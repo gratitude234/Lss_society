@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Events | Law Students’ Society – JABU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="main.js" defer></script>
+  </head>
+  <body class="events-page">
+    <header class="site-header">
+      <div class="container nav-container">
+        <div class="logo">Law Students’ Society – JABU</div>
+        <nav>
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+          </button>
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+
+            <li class="nav-has-dropdown">
+              <a href="about.html">About</a>
+              <ul class="nav-dropdown">
+                <li>
+                  <a href="about.html#lss">LSS Central Executive Council</a>
+                </li>
+                <li>
+                  <a href="about.html#lsrc"
+                    >Law Students’ Representative Council (LSRC)</a
+                  >
+                </li>
+                <li>
+                  <a href="about.html#moot-mock"
+                    >Moot &amp; Mock Trial Committee</a
+                  >
+                </li>
+                <li>
+                  <a href="about.html#judicial-council">LSS Judicial Council</a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="events.html" class="active">Events</a></li>
+            <li><a href="executives.html">Executives</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Upcoming Events -->
+      <section class="section section--light">
+        <div class="container">
+          <h1 class="section-title">Events &amp; Activities</h1>
+          <p class="section-subtitle">
+            Moots, seminars, workshops and community outreach programmes
+            organised by the Law Students’ Society.
+          </p>
+
+          <div class="filter-row">
+            <button
+              class="filter-pill event-filter active"
+              data-filter="all"
+              type="button"
+            >
+              All
+            </button>
+            <button
+              class="filter-pill event-filter"
+              data-filter="moot"
+              type="button"
+            >
+              Moot &amp; Mock
+            </button>
+            <button
+              class="filter-pill event-filter"
+              data-filter="seminar"
+              type="button"
+            >
+              Seminar
+            </button>
+            <button
+              class="filter-pill event-filter"
+              data-filter="workshop"
+              type="button"
+            >
+              Workshop
+            </button>
+            <button
+              class="filter-pill event-filter"
+              data-filter="outreach"
+              type="button"
+            >
+              Outreach
+            </button>
+          </div>
+
+          <div class="events-grid">
+            <article
+              class="event-card"
+              data-category="moot"
+            >
+              <div class="event-meta">12 February · Moot Court Hall</div>
+              <h2 class="event-title">
+                Inter-Faculty Moot Court Competition
+              </h2>
+              <div class="event-venue">
+                Hosted by Moot &amp; Mock Committee, bench constituted by the
+                LSS Judicial Council.
+              </div>
+              <p class="text-muted mt-1">
+                Teams argue a simulated appellate case before a panel of
+                practitioners, faculty members and student judges.
+              </p>
+            </article>
+
+            <article
+              class="event-card"
+              data-category="seminar"
+            >
+              <div class="event-meta">5 March · Online (Zoom)</div>
+              <h2 class="event-title">
+                Seminar: Pathways into Corporate &amp; Commercial Practice
+              </h2>
+              <div class="event-venue">Virtual · LSS Career Development Desk</div>
+              <p class="text-muted mt-1">
+                A conversation with alumni and practitioners sharing practical
+                advice on internships, pupillage and early-career development.
+              </p>
+            </article>
+
+            <article
+              class="event-card"
+              data-category="workshop"
+            >
+              <div class="event-meta">16 March · Faculty Lecture Room 2</div>
+              <h2 class="event-title">
+                Legal Writing &amp; Drafting Workshop
+              </h2>
+              <div class="event-venue">
+                Facilitated by the LSS Academic Committee
+              </div>
+              <p class="text-muted mt-1">
+                Focused on structuring arguments, drafting opinions and
+                improving the clarity and precision of legal writing.
+              </p>
+            </article>
+
+            <article
+              class="event-card"
+              data-category="outreach"
+            >
+              <div class="event-meta">30 March · Off-Campus Community</div>
+              <h2 class="event-title">
+                Community Legal Awareness &amp; Rights Clinic
+              </h2>
+              <div class="event-venue">
+                LSS Social Responsibility &amp; Welfare Desk
+              </div>
+              <p class="text-muted mt-1">
+                Students engage community members on basic rights, contracts,
+                tenancy and simple dispute resolution options.
+              </p>
+            </article>
+
+            <article
+              class="event-card"
+              data-category="moot"
+            >
+              <div class="event-meta">10 April · Moot Court Hall</div>
+              <h2 class="event-title">
+                First-Year Introductory Moot &amp; Mock Session
+              </h2>
+              <div class="event-venue">
+                LSS Moot &amp; Mock Trial Committee
+              </div>
+              <p class="text-muted mt-1">
+                A beginner-friendly session introducing first-year students to
+                mooting, mock trial etiquette and courtroom procedure.
+              </p>
+            </article>
+
+            <article
+              class="event-card"
+              data-category="seminar"
+            >
+              <div class="event-meta">20 April · JABU Auditorium</div>
+              <h2 class="event-title">
+                Public Lecture: Law, Governance &amp; Ethics in Nigeria
+              </h2>
+              <div class="event-venue">
+                Joint programme with the Faculty of Law
+              </div>
+              <p class="text-muted mt-1">
+                Speakers explore the relationship between legal frameworks,
+                public policy and ethical leadership in governance.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Past Events Gallery -->
+      <section class="section section--muted">
+        <div class="container">
+          <h2 class="section-title">Past Events Gallery</h2>
+          <p class="section-subtitle">
+            Highlights from previous Law Students’ Society activities.
+          </p>
+
+          <div class="gallery-grid">
+            <div class="gallery-item">
+              <div class="gallery-overlay">
+                <strong>2023 Intra-Faculty Moot Finals</strong>
+                <span>Faculty Moot Court Hall</span>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="gallery-overlay">
+                <strong>Legal Awareness Outreach</strong>
+                <span>Neighbouring Community</span>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="gallery-overlay">
+                <strong>Compliance &amp; Corporate Governance Seminar</strong>
+                <span>JABU Auditorium</span>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="gallery-overlay">
+                <strong>Orientation for New Law Students</strong>
+                <span>Faculty Lecture Hall</span>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="gallery-overlay">
+                <strong>Alumni Networking Evening</strong>
+                <span>On-campus Event</span>
+              </div>
+            </div>
+            <div class="gallery-item">
+              <div class="gallery-overlay">
+                <strong>Wellness &amp; Faith Dialogue</strong>
+                <span>Faculty Garden</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta-strip">
+        <div class="container cta-inner">
+          <div>
+            <h2 class="cta-title">Want to host an event with LSS?</h2>
+            <p class="mt-1" style="margin-bottom: 0">
+              Student groups and external partners can collaborate with us on
+              academic and professional programmes.
+            </p>
+          </div>
+          <a href="contact.html" class="btn btn-primary">Contact the LSS</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-heading">
+              Law Students’ Society – Joseph Ayo Babalola University
+            </div>
+            <p>
+              Promoting scholarship, advocacy and service through impactful
+              student-led programmes and events.
+            </p>
+          </div>
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="about.html">About LSS</a></li>
+              <li><a href="executives.html">Executive Council</a></li>
+              <li><a href="resources.html">Downloads</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Connect</div>
+            <div class="social-row">
+              <span class="social-pill">Instagram</span>
+              <span class="social-pill">X (Twitter)</span>
+              <span class="social-pill">LinkedIn</span>
+              <span class="social-pill">WhatsApp</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © <span class="current-year"></span> Law Students’ Society, Joseph
+          Ayo Babalola University.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

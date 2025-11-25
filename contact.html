@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Contact | Law Students’ Society – JABU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="main.js" defer></script>
+  </head>
+  <body class="contact-page">
+    <header class="site-header">
+      <div class="container nav-container">
+        <div class="logo">Law Students’ Society – JABU</div>
+        <nav>
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+          </button>
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+
+            <li class="nav-has-dropdown">
+              <a href="about.html">About</a>
+              <ul class="nav-dropdown">
+                <li>
+                  <a href="about.html#lss">LSS Central Executive Council</a>
+                </li>
+                <li>
+                  <a href="about.html#lsrc"
+                    >Law Students’ Representative Council (LSRC)</a
+                  >
+                </li>
+                <li>
+                  <a href="about.html#moot-mock"
+                    >Moot &amp; Mock Trial Committee</a
+                  >
+                </li>
+                <li>
+                  <a href="about.html#judicial-council">LSS Judicial Council</a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="events.html">Events</a></li>
+            <li><a href="executives.html">Executives</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Contact & Map -->
+      <section class="section section--light">
+        <div class="container">
+          <h1 class="section-title">Contact &amp; Enquiries</h1>
+          <p class="section-subtitle">
+            Reach out to the Law Students’ Society for membership, partnerships
+            or general enquiries.
+          </p>
+
+          <div class="form-grid">
+            <!-- Contact Form -->
+            <div>
+              <form id="contactForm">
+                <div class="form-field">
+                  <label for="name" class="form-label">Full Name *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    class="form-input"
+                    required
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="email" class="form-label">Email Address *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-input"
+                    required
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="subject" class="form-label">Subject *</label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    class="form-input"
+                    required
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="message" class="form-label">Message *</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    class="form-textarea"
+                    required
+                  ></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-blue">
+                  Send Message
+                </button>
+                <div id="formMessages" class="form-messages"></div>
+              </form>
+            </div>
+
+            <!-- Contact Info / Map Placeholder -->
+            <div>
+              <div class="card">
+                <h3>Contact Information</h3>
+                <p class="text-muted">
+                  You can reach the Law Students’ Society through the channels
+                  below.
+                </p>
+                <ul class="resource-list mt-1">
+                  <li><strong>Email:</strong> lss@jabu.edu.ng (placeholder)</li>
+                  <li><strong>Phone:</strong> +234 000 000 0000 (placeholder)</li>
+                  <li>
+                    <strong>Office:</strong> LSS Secretariat, Faculty of Law
+                    Building, Joseph Ayo Babalola University.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="card mt-2">
+                <h3>Faculty Location</h3>
+                <p class="text-muted">
+                  Faculty of Law, Joseph Ayo Babalola University, Ikeji-Arakeji,
+                  Osun State, Nigeria.
+                </p>
+                <div
+                  style="
+                    border-radius: 0.75rem;
+                    border: 1px dashed rgba(148, 163, 184, 0.8);
+                    padding: 1.2rem;
+                    text-align: center;
+                    background: linear-gradient(
+                      135deg,
+                      rgba(224, 242, 254, 0.7),
+                      rgba(239, 246, 255, 0.7)
+                    );
+                    font-size: 0.9rem;
+                  "
+                >
+                  Map placeholder – integrate Google Maps iframe here when
+                  ready.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="section section--muted">
+        <div class="container">
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">
+            Answers to some common questions about the Law Students’ Society.
+          </p>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>How do I become a member of the Law Students’ Society?</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Membership is open to every duly registered Law student of Joseph
+              Ayo Babalola University. You can obtain and submit the membership
+              form through the LSS Secretariat or download it from the Resources
+              page and follow the instructions provided.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Is there any membership due or fee?</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Yes, members may be required to pay dues as approved by the
+              Society in line with the Constitution. Dues help support academic
+              programmes, moots, welfare initiatives and other activities for
+              the benefit of all Law students.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span
+                >How can I join the Moot &amp; Mock Trial Committee or other
+                LSS committees?</span
+              >
+              <span class="icon">+</span>
+            </button>
+            <div class="faq-answer">
+              The Society occasionally calls for volunteers to join various
+              committees. Watch the LSS notice boards, WhatsApp platforms and
+              social media pages for announcements, or contact the Executive
+              Council through the form above.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Can non-Law students attend LSS events?</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Certain events, such as public lectures and legal awareness
+              programmes, are open to the wider university community. Other
+              activities, like moots or internal training sessions, may be
+              restricted to Law students. Details will usually be stated in the
+              event publicity.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Who do I contact for partnerships or sponsorships?</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="faq-answer">
+              Potential partners, firms or organisations can reach the Society
+              through the official email or by writing to the President of the
+              Law Students’ Society via the Faculty of Law, Joseph Ayo
+              Babalola University.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-heading">
+              Law Students’ Society – Joseph Ayo Babalola University
+            </div>
+            <p>
+              We are always glad to hear from students, alumni and partners who
+              wish to support the vision of the Society.
+            </p>
+          </div>
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="about.html">About LSS</a></li>
+              <li><a href="events.html">Events</a></li>
+              <li><a href="resources.html">Resources</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Connect</div>
+            <div class="social-row">
+              <span class="social-pill">Instagram</span>
+              <span class="social-pill">X (Twitter)</span>
+              <span class="social-pill">LinkedIn</span>
+              <span class="social-pill">WhatsApp</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © <span class="current-year"></span> Law Students’ Society, Joseph
+          Ayo Babalola University.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

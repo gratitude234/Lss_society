@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Blog | Law Students’ Society – JABU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="main.js" defer></script>
+  </head>
+  <body class="blog-page">
+    <header class="site-header">
+      <div class="container nav-container">
+        <div class="logo">Law Students’ Society – JABU</div>
+        <nav>
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+          </button>
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+
+            <li class="nav-has-dropdown">
+              <a href="about.html">About</a>
+              <ul class="nav-dropdown">
+                <li>
+                  <a href="about.html#lss">LSS Central Executive Council</a>
+                </li>
+                <li>
+                  <a href="about.html#lsrc"
+                    >Law Students’ Representative Council (LSRC)</a
+                  >
+                </li>
+                <li>
+                  <a href="about.html#moot-mock"
+                    >Moot &amp; Mock Trial Committee</a
+                  >
+                </li>
+                <li>
+                  <a href="about.html#judicial-council">LSS Judicial Council</a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="events.html">Events</a></li>
+            <li><a href="executives.html">Executives</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="blog.html" class="active">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="section section--light">
+        <div class="container">
+          <h1 class="section-title">News &amp; Articles</h1>
+          <p class="section-subtitle">
+            Commentary, reflections and updates from the Law Students’ Society
+            and the wider legal community.
+          </p>
+
+          <div class="blog-layout">
+            <!-- Main posts -->
+            <div>
+              <article
+                class="card blog-post"
+                data-category="legal-updates"
+              >
+                <h2 class="blog-post-title">
+                  Recent Developments in Nigerian Constitutional Law
+                </h2>
+                <div class="blog-post-meta">
+                  By LSS Research Desk · Category: Legal Updates
+                </div>
+                <p class="text-muted">
+                  A brief overview of key constitutional law decisions and
+                  legislative changes every Law student should be aware of,
+                  including trends in electoral disputes and separation of
+                  powers...
+                </p>
+                <a href="#" class="btn btn-ghost mt-1">Read more</a>
+              </article>
+
+              <article
+                class="card blog-post"
+                data-category="moot-court"
+              >
+                <h2 class="blog-post-title">
+                  Lessons from the Last Inter-Faculty Moot
+                </h2>
+                <div class="blog-post-meta">
+                  By Moot &amp; Mock Trial Committee · Category: Moot Court
+                </div>
+                <p class="text-muted">
+                  From time management to courtroom etiquette, our student
+                  advocates share insights gained during the most recent
+                  competition and how new mooters can prepare better...
+                </p>
+                <a href="#" class="btn btn-ghost mt-1">Read more</a>
+              </article>
+
+              <article
+                class="card blog-post"
+                data-category="announcements"
+              >
+                <h2 class="blog-post-title">
+                  Call for Volunteers: LSS Committees 2024/2025
+                </h2>
+                <div class="blog-post-meta">
+                  By LSS Secretariat · Category: Announcements
+                </div>
+                <p class="text-muted">
+                  The Society is inviting interested students to serve on
+                  committees such as Academic, Welfare, Moot &amp; Mock, and
+                  Public Relations. Learn about the roles and how to apply...
+                </p>
+                <a href="#" class="btn btn-ghost mt-1">Read more</a>
+              </article>
+
+              <article
+                class="card blog-post"
+                data-category="student-life"
+              >
+                <h2 class="blog-post-title">
+                  Balancing Law School, Faith and Mental Health
+                </h2>
+                <div class="blog-post-meta">
+                  By Welfare Desk · Category: Student Life
+                </div>
+                <p class="text-muted">
+                  Law school is demanding, but it should not come at the expense
+                  of your health or walk with God. Here are practical tips for
+                  maintaining balance and knowing when to seek help...
+                </p>
+                <a href="#" class="btn btn-ghost mt-1">Read more</a>
+              </article>
+            </div>
+
+            <!-- Sidebar -->
+            <aside>
+              <div class="card blog-sidebar-card">
+                <h3>Search Articles</h3>
+                <div class="form-field mt-1">
+                  <label for="blogSearch" class="form-label">Search by title</label>
+                  <input
+                    type="text"
+                    id="blogSearch"
+                    class="form-input"
+                    placeholder="E.g. constitutional law, moot..."
+                  />
+                </div>
+              </div>
+
+              <div class="card blog-sidebar-card">
+                <h3>Categories</h3>
+                <ul class="sidebar-list">
+                  <li>
+                    <a
+                      href="#"
+                      class="blog-category active"
+                      data-category="all"
+                      >All</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="blog-category"
+                      data-category="legal-updates"
+                      >Legal Updates</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="blog-category"
+                      data-category="moot-court"
+                      >Moot Court</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="blog-category"
+                      data-category="announcements"
+                      >Announcements</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="blog-category"
+                      data-category="student-life"
+                      >Student Life</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <div class="card blog-sidebar-card">
+                <h3>Recent Posts</h3>
+                <ul class="sidebar-list">
+                  <li>
+                    <a href="#">Recent Developments in Nigerian Constitutional Law</a>
+                  </li>
+                  <li>
+                    <a href="#">Lessons from the Last Inter-Faculty Moot</a>
+                  </li>
+                  <li>
+                    <a href="#">Call for Volunteers: LSS Committees 2024/2025</a>
+                  </li>
+                  <li>
+                    <a href="#">Balancing Law School, Faith and Mental Health</a>
+                  </li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-heading">
+              Law Students’ Society – Joseph Ayo Babalola University
+            </div>
+            <p>
+              Giving voice to the thoughts and scholarship of Law students
+              through articles, reflections and reports.
+            </p>
+          </div>
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="about.html">About LSS</a></li>
+              <li><a href="events.html">Events</a></li>
+              <li><a href="resources.html">Resources</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Connect</div>
+            <div class="social-row">
+              <span class="social-pill">Instagram</span>
+              <span class="social-pill">X (Twitter)</span>
+              <span class="social-pill">LinkedIn</span>
+              <span class="social-pill">WhatsApp</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © <span class="current-year"></span> Law Students’ Society, Joseph
+          Ayo Babalola University.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
