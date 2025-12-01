@@ -1,4 +1,4 @@
-// Main JS for Law Students’ Society – JABU site
+// Main JS for Law Students' Society - JABU site
 
 document.addEventListener("DOMContentLoaded", function () {
   /* ==========
