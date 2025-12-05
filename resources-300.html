@@ -5,6 +5,55 @@
     <title>300 Level Materials | Law Students’ Society – JABU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
+    <!-- Inline styles for multi-year past question download chips -->
+    <style>
+      .pq-year-group {
+        margin-top: 0.75rem;
+      }
+      .pq-year-label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #4b5563;
+        margin-bottom: 0.35rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .pq-year-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .pq-year-link {
+        display: inline-block;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid #bfdbfe;
+        background: #e5f0ff;
+        color: #1d4ed8;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.15s ease, color 0.15s ease,
+          transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .pq-year-link:hover,
+      .pq-year-link:focus-visible {
+        background: #1d4ed8;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+      }
+      .pq-year-link:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+      @media (max-width: 640px) {
+        .pq-year-list {
+          gap: 0.3rem;
+        }
+      }
+    </style>
     <script src="main.js" defer></script>
   </head>
   <body class="resources-page">
@@ -47,9 +96,9 @@
             300 Level – First and Second Semester past questions and course materials.
           </p>
           <p>
-            Click the download button under each course to get its past
-            questions or materials. Later, replace each <code>href="#</code>
-            with your real PDF file paths.
+            Pick from the last five years (2019–2023) for each course. Update
+            the file paths later to match your actual uploads in the
+            <code>pastquestions/300L/</code> folder.
           </p>
         </div>
       </section>
@@ -66,9 +115,16 @@
               <p class="text-muted">
                 Past questions and materials for Criminal Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Past Questions (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/criminal-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/criminal-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/criminal-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/criminal-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/criminal-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -76,9 +132,16 @@
               <p class="text-muted">
                 Past questions and materials for Commercial Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Past Questions (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/commercial-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/commercial-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/commercial-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/commercial-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/commercial-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -86,9 +149,16 @@
               <p class="text-muted">
                 Past questions and materials for Law of Tort.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Past Questions (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/law-of-tort/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/law-of-tort/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/law-of-tort/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/law-of-tort/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/law-of-tort/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -96,9 +166,16 @@
               <p class="text-muted">
                 Past questions and materials for Law in Computing.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Past Questions (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/law-in-computing/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/law-in-computing/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/law-in-computing/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/law-in-computing/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/law-in-computing/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -109,9 +186,16 @@
               <p class="text-muted">
                 Past questions and materials for Family Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Past Questions (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/family-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/family-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/family-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/family-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/family-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -119,9 +203,16 @@
               <p class="text-muted">
                 Past questions and materials for Intellectual Property Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Past Questions (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/intellectual-property/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/intellectual-property/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/intellectual-property/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/intellectual-property/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/intellectual-property/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -129,9 +220,16 @@
               <p class="text-muted">
                 Past questions and materials for Environmental Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Past Questions (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/environmental-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/environmental-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/environmental-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/environmental-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/environmental-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -149,9 +247,17 @@
               <p class="text-muted">
                 Second semester past questions and materials for Criminal Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <!-- Can point to same folder as first semester or separate PDFs, depending on how you upload -->
+                  <a href="pastquestions/300L/criminal-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/criminal-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/criminal-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/criminal-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/criminal-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -159,9 +265,16 @@
               <p class="text-muted">
                 Second semester past questions and materials for Commercial Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/commercial-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/commercial-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/commercial-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/commercial-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/commercial-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -169,9 +282,16 @@
               <p class="text-muted">
                 Second semester past questions and materials for Law of Tort.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/law-of-tort/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/law-of-tort/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/law-of-tort/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/law-of-tort/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/law-of-tort/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -179,9 +299,16 @@
               <p class="text-muted">
                 Second semester past questions and materials for Law in Computing.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/law-in-computing/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/law-in-computing/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/law-in-computing/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/law-in-computing/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/law-in-computing/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -189,9 +316,16 @@
               <p class="text-muted">
                 Second semester past questions and materials for CIT.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/cit/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/cit/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/cit/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/cit/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/cit/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -202,9 +336,16 @@
               <p class="text-muted">
                 Second semester past questions and materials for Family Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/family-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/family-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/family-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/family-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/family-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -212,9 +353,16 @@
               <p class="text-muted">
                 Second semester past questions and materials for Intellectual Property Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/intellectual-property/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/intellectual-property/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/intellectual-property/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/intellectual-property/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/intellectual-property/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
 
             <div class="card">
@@ -222,9 +370,16 @@
               <p class="text-muted">
                 Second semester past questions and materials for Environmental Law.
               </p>
-              <a href="#" class="btn btn-blue mt-1">
-                Download Second Semester PQ (PDF)
-              </a>
+              <div class="pq-year-group">
+                <span class="pq-year-label">Past questions (2019–2023):</span>
+                <div class="pq-year-list">
+                  <a href="pastquestions/300L/environmental-law/2019.pdf" class="pq-year-link" download>2019</a>
+                  <a href="pastquestions/300L/environmental-law/2020.pdf" class="pq-year-link" download>2020</a>
+                  <a href="pastquestions/300L/environmental-law/2021.pdf" class="pq-year-link" download>2021</a>
+                  <a href="pastquestions/300L/environmental-law/2022.pdf" class="pq-year-link" download>2022</a>
+                  <a href="pastquestions/300L/environmental-law/2023.pdf" class="pq-year-link" download>2023</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
