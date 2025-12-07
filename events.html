@@ -5,12 +5,85 @@
     <title>Events | Law Students’ Society – JABU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/jpg" href="images/logo.jpg" />
+
+    <!-- Inline styles for logo + footer social links -->
+    <style>
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .logo-img {
+        height: 48px;
+        width: auto;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
+
+      .logo-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .logo-subtitle {
+        font-size: 0.75rem;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 480px) {
+        .logo-text {
+          display: none;
+        }
+      }
+
+      .social-row .social-pill,
+      .social-row .social-pill:link,
+      .social-row .social-pill:visited {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .social-row .social-pill:hover,
+      .social-row .social-pill:focus-visible {
+        text-decoration: none;
+      }
+    </style>
+
     <script src="main.js" defer></script>
   </head>
   <body class="events-page">
     <header class="site-header">
       <div class="container nav-container">
-        <div class="logo">Law Students’ Society – JABU</div>
+        <div class="logo">
+          <a href="index.html" class="logo-link">
+            <img
+              src="images/logo.jpg"
+              alt="JABU Law Students’ Society logo"
+              class="logo-img"
+            />
+            <span class="logo-text">
+              <span class="logo-title">Law Students’ Society</span>
+              <span class="logo-subtitle">Joseph Ayo Babalola University</span>
+            </span>
+          </a>
+        </div>
         <nav>
           <button class="nav-toggle" aria-label="Toggle navigation">
             <span></span><span></span><span></span>
@@ -290,10 +363,34 @@
           <div>
             <div class="footer-heading">Connect</div>
             <div class="social-row">
-              <span class="social-pill">Instagram</span>
-              <span class="social-pill">X (Twitter)</span>
-              <span class="social-pill">LinkedIn</span>
-              <span class="social-pill">WhatsApp</span>
+              <a
+                href="https://wa.link/lj7s82"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >WhatsApp</a
+              >
+              <a
+                href="https://www.instagram.com/lssjabu"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Instagram</a
+              >
+              <a
+                href="https://www.tiktok.com/@lss_jabu?_t=ZS-8zgpH5F9cFF&_r=1"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >TikTok</a
+              >
+              <a
+                href="https://www.linkedin.com/company/joseph-ayo-babalola-university-jabu-law-students-society/"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >LinkedIn</a
+              >
             </div>
           </div>
         </div>

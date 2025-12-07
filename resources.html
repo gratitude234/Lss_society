@@ -5,12 +5,87 @@
     <title>Resources | Law Students’ Society – JABU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/jpg" href="images/logo.jpg" />
+
+    <!-- Inline styles for logo + footer social links -->
+    <style>
+      /* LOGO AREA */
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .logo-img {
+        height: 48px;
+        width: auto;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
+
+      .logo-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .logo-subtitle {
+        font-size: 0.75rem;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 480px) {
+        .logo-text {
+          display: none;
+        }
+      }
+
+      /* Footer social links – inherit footer text colour */
+      .social-row .social-pill,
+      .social-row .social-pill:link,
+      .social-row .social-pill:visited {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .social-row .social-pill:hover,
+      .social-row .social-pill:focus-visible {
+        text-decoration: none;
+      }
+    </style>
+
     <script src="main.js" defer></script>
   </head>
   <body class="resources-page">
     <header class="site-header">
       <div class="container nav-container">
-        <div class="logo">Law Students’ Society – JABU</div>
+        <div class="logo">
+          <a href="index.html" class="logo-link">
+            <img
+              src="images/logo.jpg"
+              alt="JABU Law Students’ Society logo"
+              class="logo-img"
+            />
+            <span class="logo-text">
+              <span class="logo-title">Law Students’ Society</span>
+              <span class="logo-subtitle">Joseph Ayo Babalola University</span>
+            </span>
+          </a>
+        </div>
         <nav>
           <button class="nav-toggle" aria-label="Toggle navigation">
             <span></span><span></span><span></span>
@@ -51,7 +126,7 @@
     </header>
 
     <main>
-      <!-- Study Resources (original content) -->
+      <!-- Study Resources -->
       <section class="section section--light">
         <div class="container">
           <h1 class="section-title">Resources &amp; Downloads</h1>
@@ -66,13 +141,31 @@
                 <h3>Case Law</h3>
                 <ul class="resource-list">
                   <li>
-                    <a href="#">Leading Nigerian Constitutional Law Cases (PDF)</a>
+                    <a
+                      href="downloads/leading-nigerian-constitutional-law-cases.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Leading Nigerian Constitutional Law Cases (PDF)
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Case Digest on Contract &amp; Tort (PDF)</a>
+                    <a
+                      href="downloads/case-digest-contract-tort.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Case Digest on Contract &amp; Tort (PDF)
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Selected Supreme Court Decisions on Evidence</a>
+                    <a
+                      href="downloads/selected-supreme-court-decisions-evidence.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Selected Supreme Court Decisions on Evidence (PDF)
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -81,13 +174,31 @@
                 <h3>Statutes &amp; Legislation</h3>
                 <ul class="resource-list">
                   <li>
-                    <a href="#">1999 Constitution of the Federal Republic of Nigeria</a>
+                    <a
+                      href="downloads/1999-constitution-federal-republic-of-nigeria.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      1999 Constitution of the Federal Republic of Nigeria (PDF)
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Evidence Act (Consolidated Version)</a>
+                    <a
+                      href="downloads/evidence-act-consolidated.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Evidence Act (Consolidated Version) (PDF)
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Companies and Allied Matters Act (Summary Notes)</a>
+                    <a
+                      href="downloads/cama-summary-notes.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Companies and Allied Matters Act (Summary Notes) (PDF)
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -97,15 +208,41 @@
               <div class="resource-category">
                 <h3>Lecture Notes &amp; Summaries</h3>
                 <ul class="resource-list">
-                  <li><a href="#">Year 1: Legal Methods – Key Topics</a></li>
                   <li>
-                    <a href="#">Year 2: Nigerian Legal System – Revision Pack</a>
+                    <a
+                      href="downloads/year1-legal-methods-key-topics.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Year 1: Legal Methods – Key Topics (PDF)
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Year 3: Constitutional Law – Model Answers</a>
+                    <a
+                      href="downloads/year2-nigerian-legal-system-revision-pack.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Year 2: Nigerian Legal System – Revision Pack (PDF)
+                    </a>
                   </li>
                   <li>
-                    <a href="#">Year 4: Commercial Law – Study Guide</a>
+                    <a
+                      href="downloads/year3-constitutional-law-model-answers.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Year 3: Constitutional Law – Model Answers (PDF)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="downloads/year4-commercial-law-study-guide.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Year 4: Commercial Law – Study Guide (PDF)
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -113,10 +250,42 @@
               <div class="resource-category">
                 <h3>Moot &amp; Mock Materials</h3>
                 <ul class="resource-list">
-                  <li><a href="#">Sample Moot Proposition (PDF)</a></li>
-                  <li><a href="#">Template for Appellant’s Brief</a></li>
-                  <li><a href="#">Template for Respondent’s Brief</a></li>
-                  <li><a href="#">Checklist for Moot &amp; Mock Preparation</a></li>
+                  <li>
+                    <a
+                      href="downloads/sample-moot-proposition.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Sample Moot Proposition (PDF)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="downloads/template-appellants-brief.docx"
+                      class="resource-link"
+                      download
+                    >
+                      Template for Appellant’s Brief (DOCX)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="downloads/template-respondents-brief.docx"
+                      class="resource-link"
+                      download
+                    >
+                      Template for Respondent’s Brief (DOCX)
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="downloads/checklist-moot-mock-preparation.pdf"
+                      class="resource-link"
+                      download
+                    >
+                      Checklist for Moot &amp; Mock Preparation (PDF)
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -124,7 +293,7 @@
         </div>
       </section>
 
-      <!-- NEW: Resources by Level (100–500) -->
+      <!-- Resources by Level (100–500) -->
       <section class="section section--muted">
         <div class="container">
           <h2 class="section-title">Resources by Level</h2>
@@ -203,7 +372,7 @@
         </div>
       </section>
 
-      <!-- Official Downloads (original content, now wired) -->
+      <!-- Official Downloads -->
       <section class="section section--light">
         <div class="container">
           <h2 class="section-title">Official Downloads</h2>
@@ -217,7 +386,11 @@
               <p class="text-muted">
                 The supreme governing document of the Law Students’ Society.
               </p>
-              <a href="downloads/lss-constitution.pdf" class="btn btn-blue mt-1" download>
+              <a
+                href="downloads/lss-constitution.pdf"
+                class="btn btn-blue mt-1"
+                download
+              >
                 Download PDF
               </a>
             </div>
@@ -228,7 +401,11 @@
                 Apply formally to join or regularise your membership with the
                 Society.
               </p>
-              <a href="downloads/lss-membership-form.pdf" class="btn btn-blue mt-1" download>
+              <a
+                href="downloads/lss-membership-form.pdf"
+                class="btn btn-blue mt-1"
+                download
+              >
                 Download Form
               </a>
             </div>
@@ -239,7 +416,11 @@
                 Use this template when proposing academic, social or outreach
                 programmes to LSS.
               </p>
-              <a href="downloads/lss-event-proposal-template.docx" class="btn btn-blue mt-1" download>
+              <a
+                href="downloads/lss-event-proposal-template.docx"
+                class="btn btn-blue mt-1"
+                download
+              >
                 Download Template
               </a>
             </div>
@@ -247,7 +428,7 @@
         </div>
       </section>
 
-      <!-- Useful External Links (original content) -->
+      <!-- Useful External Links -->
       <section class="section section--muted">
         <div class="container">
           <h2 class="section-title">Useful External Links</h2>
@@ -311,10 +492,34 @@
           <div>
             <div class="footer-heading">Connect</div>
             <div class="social-row">
-              <span class="social-pill">Instagram</span>
-              <span class="social-pill">X (Twitter)</span>
-              <span class="social-pill">LinkedIn</span>
-              <span class="social-pill">WhatsApp</span>
+              <a
+                href="https://wa.link/lj7s82"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >WhatsApp</a
+              >
+              <a
+                href="https://www.instagram.com/lssjabu"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Instagram</a
+              >
+              <a
+                href="https://www.tiktok.com/@lss_jabu?_t=ZS-8zgpH5F9cFF&_r=1"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >TikTok</a
+              >
+              <a
+                href="https://www.linkedin.com/company/joseph-ayo-babalola-university-jabu-law-students-society/"
+                class="social-pill"
+                target="_blank"
+                rel="noopener noreferrer"
+                >LinkedIn</a
+              >
             </div>
           </div>
         </div>
