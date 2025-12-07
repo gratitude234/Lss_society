@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LSRC – Law Students’ Representative Council | LSS – JABU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="main.js" defer></script>
+
+    <!-- Override dropdown link colour to black -->
+    <style>
+      .nav-dropdown a,
+      .nav-dropdown a:visited {
+        color: #0f172a; /* deep slate/black */
+      }
+
+      .nav-dropdown a.active {
+        color: #0f172a; /* keep active state black too */
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-container">
+        <div class="logo">Law Students’ Society – JABU</div>
+        <nav>
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+          </button>
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+
+            <!-- ABOUT DROPDOWN -->
+            <li class="nav-has-dropdown">
+              <a href="about.html">About</a>
+              <ul class="nav-dropdown">
+                <li>
+                  <a href="about-lsrc.html" class="active">
+                    Law Students’ Representative Council (LSRC)
+                  </a>
+                </li>
+                <li>
+                  <a href="moot-mock.html">
+                    Moot &amp; Mock Trial Committee
+                  </a>
+                </li>
+                <li>
+                  <a href="judicial-council.html">
+                    LSS Judicial Council
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="events.html">Events</a></li>
+            <li><a href="executives.html">Executives</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO SECTION -->
+      <section class="section section--light">
+        <div class="container">
+          <h1 class="section-title">Law Students’ Representative Council (LSRC)</h1>
+          <p class="section-subtitle">
+            The legislative arm of the Law Students’ Society responsible for
+            representation, policy direction and accountability within the LSS.
+          </p>
+
+          <div class="grid-2">
+            <div>
+              <p>
+                The Law Students’ Representative Council (LSRC) serves as the
+                voice of Law students within the Society. Members of the Council
+                are elected from different constituencies to deliberate on
+                student-centred issues, pass resolutions, and provide oversight
+                over the Executive Council of the LSS.
+              </p>
+              <p class="mt-1">
+                Through regular sittings, committee work and constituency
+                engagement, the LSRC ensures that the concerns of students are
+                heard and addressed in line with the Constitution of the Society
+                and the values of Joseph Ayo Babalola University.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Mandate of the LSRC</h3>
+              <ul class="resource-list mt-1">
+                <li>Represent the interests of Law students across all levels.</li>
+                <li>Debate and pass resolutions on academic and welfare issues.</li>
+                <li>Exercise oversight over the LSS Executive Council.</li>
+                <li>Promote accountability, transparency and due process.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEMBERS GALLERY (PICTURES + POSTS) -->
+      <section class="section section--muted">
+        <div class="container">
+          <h2 class="section-title">Council Members – Photos &amp; Positions</h2>
+          <p class="section-subtitle">
+            Upload each councillor’s photograph and position here. Duplicate or
+            edit the cards below as you add more members.
+          </p>
+
+          <div class="grid-3">
+            <!-- 20 MEMBER CARDS – update names/positions individually -->
+
+            <!-- 1 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 1
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position (e.g. Speaker)
+              </p>
+            </div>
+
+            <!-- 2 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(209, 250, 229, 0.9),
+                    rgba(59, 130, 246, 0.6)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 2
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position (e.g. First Deputy Speaker)
+              </p>
+            </div>
+
+            <!-- 3 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(254, 243, 199, 0.9),
+                    rgba(96, 165, 250, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 3
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position (e.g. Council Secretary)
+              </p>
+            </div>
+
+            <!-- 4 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 4
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position (e.g. Chief Whip)
+              </p>
+            </div>
+
+            <!-- 5 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(209, 250, 229, 0.9),
+                    rgba(59, 130, 246, 0.6)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 5
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position (e.g. Constituency 5 Head)
+              </p>
+            </div>
+
+            <!-- 6 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(254, 243, 199, 0.9),
+                    rgba(96, 165, 250, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 6
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position (e.g. Constituency 5 Member)
+              </p>
+            </div>
+
+            <!-- 7 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 7
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 8 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(209, 250, 229, 0.9),
+                    rgba(59, 130, 246, 0.6)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 8
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 9 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(254, 243, 199, 0.9),
+                    rgba(96, 165, 250, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 9
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 10 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 10
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 11 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(209, 250, 229, 0.9),
+                    rgba(59, 130, 246, 0.6)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 11
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 12 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(254, 243, 199, 0.9),
+                    rgba(96, 165, 250, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 12
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 13 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 13
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 14 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(209, 250, 229, 0.9),
+                    rgba(59, 130, 246, 0.6)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 14
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 15 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(254, 243, 199, 0.9),
+                    rgba(96, 165, 250, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 15
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 16 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 16
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 17 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(209, 250, 229, 0.9),
+                    rgba(59, 130, 246, 0.6)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 17
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 18 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(254, 243, 199, 0.9),
+                    rgba(96, 165, 250, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 18
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 19 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 19
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+
+            <!-- 20 -->
+            <div class="card">
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 4 / 3;
+                  border-radius: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(209, 250, 229, 0.9),
+                    rgba(59, 130, 246, 0.6)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.9rem;
+                  color: #1e293b;
+                  font-weight: 600;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                Member Photo
+              </div>
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
+                Hon. Member 20
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem;">
+                Position
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ORGANISATIONAL STRUCTURE -->
+      <section class="section section--light">
+        <div class="container">
+          <h2 class="section-title">Organisational Structure of the LSRC</h2>
+          <p class="section-subtitle">
+            Overview of the leadership and constituency representation within the
+            Law Students’ Representative Council.
+          </p>
+
+          <!-- PRESIDING OFFICERS -->
+          <div class="card">
+            <h3>Presiding Officers</h3>
+            <ul class="resource-list mt-1">
+              <li>
+                <strong>Speaker of the House</strong> – Hon. Full Name (insert name)
+              </li>
+              <li>
+                <strong>First Deputy Speaker</strong> – Hon. Full Name
+              </li>
+              <li>
+                <strong>Council Secretary</strong> – Hon. Full Name
+              </li>
+              <li>
+                <strong>Chief Whip</strong> – Hon. Full Name
+              </li>
+            </ul>
+          </div>
+
+          <!-- CONSTITUENCY STRUCTURE -->
+          <div class="card mt-2">
+            <h3>Constituency Representation</h3>
+            <p class="text-muted">
+              Each constituency is led by a Constituency Head, followed by four
+              other constituency members. Replace the placeholders below with the
+              actual names of councillors for each constituency.
+            </p>
+
+            <!-- Constituency 5 -->
+            <div class="mt-2">
+              <h4>Constituency 5</h4>
+              <p class="text-muted">
+                <strong>Constituency Head:</strong> Hon. Full Name
+              </p>
+              <ul class="resource-list mt-1">
+                <li>Hon. Member One – Constituency 5</li>
+                <li>Hon. Member Two – Constituency 5</li>
+                <li>Hon. Member Three – Constituency 5</li>
+                <li>Hon. Member Four – Constituency 5</li>
+              </ul>
+            </div>
+
+            <!-- Constituency 4 -->
+            <div class="mt-2">
+              <h4>Constituency 4</h4>
+              <p class="text-muted">
+                <strong>Constituency Head:</strong> Hon. Full Name
+              </p>
+              <ul class="resource-list mt-1">
+                <li>Hon. Member One – Constituency 4</li>
+                <li>Hon. Member Two – Constituency 4</li>
+                <li>Hon. Member Three – Constituency 4</li>
+                <li>Hon. Member Four – Constituency 4</li>
+              </ul>
+            </div>
+
+            <!-- Constituency 3 -->
+            <div class="mt-2">
+              <h4>Constituency 3</h4>
+              <p class="text-muted">
+                <strong>Constituency Head:</strong> Hon. Full Name
+              </p>
+              <ul class="resource-list mt-1">
+                <li>Hon. Member One – Constituency 3</li>
+                <li>Hon. Member Two – Constituency 3</li>
+                <li>Hon. Member Three – Constituency 3</li>
+                <li>Hon. Member Four – Constituency 3</li>
+              </ul>
+            </div>
+
+            <!-- Constituency 2 -->
+            <div class="mt-2">
+              <h4>Constituency 2</h4>
+              <p class="text-muted">
+                <strong>Constituency Head:</strong> Hon. Full Name
+              </p>
+              <ul class="resource-list mt-1">
+                <li>Hon. Member One – Constituency 2</li>
+                <li>Hon. Member Two – Constituency 2</li>
+                <li>Hon. Member Three – Constituency 2</li>
+                <li>Hon. Member Four – Constituency 2</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-heading">
+              Law Students’ Society – Joseph Ayo Babalola University
+            </div>
+            <p>
+              A community of Law students advancing justice, scholarship, and
+              service in a Christ-centred environment.
+            </p>
+          </div>
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="executives.html">Executive Council</a></li>
+              <li><a href="events.html">Upcoming Events</a></li>
+              <li><a href="resources.html">Downloads</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Connect</div>
+            <div class="social-row">
+              <span class="social-pill">Instagram</span>
+              <span class="social-pill">X (Twitter)</span>
+              <span class="social-pill">LinkedIn</span>
+              <span class="social-pill">WhatsApp</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © <span class="current-year"></span> Law Students’ Society, Joseph
+          Ayo Babalola University.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

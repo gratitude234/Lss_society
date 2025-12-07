@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LSS Judicial Council | LSS – JABU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Override dropdown link colours so active item is black, not yellow -->
+    <style>
+      .nav-dropdown a {
+        color: #111827 !important; /* slate-900 */
+      }
+
+      .nav-dropdown a:hover,
+      .nav-dropdown a:focus-visible {
+        color: #111827 !important;
+        background: #f9fafb;
+      }
+
+      .nav-dropdown a.active {
+        color: #111827 !important;
+        font-weight: 600;
+      }
+    </style>
+
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-container">
+        <div class="logo">Law Students’ Society – JABU</div>
+        <nav>
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+          </button>
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+
+            <!-- ABOUT DROPDOWN -->
+            <li class="nav-has-dropdown">
+              <a href="about.html">About</a>
+              <ul class="nav-dropdown">
+                <li>
+                  <a href="about-lsrc.html">
+                    Law Students’ Representative Council (LSRC)
+                  </a>
+                </li>
+                <li>
+                  <a href="moot-mock.html">
+                    Moot &amp; Mock Trial Committee
+                  </a>
+                </li>
+                <li>
+                  <a href="judicial-council.html" class="active">
+                    LSS Judicial Council
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="events.html">Events</a></li>
+            <li><a href="executives.html">Executives</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="section section--light">
+        <div class="container">
+          <h1 class="section-title">LSS Judicial Council</h1>
+          <p class="section-subtitle">
+            The disciplinary and adjudicatory body of the Law Students’ Society,
+            tasked with upholding the Constitution and promoting fairness within
+            the community.
+          </p>
+
+          <div class="grid-2">
+            <div>
+              <p>
+                The LSS Judicial Council interprets the Constitution of the Law
+                Students’ Society and adjudicates disputes arising within the
+                Society. It also hears petitions, disciplinary matters, and
+                electoral disputes involving LSS officers or members.
+              </p>
+              <p class="mt-1">
+                In carrying out its duties, the Council is expected to maintain
+                impartiality, respect due process, and reflect the values of
+                justice and integrity taught by the Faculty of Law.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Core Functions</h3>
+              <ul class="resource-list mt-1">
+                <li>Interpretation of the LSS Constitution and regulations.</li>
+                <li>Adjudication of disputes among members of the Society.</li>
+                <li>Hearing and determination of disciplinary matters.</li>
+                <li>Resolution of electoral petitions and related complaints.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- JUDICIAL COUNCIL LEADERSHIP (CHIEF JUDGE IMAGE) -->
+      <section class="section section--muted">
+        <div class="container">
+          <h2 class="section-title">Judicial Council Leadership</h2>
+          <p class="section-subtitle">
+            Upload the official photograph and profile of the Chief Judge of the
+            LSS Judicial Council here.
+          </p>
+
+          <div class="grid-3">
+            <div
+              class="card"
+              style="
+                max-width: 480px;
+                margin: 0 auto;
+              "
+            >
+              <div
+                style="
+                  width: 100%;
+                  border-radius: 0.75rem;
+                  overflow: hidden;
+                  margin-bottom: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <!-- Chief Judge image -->
+                <img
+                  src="images/CHIEF JUDGE.jpeg"
+                  alt="Chief Judge, LSS Judicial Council"
+                  style="
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                    object-fit: contain;
+                  "
+                />
+              </div>
+
+              <h3 style="font-size: 1rem; margin-bottom: 0.15rem;">
+                OLUWAFEYISIKEMI ROSEMARY
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 0.35rem;">
+                Chief Judge, LSS Judicial Council
+              </p>
+              <p class="text-muted" style="font-size: 0.85rem;">
+                Brief profile or description of the Chief Judge’s role and
+                contribution to discipline, dispute resolution and constitutional
+                interpretation within the Law Students’ Society. You can edit this
+                text to include achievements, term of office, and notable
+                decisions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL / STRUCTURE OVERVIEW -->
+      <section class="section section--light">
+        <div class="container">
+          <h2 class="section-title">Council Structure</h2>
+          <p class="section-subtitle">
+            A brief outline of the typical composition of the LSS Judicial
+            Council. Replace with the exact structure used in your Constitution.
+          </p>
+
+          <div class="grid-3">
+            <div class="card card--shadowless">
+              <h3>Chief Judge</h3>
+              <p class="text-muted">
+                Presides over sittings of the Judicial Council and leads in
+                delivering decisions on matters brought before the Council.
+              </p>
+            </div>
+            <div class="card card--shadowless">
+              <h3>Associate Judges</h3>
+              <p class="text-muted">
+                Support the Chief Judge in hearing matters, reviewing evidence,
+                and contributing to reasoned judgments and opinions.
+              </p>
+            </div>
+            <div class="card card--shadowless">
+              <h3>Council Registrar</h3>
+              <p class="text-muted">
+                Responsible for recording proceedings, managing filings and
+                communicating the decisions of the Council to the appropriate
+                parties.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACCESS & PROCEDURE -->
+      <section class="section section--light">
+        <div class="container">
+          <h2 class="section-title">Accessing the Judicial Council</h2>
+          <p class="section-subtitle">
+            How members of the Law Students’ Society may approach the Council
+            with complaints, petitions, or requests for interpretation.
+          </p>
+
+          <div class="grid-2">
+            <div>
+              <h3>Filing a Complaint or Petition</h3>
+              <p class="text-muted">
+                Members may be required to submit a written petition or complaint
+                addressed to the Chief Judge of the LSS Judicial Council through
+                the Faculty of Law or the LSS Secretariat. The petition should
+                clearly state the facts, issues and reliefs sought.
+              </p>
+            </div>
+            <div>
+              <h3>Hearings & Decisions</h3>
+              <p class="text-muted">
+                Upon receipt of a complaint, the Council may schedule a hearing,
+                invite the parties, and review any documentary or oral evidence.
+                Decisions of the Council are typically communicated in writing
+                and may be subject to provisions in the LSS Constitution.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-heading">
+              Law Students’ Society – Joseph Ayo Babalola University
+            </div>
+            <p>
+              A community of Law students advancing justice, scholarship, and
+              service in a Christ-centred environment.
+            </p>
+          </div>
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="executives.html">Executive Council</a></li>
+              <li><a href="events.html">Upcoming Events</a></li>
+              <li><a href="resources.html">Downloads</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Connect</div>
+            <div class="social-row">
+              <span class="social-pill">Instagram</span>
+              <span class="social-pill">X (Twitter)</span>
+              <span class="social-pill">LinkedIn</span>
+              <span class="social-pill">WhatsApp</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © <span class="current-year"></span> Law Students’ Society, Joseph
+          Ayo Babalola University.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

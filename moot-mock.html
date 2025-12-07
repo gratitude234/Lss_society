@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Moot &amp; Mock Trial Committee | LSS – JABU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Fix dropdown colour: make About submenu links black, not yellow -->
+    <style>
+      .nav-dropdown a {
+        color: #0f172a; /* near-black */
+      }
+
+      .nav-dropdown a.active {
+        color: #0f172a;
+        font-weight: 600;
+      }
+
+      .nav-dropdown a:hover,
+      .nav-dropdown a:focus-visible {
+        color: #0f172a;
+        background-color: #e5e7eb; /* subtle grey hover */
+      }
+    </style>
+
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-container">
+        <div class="logo">Law Students’ Society – JABU</div>
+        <nav>
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+          </button>
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+
+            <!-- ABOUT DROPDOWN -->
+            <li class="nav-has-dropdown">
+              <a href="about.html">About</a>
+              <ul class="nav-dropdown">
+                <li>
+                  <a href="about-lsrc.html">
+                    Law Students’ Representative Council (LSRC)
+                  </a>
+                </li>
+                <li>
+                  <a href="moot-mock.html" class="active">
+                    Moot &amp; Mock Trial Committee
+                  </a>
+                </li>
+                <li>
+                  <a href="judicial-council.html">
+                    LSS Judicial Council
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="events.html">Events</a></li>
+            <li><a href="executives.html">Executives</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="section section--light">
+        <div class="container">
+          <h1 class="section-title">Moot &amp; Mock Trial Committee</h1>
+          <p class="section-subtitle">
+            Training Law students in advocacy, courtroom etiquette, and case
+            analysis through moots, mock trials and advocacy workshops.
+          </p>
+
+          <div class="grid-2">
+            <div>
+              <p>
+                The Moot &amp; Mock Trial Committee is responsible for planning
+                and executing advocacy-focused programmes for Law students. This
+                includes internal moot competitions, inter-faculty contests and
+                preparation for external advocacy events.
+              </p>
+              <p class="mt-1">
+                By simulating courtroom proceedings and appellate advocacy, the
+                Committee helps students develop research skills, legal writing
+                skills, oral advocacy, and confidence before a bench.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Key Activities</h3>
+              <ul class="resource-list mt-1">
+                <li>Organisation of internal moot court competitions.</li>
+                <li>Coaching teams for external moot and mock trial events.</li>
+                <li>Workshops on legal writing, oral submissions and etiquette.</li>
+                <li>Collaboration with lecturers and legal practitioners.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMMITTEE LEADERSHIP (DIRECTOR CARD WITH IMAGE) -->
+      <section class="section section--muted">
+        <div class="container">
+          <h2 class="section-title">Committee Leadership</h2>
+          <p class="section-subtitle">
+            Meet the Director of the Moot and Debate Association.
+          </p>
+
+          <div class="grid-3">
+            <div
+              class="card"
+              style="
+                max-width: 480px;
+                margin: 0 auto;
+              "
+            >
+              <div
+                style="
+                  width: 100%;
+                  aspect-ratio: 3 / 2;
+                  border-radius: 0.75rem;
+                  overflow: hidden;
+                  margin-bottom: 0.75rem;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(191, 219, 254, 0.9),
+                    rgba(129, 140, 248, 0.7)
+                  );
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <!-- Director image -->
+                <img
+                  src="images/PRESIDENT.jpg"
+                  alt="Director, Moot and Debate Association"
+                  style="width: 100%; height: 100%; object-fit: cover;"
+                />
+              </div>
+
+              <h3 style="font-size: 1rem; margin-bottom: 0.15rem;">
+                Hon. Full Name
+              </h3>
+              <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 0.35rem;">
+                Director, Moot and Debate Association
+              </p>
+              <p class="text-muted" style="font-size: 0.85rem;">
+                Brief profile or description of the Director’s role and
+                contribution to advocacy training within the Law Students’
+                Society. You can edit this text to include achievements or focus
+                areas.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROGRAMME HIGHLIGHTS -->
+      <section class="section section--light">
+        <div class="container">
+          <h2 class="section-title">Programme Highlights</h2>
+          <p class="section-subtitle">
+            A snapshot of what student advocates can expect from the Committee.
+          </p>
+
+          <div class="grid-3">
+            <div class="card card--shadowless">
+              <h3>Foundational Advocacy</h3>
+              <p class="text-muted">
+                Introductory sessions for 100–200 Level students on the basics of
+                mooting, oral presentation and court decorum.
+              </p>
+            </div>
+            <div class="card card--shadowless">
+              <h3>Intermediate Moots</h3>
+              <p class="text-muted">
+                Structured internal competitions that guide students on research,
+                skeleton arguments and timed submissions before a panel.
+              </p>
+            </div>
+            <div class="card card--shadowless">
+              <h3>Advanced Preparation</h3>
+              <p class="text-muted">
+                Focused preparation of teams representing JABU at inter-university
+                and external competitions, including brief writing and rehearsals.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOINING INFO -->
+      <section class="section section--muted">
+        <div class="container">
+          <h2 class="section-title">Joining the Committee</h2>
+          <p class="section-subtitle">
+            How interested students can become part of the Moot &amp; Mock Trial
+            Committee.
+          </p>
+
+          <div class="grid-2">
+            <div>
+              <p>
+                Calls for membership or volunteers are usually announced at the
+                start of the academic session or ahead of major competitions.
+                Interested students may be required to submit a short statement
+                of interest or participate in a brief advocacy audition.
+              </p>
+              <p class="mt-1">
+                Both beginners and experienced mooters are welcome. The Committee
+                values commitment, willingness to learn and respect for teamwork.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Contact</h3>
+              <p class="text-muted">
+                To indicate interest or seek more information about the Committee,
+                please reach out through the LSS Contact page or your class
+                representatives.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-heading">
+              Law Students’ Society – Joseph Ayo Babalola University
+            </div>
+            <p>
+              A community of Law students advancing justice, scholarship, and
+              service in a Christ-centred environment.
+            </p>
+          </div>
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="executives.html">Executive Council</a></li>
+              <li><a href="events.html">Upcoming Events</a></li>
+              <li><a href="resources.html">Downloads</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Connect</div>
+            <div class="social-row">
+              <span class="social-pill">Instagram</span>
+              <span class="social-pill">X (Twitter)</span>
+              <span class="social-pill">LinkedIn</span>
+              <span class="social-pill">WhatsApp</span>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          © <span class="current-year"></span> Law Students’ Society, Joseph
+          Ayo Babalola University.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
