@@ -114,7 +114,7 @@
               </form>
             </div>
 
-            <!-- Contact Info / Map Placeholder -->
+            <!-- Contact Info / Map -->
             <div>
               <div class="card">
                 <h3>Contact Information</h3>
@@ -123,17 +123,17 @@
                   below.
                 </p>
                 <ul class="resource-list mt-1">
-                  <li><strong>Email:</strong> lss@jabu.edu.ng (placeholder)</li>
-                  <li><strong>Phone:</strong> +234 000 000 0000 (placeholder)</li>
+                  <li><strong>Email:</strong> lawstudentssocietyjabu@gmail.com </li>
+                  <li><strong>Phone:</strong> +234 8140616616 </li>
                   <li>
-                    <strong>Office:</strong> LSS Secretariat, Faculty of Law
+                    <strong>Office:</strong> LSS Public Relation Officer, Faculty of Law
                     Building, Joseph Ayo Babalola University.
                   </li>
                 </ul>
               </div>
 
               <div class="card mt-2">
-                <h3>Faculty Location</h3>
+                <h3>JABU Location</h3>
                 <p class="text-muted">
                   Faculty of Law, Joseph Ayo Babalola University, Ikeji-Arakeji,
                   Osun State, Nigeria.
@@ -142,18 +142,21 @@
                   style="
                     border-radius: 0.75rem;
                     border: 1px dashed rgba(148, 163, 184, 0.8);
-                    padding: 1.2rem;
-                    text-align: center;
-                    background: linear-gradient(
-                      135deg,
-                      rgba(224, 242, 254, 0.7),
-                      rgba(239, 246, 255, 0.7)
-                    );
-                    font-size: 0.9rem;
+                    padding: 0;
+                    overflow: hidden;
+                    background: #e5f0ff;
                   "
                 >
-                  Map placeholder – integrate Google Maps iframe here when
-                  ready.
+                  <!-- Google Maps Embed for JABU -->
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126594.89593160093!2d4.939!3d7.49!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1047ad217dd8f0a1%3A0x8f7a7fede2a7040c!2sJoseph%20Ayo%20Babalola%20University!5e0!3m2!1sen!2sng!4v0000000000000"
+                    width="100%"
+                    height="260"
+                    style="border: 0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                  ></iframe>
                 </div>
               </div>
             </div>
@@ -277,5 +280,53 @@
         </div>
       </div>
     </footer>
+
+    <!-- WhatsApp redirect for contact form with message content -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("contactForm");
+        const messages = document.getElementById("formMessages");
+
+        if (form) {
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const subject = document.getElementById("subject").value.trim();
+            const message = document.getElementById("message").value.trim();
+
+            if (!name || !email || !subject || !message) {
+              if (messages) {
+                messages.textContent =
+                  "Please fill in all required fields before sending.";
+                messages.className = "form-messages form-messages--error";
+              }
+              return;
+            }
+
+            const whatsappNumber = "2438073436531"; // target WhatsApp number
+            const text = 
+              "New LSS Website Enquiry%0A%0A" +
+              "Name: " + encodeURIComponent(name) + "%0A" +
+              "Email: " + encodeURIComponent(email) + "%0A" +
+              "Subject: " + encodeURIComponent(subject) + "%0A%0A" +
+              "Message:%0A" + encodeURIComponent(message);
+
+            const whatsappUrl = "https://wa.me/" + whatsappNumber + "?text=" + text;
+
+            window.open(whatsappUrl, "_blank");
+
+            if (messages) {
+              messages.textContent =
+                "Opening WhatsApp… If it doesn’t open, kindly check your WhatsApp app or browser.";
+              messages.className = "form-messages form-messages--success";
+            }
+
+            form.reset();
+          });
+        }
+      });
+    </script>
   </body>
 </html>
