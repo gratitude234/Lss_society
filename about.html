@@ -5,10 +5,9 @@
     <title>About | Law Students’ Society – JABU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
-          <link rel="icon" type="image/jpg" href="images/logo.jpg" />
+    <link rel="icon" type="image/jpg" href="images/logo.jpg" />
 
-
-    <!-- Inline styles for logo + footer social links -->
+    <!-- Inline styles for logo + footer social links + ABOUT hero -->
     <style>
       /* LOGO AREA */
       .logo {
@@ -67,6 +66,214 @@
       .social-row .social-pill:focus-visible {
         text-decoration: none;
       }
+
+      /* ===== ABOUT HERO ===== */
+
+      .about-hero {
+        position: relative;
+        overflow: hidden;
+        padding-top: 4rem;
+        padding-bottom: 4.5rem;
+        background: radial-gradient(
+            circle at top left,
+            rgba(219, 234, 254, 0.85),
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(219, 234, 254, 0.7),
+            transparent 55%
+          ),
+          #f9fafb;
+      }
+
+      .about-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.4;
+        background: linear-gradient(
+          120deg,
+          rgba(59, 130, 246, 0.1),
+          rgba(30, 64, 175, 0.15),
+          transparent
+        );
+      }
+
+      .about-hero-inner {
+        position: relative;
+        z-index: 1;
+      }
+
+      .about-hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        gap: 2.5rem;
+        align-items: center;
+      }
+
+      @media (max-width: 900px) {
+        .about-hero-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      .about-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.06);
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-bottom: 1rem;
+      }
+
+      .about-hero-badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.25);
+      }
+
+      .about-hero-title {
+        font-size: clamp(2.1rem, 3vw, 2.6rem);
+        line-height: 1.15;
+        margin-bottom: 0.75rem;
+      }
+
+      .about-hero-subtitle {
+        font-size: 0.98rem;
+        max-width: 38rem;
+        color: #4b5563;
+        margin-bottom: 1.5rem;
+      }
+
+      .about-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.75rem;
+      }
+
+      .btn-outline-light {
+        border-radius: 999px;
+        padding: 0.7rem 1.3rem;
+        border: 1px solid rgba(148, 163, 184, 0.9);
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        color: #111827;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        backdrop-filter: blur(6px);
+        transition: background 0.15s ease, transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .btn-outline-light span {
+        font-size: 1rem;
+      }
+
+      .btn-outline-light:hover,
+      .btn-outline-light:focus-visible {
+        background: #111827;
+        color: #f9fafb;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.28);
+        transform: translateY(-1px);
+      }
+
+      .about-hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #6b7280;
+      }
+
+      .about-hero-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .about-hero-meta-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #1d4ed8;
+      }
+
+      /* Right side info card */
+
+      .about-hero-card {
+        border-radius: 1.25rem;
+        padding: 1.5rem 1.6rem;
+        background: radial-gradient(circle at top left, #eff6ff, #e0f2fe);
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+        border: 1px solid rgba(191, 219, 254, 0.9);
+      }
+
+      .about-hero-card h3 {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        margin-bottom: 1.1rem;
+        color: #1e293b;
+      }
+
+      .about-hero-card p {
+        font-size: 0.9rem;
+        color: #4b5563;
+        margin-bottom: 1.2rem;
+      }
+
+      .about-hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.9rem;
+      }
+
+      @media (max-width: 480px) {
+        .about-hero-stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .about-hero-stat {
+        padding: 0.75rem 0.8rem;
+        border-radius: 0.9rem;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(191, 219, 254, 0.8);
+      }
+
+      .about-hero-stat-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #6b7280;
+        margin-bottom: 0.2rem;
+      }
+
+      .about-hero-stat-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #111827;
+      }
+
+      .about-hero-stat-note {
+        font-size: 0.75rem;
+        color: #6b7280;
+      }
     </style>
 
     <script src="main.js" defer></script>
@@ -95,11 +302,11 @@
             <li><a href="index.html">Home</a></li>
 
             <!-- ABOUT with dropdown (LSS Central Executive Council removed) -->
-            <li class="nav-has-dropdown">
-              <a href="about.html" class="active">About</a>
+           <li class="nav-has-dropdown">
+              <a href="about.html">About</a>
               <ul class="nav-dropdown">
                 <li>
-                  <a href="lsrc.html">
+                  <a href="lsrc.html" class="active">
                     Law Students’ Representative Council (LSRC)
                   </a>
                 </li>
@@ -127,53 +334,87 @@
     </header>
 
     <main>
-      <section class="section section--light">
-        <div class="container">
-          <h1 class="section-title">About the Society</h1>
-          <p class="section-subtitle">
-            Learn more about the identity, mission, and structure of the Law
-            Students’ Society at Joseph Ayo Babalola University.
-          </p>
-
-          <div class="grid-2">
+      <!-- BEAUTIFUL HERO -->
+      <section class="section about-hero">
+        <div class="container about-hero-inner">
+          <div class="about-hero-grid">
+            <!-- LEFT: Text -->
             <div>
+              <div class="about-hero-badge">
+                <span class="about-hero-badge-dot"></span>
+                <span>About the Society</span>
+              </div>
+
+              <h1 class="about-hero-title">
+                A Christ-centred community of future lawyers shaping justice at
+                JABU.
+              </h1>
+
+              <p class="about-hero-subtitle">
+                The Law Students’ Society (LSS) represents and empowers every
+                Law student at Joseph Ayo Babalola University — providing
+                advocacy training, academic support, mentorship and a vibrant
+                platform for leadership and service.
+              </p>
+
+              <div class="about-hero-actions">
+                <a href="executives.html" class="btn btn-blue">
+                  Meet the Executive Council
+                </a>
+                <a href="#constitution" class="btn-outline-light">
+                  <span>⮞</span> View Society Constitution
+                </a>
+              </div>
+
+              <div class="about-hero-meta">
+                <span>
+                  <span class="about-hero-meta-dot"></span>
+                  Founded 2015
+                </span>
+                <span>
+                  <span class="about-hero-meta-dot"></span>
+                  Faculty of Law · JABU
+                </span>
+                <span>
+                  <span class="about-hero-meta-dot"></span>
+                  Faith · Excellence · Service
+                </span>
+              </div>
+            </div>
+
+            <!-- RIGHT: Highlight card -->
+            <aside class="about-hero-card">
+              <h3>LSS at a Glance</h3>
               <p>
-                The Law Students’ Society (LSS) of Joseph Ayo Babalola
-                University is a student-led association that represents and
-                promotes the interests of all Law students within the
-                university. We work closely with the Faculty of Law to create an
-                environment where students can excel academically, grow
-                spiritually, and prepare for life in legal practice or other
-                calling.
+                From moots and legal awareness programmes to welfare and
+                mentorship, the Society supports students on their journey from
+                the lecture hall to practice and public service.
               </p>
-              <p class="mt-1">
-                As a faith-based institution, JABU calls its students to
-                demonstrate integrity and service. The LSS reflects this calling
-                by organising activities that encourage ethical leadership,
-                social responsibility, and a deep respect for the rule of law.
-              </p>
-            </div>
-            <div class="card">
-              <h3>What We Do</h3>
-              <ul class="resource-list mt-1">
-                <li>
-                  Coordinate advocacy-focused programmes such as moot court
-                  competitions, debates, and legal clinics.
-                </li>
-                <li>
-                  Provide academic support through tutorials, study groups, and
-                  resource sharing.
-                </li>
-                <li>
-                  Facilitate mentorship between students, alumni, and legal
-                  practitioners.
-                </li>
-                <li>
-                  Represent Law students’ interests to the Faculty and wider
-                  university authorities.
-                </li>
-              </ul>
-            </div>
+
+              <div class="about-hero-stats">
+                <div class="about-hero-stat">
+                  <div class="about-hero-stat-label">Law Students</div>
+                  <div class="about-hero-stat-value">200+</div>
+                  <div class="about-hero-stat-note">Across all levels</div>
+                </div>
+
+                <div class="about-hero-stat">
+                  <div class="about-hero-stat-label">Arms of LSS</div>
+                  <div class="about-hero-stat-value">3</div>
+                  <div class="about-hero-stat-note">
+                    Executive, LSRC, Judicial
+                  </div>
+                </div>
+
+                <div class="about-hero-stat">
+                  <div class="about-hero-stat-label">Key Pillars</div>
+                  <div class="about-hero-stat-value">5</div>
+                  <div class="about-hero-stat-note">
+                    Integrity, Excellence,<br />Service, Justice, Faith
+                  </div>
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
       </section>
@@ -264,7 +505,7 @@
       </section>
 
       <!-- Constitution -->
-      <section class="section section--muted">
+      <section class="section section--muted" id="constitution">
         <div class="container">
           <h2 class="section-title">Society Constitution</h2>
           <p class="section-subtitle">
