@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
 
-    <!-- Fix dropdown colour: make About submenu links black, not yellow -->
     <style>
+      /* Fix dropdown colour: make About submenu links black, not yellow */
       .nav-dropdown a {
         color: #0f172a; /* near-black */
       }
@@ -22,10 +22,44 @@
         color: #0f172a;
         background-color: #e5e7eb; /* subtle grey hover */
       }
+
+      /* ========= Leadership card image sizing fix ========= */
+      .leader-card {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      /* Portrait-friendly frame (so image doesn't look "misplaced") */
+      .leader-photo {
+        width: 100%;
+        aspect-ratio: 4 / 5; /* portrait */
+        border-radius: 0.9rem;
+        overflow: hidden;
+        margin-bottom: 0.75rem;
+        background: #e2e8f0;
+      }
+
+      .leader-photo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: 50% 12%; /* keeps face higher */
+      }
+
+      @media (max-width: 520px) {
+        .leader-photo {
+          aspect-ratio: 3 / 4;
+        }
+        .leader-photo img {
+          object-position: 50% 10%;
+        }
+      }
     </style>
 
     <script src="main.js" defer></script>
   </head>
+
   <body>
     <header class="site-header">
       <div class="container nav-container">
@@ -38,27 +72,22 @@
             <li><a href="index.html">Home</a></li>
 
             <!-- ABOUT DROPDOWN -->
-           <li class="nav-has-dropdown">
+            <li class="nav-has-dropdown">
               <a href="about.html">About</a>
               <ul class="nav-dropdown">
                 <li>
-                  <a href="lsrc.html" class="active">
-                    Law Students’ Representative Council (LSRC)
-                  </a>
+                  <a href="lsrc.html">Law Students’ Representative Council (LSRC)</a>
                 </li>
                 <li>
-                  <a href="moot-mock.html">
+                  <a href="moot-mock.html" class="active">
                     Moot &amp; Mock Trial Committee
                   </a>
                 </li>
                 <li>
-                  <a href="judicial-council.html">
-                    LSS Judicial Council
-                  </a>
+                  <a href="judicial-council.html">LSS Judicial Council</a>
                 </li>
               </ul>
             </li>
-
 
             <li><a href="events.html">Events</a></li>
             <li><a href="executives.html">Executives</a></li>
@@ -116,40 +145,16 @@
           </p>
 
           <div class="grid-3">
-            <div
-              class="card"
-              style="
-                max-width: 480px;
-                margin: 0 auto;
-              "
-            >
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 3 / 2;
-                  border-radius: 0.75rem;
-                  overflow: hidden;
-                  margin-bottom: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                "
-              >
-                <!-- Director image -->
+            <div class="card leader-card">
+              <div class="leader-photo">
                 <img
-                  src="images/PRESIDENT.jpg"
+                  src="images/MOOT DEBATE DIREC.jpeg"
                   alt="Director, Moot and Debate Association"
-                  style="width: 100%; height: 100%; object-fit: cover;"
                 />
               </div>
 
               <h3 style="font-size: 1rem; margin-bottom: 0.15rem;">
-                Hon. Full Name
+                Aderinsola Pricilla Oluwalase
               </h3>
               <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 0.35rem;">
                 Director, Moot and Debate Association

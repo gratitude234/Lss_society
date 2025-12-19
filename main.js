@@ -195,4 +195,90 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+
+  /* ==========
+     LSRC: Council Member Photo Upload (preview + save)
+     ==========
+     Requires your lsrc.html cards to use:
+     <div class="member-photo" data-photo-key="lsrc-member-1"> ... </div>
+  */
+  (function initLSRCMemberPhotoUploads() {
+    const containers = document.querySelectorAll(
+      ".member-photo[data-photo-key]"
+    );
+    if (!containers.length) return;
+
+    containers.forEach((box) => {
+      const key = box.getAttribute("data-photo-key");
+      const input = box.querySelector(".member-photo-input");
+      const img = box.querySelector(".member-photo-img");
+      const removeBtn = box.querySelector(".member-photo-remove");
+
+      // Guard: if markup isn't complete, skip safely
+      if (!key || !input || !img || !removeBtn) return;
+
+      // Load saved image (if any)
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        img.src = saved;
+        box.classList.add("has-image");
+      }
+
+      // Click the box to open file picker (except on remove)
+      box.addEventListener("click", (e) => {
+        if (e.target === removeBtn) return;
+        input.click();
+      });
+
+      input.addEventListener("change", () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+
+        // images only
+        if (!file.type || !file.type.startsWith("image/")) {
+          alert("Please select an image file.");
+          input.value = "";
+          return;
+        }
+
+        // Optional: soft size guard (prevents huge localStorage issues)
+        // 1.5MB is a safe-ish limit for base64 saving
+        const MAX_BYTES = 1.5 * 1024 * 1024;
+        if (file.size > MAX_BYTES) {
+          alert("Image too large. Please use an image under ~1.5MB.");
+          input.value = "";
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = reader.result;
+
+          img.src = dataUrl;
+          box.classList.add("has-image");
+
+          try {
+            localStorage.setItem(key, dataUrl);
+          } catch (err) {
+            // If storage is full, still show preview but warn user
+            console.warn("Could not save image to localStorage:", err);
+            alert(
+              "Preview shown, but could not save in this browser (storage full)."
+            );
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      removeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        localStorage.removeItem(key);
+        img.removeAttribute("src");
+        input.value = "";
+        box.classList.remove("has-image");
+      });
+    });
+  })();
 });

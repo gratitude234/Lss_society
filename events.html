@@ -64,6 +64,15 @@
       .social-row .social-pill:focus-visible {
         text-decoration: none;
       }
+
+      /* Helpful defaults in case they're not already in styles.css */
+      .gallery-item {
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #111;
+      }
     </style>
 
     <script src="main.js" defer></script>
@@ -171,10 +180,7 @@
           </div>
 
           <div class="events-grid">
-            <article
-              class="event-card"
-              data-category="moot"
-            >
+            <article class="event-card" data-category="moot">
               <div class="event-meta">12 February · Moot Court Hall</div>
               <h2 class="event-title">
                 Inter-Faculty Moot Court Competition
@@ -189,10 +195,7 @@
               </p>
             </article>
 
-            <article
-              class="event-card"
-              data-category="seminar"
-            >
+            <article class="event-card" data-category="seminar">
               <div class="event-meta">5 March · Online (Zoom)</div>
               <h2 class="event-title">
                 Seminar: Pathways into Corporate &amp; Commercial Practice
@@ -204,10 +207,7 @@
               </p>
             </article>
 
-            <article
-              class="event-card"
-              data-category="workshop"
-            >
+            <article class="event-card" data-category="workshop">
               <div class="event-meta">16 March · Faculty Lecture Room 2</div>
               <h2 class="event-title">
                 Legal Writing &amp; Drafting Workshop
@@ -221,10 +221,7 @@
               </p>
             </article>
 
-            <article
-              class="event-card"
-              data-category="outreach"
-            >
+            <article class="event-card" data-category="outreach">
               <div class="event-meta">30 March · Off-Campus Community</div>
               <h2 class="event-title">
                 Community Legal Awareness &amp; Rights Clinic
@@ -238,10 +235,7 @@
               </p>
             </article>
 
-            <article
-              class="event-card"
-              data-category="moot"
-            >
+            <article class="event-card" data-category="moot">
               <div class="event-meta">10 April · Moot Court Hall</div>
               <h2 class="event-title">
                 First-Year Introductory Moot &amp; Mock Session
@@ -255,10 +249,7 @@
               </p>
             </article>
 
-            <article
-              class="event-card"
-              data-category="seminar"
-            >
+            <article class="event-card" data-category="seminar">
               <div class="event-meta">20 April · JABU Auditorium</div>
               <h2 class="event-title">
                 Public Lecture: Law, Governance &amp; Ethics in Nigeria
@@ -284,37 +275,78 @@
           </p>
 
           <div class="gallery-grid">
-            <div class="gallery-item">
+            <!-- 1: Moot Finals – Nigerian lawyer in full attire -->
+            <div
+              class="gallery-item"
+              style="
+                background-image: url('https://images.pexels.com/photos/34659065/pexels-photo-34659065.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900&h=600&dpr=1');
+              "
+            >
               <div class="gallery-overlay">
                 <strong>2023 Intra-Faculty Moot Finals</strong>
                 <span>Faculty Moot Court Hall</span>
               </div>
             </div>
-            <div class="gallery-item">
+
+            <!-- 2: Outreach – Nigerian students on campus -->
+            <div
+              class="gallery-item"
+              style="
+                background-image: url('https://images.pexels.com/photos/30714883/pexels-photo-30714883.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900&h=600&dpr=1');
+              "
+            >
               <div class="gallery-overlay">
                 <strong>Legal Awareness Outreach</strong>
                 <span>Neighbouring Community</span>
               </div>
             </div>
-            <div class="gallery-item">
+
+            <!-- 3: Corporate / Governance Seminar – law/judge library scene -->
+            <div
+              class="gallery-item"
+              style="
+                background-image: url('https://images.pexels.com/photos/6077294/pexels-photo-6077294.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900&h=600&dpr=1');
+              "
+            >
               <div class="gallery-overlay">
                 <strong>Compliance &amp; Corporate Governance Seminar</strong>
                 <span>JABU Auditorium</span>
               </div>
             </div>
-            <div class="gallery-item">
+
+            <!-- 4: Orientation – graduate at Nigerian university -->
+            <div
+              class="gallery-item"
+              style="
+                background-image: url('https://images.pexels.com/photos/27945940/pexels-photo-27945940.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900&h=600&dpr=1');
+              "
+            >
               <div class="gallery-overlay">
                 <strong>Orientation for New Law Students</strong>
                 <span>Faculty Lecture Hall</span>
               </div>
             </div>
-            <div class="gallery-item">
+
+            <!-- 5: Alumni – Nigerian academic / convocation event -->
+            <div
+              class="gallery-item"
+              style="
+                background-image: url('https://images.pexels.com/photos/10550102/pexels-photo-10550102.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900&h=600&dpr=1');
+              "
+            >
               <div class="gallery-overlay">
                 <strong>Alumni Networking Evening</strong>
                 <span>On-campus Event</span>
               </div>
             </div>
-            <div class="gallery-item">
+
+            <!-- 6: Wellness & Faith – Nigerian students vibe -->
+            <div
+              class="gallery-item"
+              style="
+                background-image: url('https://images.pexels.com/photos/30714883/pexels-photo-30714883.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=900&h=600&dpr=1');
+              "
+            >
               <div class="gallery-overlay">
                 <strong>Wellness &amp; Faith Dialogue</strong>
                 <span>Faculty Garden</span>

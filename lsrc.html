@@ -4,21 +4,46 @@
     <meta charset="UTF-8" />
     <title>LSRC – Law Students’ Representative Council | LSS – JABU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <link rel="stylesheet" href="styles.css" />
     <script src="main.js" defer></script>
 
-    <!-- Override dropdown link colour to black -->
     <style>
+      /* Dropdown link colour override */
       .nav-dropdown a,
       .nav-dropdown a:visited {
-        color: #0f172a; /* deep slate/black */
+        color: #0f172a;
+      }
+      .nav-dropdown a.active {
+        color: #0f172a;
       }
 
-      .nav-dropdown a.active {
-        color: #0f172a; /* keep active state black too */
+      /* ===========================
+         Static member photo styling
+         (better sizing for portraits)
+         =========================== */
+      .member-img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;               /* no fixed height */
+        aspect-ratio: 4 / 5;        /* portrait frame */
+        object-fit: cover;          /* consistent fill */
+        object-position: 50% 12%;   /* keep face higher (less head crop) */
+        border-radius: 14px;
+        margin-bottom: 12px;
+        display: block;
+        background: #e2e8f0;
+      }
+
+      @media (max-width: 520px) {
+        .member-img {
+          aspect-ratio: 3 / 4;      /* slightly taller on small screens */
+          object-position: 50% 10%;
+        }
       }
     </style>
   </head>
+
   <body>
     <header class="site-header">
       <div class="container nav-container">
@@ -40,14 +65,10 @@
                   </a>
                 </li>
                 <li>
-                  <a href="moot-mock.html">
-                    Moot &amp; Mock Trial Committee
-                  </a>
+                  <a href="moot-mock.html">Moot &amp; Mock Trial Committee</a>
                 </li>
                 <li>
-                  <a href="judicial-council.html">
-                    LSS Judicial Council
-                  </a>
+                  <a href="judicial-council.html">LSS Judicial Council</a>
                 </li>
               </ul>
             </li>
@@ -88,6 +109,7 @@
                 and the values of Joseph Ayo Babalola University.
               </p>
             </div>
+
             <div class="card">
               <h3>Mandate of the LSRC</h3>
               <ul class="resource-list mt-1">
@@ -101,636 +123,143 @@
         </div>
       </section>
 
-      <!-- MEMBERS GALLERY (PICTURES + POSTS) -->
+      <!-- MEMBERS GALLERY -->
       <section class="section section--muted">
         <div class="container">
           <h2 class="section-title">Council Members – Photos &amp; Positions</h2>
           <p class="section-subtitle">
-            Upload each councillor’s photograph and position here. Duplicate or
-            edit the cards below as you add more members.
+            Add member photos inside <strong>images/lsrc/</strong> named
+            <strong>member-01.jpg</strong> to <strong>member-20.jpg</strong>.
           </p>
 
+          <!-- ORDER: Presiding Officers, then Constituency 5 → 4 → 3 → 2 -->
           <div class="grid-3">
-            <!-- 20 MEMBER CARDS – update names/positions individually -->
-
-            <!-- 1 -->
+            <!-- 1: Speaker -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 1
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position (e.g. Speaker)
-              </p>
+              <img class="member-img" src="images/RT.HON OLUWATUNMISE.jfif" alt="RT. Hon. Akindele Oluwatunmise photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">RT. Hon. Akindele Oluwatunmise</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Speaker • Constituency 5</p>
             </div>
 
-            <!-- 2 -->
+            <!-- 2: Deputy Speaker -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(209, 250, 229, 0.9),
-                    rgba(59, 130, 246, 0.6)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 2
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position (e.g. First Deputy Speaker)
-              </p>
+              <img class="member-img" src="images/Hon 4 adodo grace.jpeg" alt="Hon. Adodo Grace photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Adodo Grace</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Deputy Speaker • Constituency 4</p>
             </div>
 
-            <!-- 3 -->
+            <!-- 3: Council Secretary -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(254, 243, 199, 0.9),
-                    rgba(96, 165, 250, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 3
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position (e.g. Council Secretary)
-              </p>
+              <img class="member-img" src="images/Hon. Atoyebi Favour.jpeg" alt="Hon. Atoyebi Favour photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Atoyebi Favour</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Council Secretary • Constituency 5</p>
             </div>
 
-            <!-- 4 -->
+            <!-- 4: Chief Whip -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 4
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position (e.g. Chief Whip)
-              </p>
+              <img class="member-img" src="images/Hon 2 Owolabi Malik.jpeg" alt="Hon. Owolabi Malik photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Owolabi Malik</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Chief Whip • Constituency 2</p>
             </div>
 
-            <!-- 5 -->
+            <!-- Constituency 5 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(209, 250, 229, 0.9),
-                    rgba(59, 130, 246, 0.6)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 5
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position (e.g. Constituency 5 Head)
-              </p>
+              <img class="member-img" src="images/HON 5 ADELEYE OYINDAMOLA.jpeg" alt="Hon. Adeleye Oyindamola photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Adeleye Oyindamola</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 5 • Constituency Head</p>
             </div>
 
-            <!-- 6 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(254, 243, 199, 0.9),
-                    rgba(96, 165, 250, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 6
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position (e.g. Constituency 5 Member)
-              </p>
+              <img class="member-img" src="images/HON 5 JESULADEMI  SEMILOORE.jpeg" alt="Hon. Jesulademi Oluwasemilore photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Jesulademi Oluwasemilore</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 5 • Member</p>
             </div>
 
-            <!-- 7 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 7
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/HON 5 ADEDAPO OLUWADEMILADE.jpeg" alt="Hon. Adedapo Oluwademilade photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Adedapo Oluwademilade</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 5 • Member</p>
             </div>
 
-            <!-- 8 -->
+            <!-- Constituency 4 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(209, 250, 229, 0.9),
-                    rgba(59, 130, 246, 0.6)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 8
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/HON 4 ADEUYA ABIMBOLA.jpeg" alt="Hon. Adeuya Abimbola photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Adeuya Abimbola</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 4 • Constituency Head</p>
             </div>
 
-            <!-- 9 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(254, 243, 199, 0.9),
-                    rgba(96, 165, 250, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 9
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon. 4 Dada Ayoyimika.jpeg" alt="Hon. Dada Ayoyimika photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Dada Ayoyimika</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 4 • Member</p>
             </div>
 
-            <!-- 10 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 10
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon. 4 Akelere Gbemisola.jpeg" alt="Hon. Akelere Gbemisola photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Akelere Gbemisola</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 4 • Member</p>
             </div>
 
-            <!-- 11 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(209, 250, 229, 0.9),
-                    rgba(59, 130, 246, 0.6)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 11
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon 4 Akinola eniola.jpeg" alt="Hon. Akinola Eniola photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Akinola Eniola</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 4 • Member</p>
             </div>
 
-            <!-- 12 -->
+            <!-- Constituency 3 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(254, 243, 199, 0.9),
-                    rgba(96, 165, 250, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 12
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/HON 3 OLADUNJOYE PRESCIOUS.jpeg" alt="Hon. Oladunjoye Oluwanifesimi photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Oladunjoye Oluwanifesimi</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 3 • Constituency Head</p>
             </div>
 
-            <!-- 13 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 13
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/HON AYENI ADURAGBEMI.jpeg" alt="Hon. Ayeni Aduragbemi photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Ayeni Aduragbemi</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 3 • Member</p>
             </div>
 
-            <!-- 14 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(209, 250, 229, 0.9),
-                    rgba(59, 130, 246, 0.6)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 14
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon. Williams Florentyna.jpeg" alt="Hon. Williams Florentyna photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Williams Florentyna</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 3 • Member</p>
             </div>
 
-            <!-- 15 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(254, 243, 199, 0.9),
-                    rgba(96, 165, 250, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 15
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon. Ayorinde Inioluwa.jpeg" alt="Hon. Ayorinde Inioluwa photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Ayorinde Inioluwa</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 3 • Member</p>
             </div>
 
-            <!-- 16 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 16
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon. 4  Akinolu Oluwanifemi.jpeg" alt="Hon. Akinolu Oluwanifemi photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Akinolu Oluwanifemi</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 3 • Member</p>
             </div>
 
-            <!-- 17 -->
+            <!-- Constituency 2 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(209, 250, 229, 0.9),
-                    rgba(59, 130, 246, 0.6)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 17
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon 2 Ogunmodede Elizabeth.jpeg" alt="Hon. Ogunmodede Elizabeth photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Ogunmodede Elizabeth</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 2 • Constituency Head</p>
             </div>
 
-            <!-- 18 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(254, 243, 199, 0.9),
-                    rgba(96, 165, 250, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 18
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/Hon 2 YAHAYA ESTHER.jpeg" alt="Hon. Yahaya Esther photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Yahaya Esther</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 2 • Member</p>
             </div>
 
-            <!-- 19 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(191, 219, 254, 0.9),
-                    rgba(129, 140, 248, 0.7)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 19
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/HON ALUKO AYOBAMI.jpeg" alt="Hon. Aluko Emmanuel photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Aluko Emmanuel</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 2 • Member</p>
             </div>
 
-            <!-- 20 -->
             <div class="card">
-              <div
-                style="
-                  width: 100%;
-                  aspect-ratio: 4 / 3;
-                  border-radius: 0.75rem;
-                  background: linear-gradient(
-                    135deg,
-                    rgba(209, 250, 229, 0.9),
-                    rgba(59, 130, 246, 0.6)
-                  );
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-size: 0.9rem;
-                  color: #1e293b;
-                  font-weight: 600;
-                  margin-bottom: 0.75rem;
-                "
-              >
-                Member Photo
-              </div>
-              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">
-                Hon. Member 20
-              </h3>
-              <p class="text-muted" style="font-size: 0.9rem;">
-                Position
-              </p>
+              <img class="member-img" src="images/SENATOR ADEBAYO OLUWAFERANMI.jpeg" alt="Hon. Adebayo Oluwaferanmi photo" />
+              <h3 style="font-size: 1rem; margin-bottom: 0.25rem;">Hon. Adebayo Oluwaferanmi</h3>
+              <p class="text-muted" style="font-size: 0.9rem;">Constituency 2 • Member</p>
             </div>
           </div>
         </div>
@@ -749,18 +278,10 @@
           <div class="card">
             <h3>Presiding Officers</h3>
             <ul class="resource-list mt-1">
-              <li>
-                <strong>Speaker of the House</strong> – Hon. Full Name (insert name)
-              </li>
-              <li>
-                <strong>First Deputy Speaker</strong> – Hon. Full Name
-              </li>
-              <li>
-                <strong>Council Secretary</strong> – Hon. Full Name
-              </li>
-              <li>
-                <strong>Chief Whip</strong> – Hon. Full Name
-              </li>
+              <li><strong>Speaker of the House</strong> – RT. Hon. Akindele Oluwatunmise</li>
+              <li><strong>Deputy Speaker</strong> – Hon. Adodo Grace</li>
+              <li><strong>Council Secretary</strong> – Hon. Atoyebi Favour</li>
+              <li><strong>Chief Whip</strong> – Hon. Owolabi Malik</li>
             </ul>
           </div>
 
@@ -768,64 +289,54 @@
           <div class="card mt-2">
             <h3>Constituency Representation</h3>
             <p class="text-muted">
-              Each constituency is led by a Constituency Head, followed by four
-              other constituency members. Replace the placeholders below with the
-              actual names of councillors for each constituency.
+              Each constituency is led by a Constituency Head and supported by constituency members.
             </p>
 
             <!-- Constituency 5 -->
             <div class="mt-2">
               <h4>Constituency 5</h4>
-              <p class="text-muted">
-                <strong>Constituency Head:</strong> Hon. Full Name
-              </p>
+              <p class="text-muted"><strong>Constituency Head:</strong> Hon. Adeleye Oyindamola</p>
               <ul class="resource-list mt-1">
-                <li>Hon. Member One – Constituency 5</li>
-                <li>Hon. Member Two – Constituency 5</li>
-                <li>Hon. Member Three – Constituency 5</li>
-                <li>Hon. Member Four – Constituency 5</li>
+                <li>Hon. Akindele Oluwatunmise</li>
+                <li>Hon. Atoyebi Favour</li>
+                <li>Hon. Jesulademi Oluwasemilore</li>
+                <li>Hon. Adedapo Oluwademilade</li>
               </ul>
             </div>
 
             <!-- Constituency 4 -->
             <div class="mt-2">
               <h4>Constituency 4</h4>
-              <p class="text-muted">
-                <strong>Constituency Head:</strong> Hon. Full Name
-              </p>
+              <p class="text-muted"><strong>Constituency Head:</strong> Hon. Adeuya Abimbola</p>
               <ul class="resource-list mt-1">
-                <li>Hon. Member One – Constituency 4</li>
-                <li>Hon. Member Two – Constituency 4</li>
-                <li>Hon. Member Three – Constituency 4</li>
-                <li>Hon. Member Four – Constituency 4</li>
+                <li>Hon. Adodo Grace</li>
+                <li>Hon. Dada Ayoyimika</li>
+                <li>Hon. Akelere Gbemisola</li>
+                <li>Hon. Akinola Eniola</li>
               </ul>
             </div>
 
             <!-- Constituency 3 -->
             <div class="mt-2">
               <h4>Constituency 3</h4>
-              <p class="text-muted">
-                <strong>Constituency Head:</strong> Hon. Full Name
-              </p>
+              <p class="text-muted"><strong>Constituency Head:</strong> Hon. Oladunjoye Oluwanifesimi</p>
               <ul class="resource-list mt-1">
-                <li>Hon. Member One – Constituency 3</li>
-                <li>Hon. Member Two – Constituency 3</li>
-                <li>Hon. Member Three – Constituency 3</li>
-                <li>Hon. Member Four – Constituency 3</li>
+                <li>Hon. Ayeni Aduragbemi</li>
+                <li>Hon. Williams Florentyna</li>
+                <li>Hon. Ayorinde Inioluwa</li>
+                <li>Hon. Akinolu Oluwanifemi</li>
               </ul>
             </div>
 
             <!-- Constituency 2 -->
             <div class="mt-2">
               <h4>Constituency 2</h4>
-              <p class="text-muted">
-                <strong>Constituency Head:</strong> Hon. Full Name
-              </p>
+              <p class="text-muted"><strong>Constituency Head:</strong> Hon. Ogunmodede Elizabeth</p>
               <ul class="resource-list mt-1">
-                <li>Hon. Member One – Constituency 2</li>
-                <li>Hon. Member Two – Constituency 2</li>
-                <li>Hon. Member Three – Constituency 2</li>
-                <li>Hon. Member Four – Constituency 2</li>
+                <li>Hon. Owolabi Malik</li>
+                <li>Hon. Yahaya Esther</li>
+                <li>Hon. Aluko Emmanuel</li>
+                <li>Hon. Adebayo Oluwaferanmi</li>
               </ul>
             </div>
           </div>
@@ -863,6 +374,7 @@
             </div>
           </div>
         </div>
+
         <div class="footer-bottom">
           © <span class="current-year"></span> Law Students’ Society, Joseph
           Ayo Babalola University.

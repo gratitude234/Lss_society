@@ -432,6 +432,92 @@ main {
   box-shadow: none;
 }
 
+/* ==========
+   LSRC Member Photo Upload (click to upload + preview)
+   ========== */
+
+.member-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(191, 219, 254, 0.9), rgba(129, 140, 248, 0.7));
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+}
+
+.member-photo-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.member-photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.member-photo-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(2px);
+  transition: opacity 0.2s ease;
+}
+
+.member-photo-cta {
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+}
+
+.member-photo:hover .member-photo-overlay {
+  opacity: 0.9;
+}
+
+.member-photo-remove {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f172a;
+  display: none;
+  cursor: pointer;
+}
+
+.member-photo.has-image .member-photo-img {
+  display: block;
+}
+
+.member-photo.has-image .member-photo-overlay {
+  opacity: 0;
+}
+
+.member-photo.has-image .member-photo-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .btn-row {
   display: flex;
   flex-wrap: wrap;
