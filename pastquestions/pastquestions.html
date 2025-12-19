@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Past Questions | LSS – JABU</title>
+
+  <!-- Use your main site styling -->
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="icon" type="image/jpg" href="../images/logo.jpg" />
+
+  <!-- Page-specific polish (blends with your theme) -->
+  <style>
+    :root{
+      --pq-bg1:#071021;
+      --pq-bg2:#0b1730;
+      --pq-card: rgba(255,255,255,.045);
+      --pq-border: rgba(255,255,255,.10);
+      --pq-text: rgba(255,255,255,.92);
+      --pq-muted: rgba(255,255,255,.68);
+      --pq-soft: rgba(255,255,255,.06);
+      --pq-accent: #23B5A8; /* matches your teal accent idea */
+      --pq-accent-soft: rgba(35,181,168,.16);
+      --pq-shadow: 0 18px 50px rgba(0,0,0,.35);
+      --pq-radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      color: var(--pq-text);
+      background:
+        radial-gradient(1000px 380px at 20% -10%, rgba(35,181,168,.18), transparent 60%),
+        radial-gradient(900px 360px at 90% 0%, rgba(59,130,246,.12), transparent 55%),
+        linear-gradient(180deg, var(--pq-bg1), var(--pq-bg2));
+    }
+
+    /* Keep your site header consistent */
+    .site-header { position: sticky; top: 0; z-index: 50; }
+
+    /* Main wrapper */
+    .pq-wrap{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 22px 16px 70px;
+    }
+
+    /* Hero */
+    .pq-hero{
+      border: 1px solid var(--pq-border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius: 22px;
+      padding: 18px 18px;
+      box-shadow: var(--pq-shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    .pq-hero:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(500px 250px at 15% 10%, rgba(35,181,168,.22), transparent 60%),
+        radial-gradient(520px 240px at 95% 30%, rgba(59,130,246,.18), transparent 60%);
+      pointer-events:none;
+      opacity:.8;
+    }
+    .pq-hero-inner{ position: relative; display:flex; gap:16px; align-items:flex-start; justify-content: space-between; flex-wrap: wrap; }
+    .pq-title{
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .pq-sub{
+      margin: 8px 0 0;
+      color: var(--pq-muted);
+      font-size: 13px;
+      line-height: 1.55;
+      max-width: 70ch;
+    }
+    .pq-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .pq-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--pq-border);
+      background: rgba(255,255,255,.05);
+      color: var(--pq-text);
+      text-decoration:none;
+      font-size: 13px;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .pq-pill:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); }
+    .pq-pill strong{ font-weight: 700; }
+    .pq-accent-dot{
+      width: 9px; height: 9px; border-radius: 999px;
+      background: var(--pq-accent);
+      box-shadow: 0 0 0 6px rgba(35,181,168,.12);
+    }
+
+    /* Filter bar */
+    .pq-filters{
+      margin-top: 14px;
+      border: 1px solid var(--pq-border);
+      background: rgba(255,255,255,.035);
+      border-radius: 18px;
+      padding: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      align-items:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      position: sticky;
+      top: 86px; /* sits under sticky header */
+      z-index: 20;
+      backdrop-filter: blur(8px);
+    }
+
+    .pq-control{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--pq-border);
+      border-radius: 14px;
+      padding: 8px 10px;
+      min-height: 44px;
+    }
+    .pq-control label{
+      font-size: 12px;
+      color: var(--pq-muted);
+      white-space: nowrap;
+    }
+    select, input{
+      font: inherit;
+      color: var(--pq-text);
+      border: none;
+      outline: none;
+      background: transparent;
+      min-height: 28px;
+      font-size: 13px;
+    }
+    select{ cursor: pointer; }
+    input{ width: min(520px, 72vw); }
+    .pq-search{ flex: 1 1 320px; }
+
+    .pq-right{
+      margin-left: auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+
+    .pq-count{
+      font-size: 12px;
+      color: var(--pq-muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--pq-border);
+      background: rgba(255,255,255,.04);
+    }
+
+    .pq-clear{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(35,181,168,.35);
+      background: rgba(35,181,168,.14);
+      color: #dffdf9;
+      text-decoration:none;
+      font-size: 13px;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .pq-clear:hover{ transform: translateY(-1px); background: rgba(35,181,168,.20); }
+
+    /* Grid cards */
+    .pq-grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+
+    .pq-card{
+      grid-column: span 12;
+      border-radius: var(--pq-radius);
+      border: 1px solid var(--pq-border);
+      background: var(--pq-card);
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      padding: 14px;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .pq-card:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.14);
+    }
+
+    @media (min-width: 740px){ .pq-card{ grid-column: span 6; } }
+    @media (min-width: 1020px){ .pq-card{ grid-column: span 4; } }
+
+    .pq-topline{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .pq-name{
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .pq-meta{
+      margin-top: 7px;
+      color: var(--pq-muted);
+      font-size: 12px;
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+
+    .pq-tags{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .pq-tag{
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--pq-border);
+      background: rgba(255,255,255,.05);
+      color: var(--pq-muted);
+    }
+    .pq-tag.good{
+      border-color: rgba(35,181,168,.35);
+      background: var(--pq-accent-soft);
+      color: #dffdf9;
+    }
+    .pq-tag.bad{
+      border-color: rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.60);
+    }
+
+    .pq-btnrow{
+      margin-top: 12px;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .pq-download{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(35,181,168,.38);
+      background: rgba(35,181,168,.16);
+      color: #dffdf9;
+      text-decoration:none;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .pq-download:hover{ transform: translateY(-1px); background: rgba(35,181,168,.22); }
+
+    .pq-hint{
+      font-size: 12px;
+      color: var(--pq-muted);
+      margin-top: 10px;
+    }
+
+    /* Empty state */
+    .pq-empty{
+      grid-column: span 12;
+      border: 1px dashed rgba(255,255,255,.18);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 16px;
+      color: var(--pq-muted);
+      font-size: 13px;
+    }
+
+    /* Small warning */
+    .pq-warn{
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,193,7,.22);
+      background: rgba(255,193,7,.10);
+      color: #ffe8a1;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    /* Logo styles to match your site’s header markup (safe even if already in styles.css) */
+    .logo{ display:flex; align-items:center; }
+    .logo-link{ display:inline-flex; align-items:center; gap:.75rem; text-decoration:none; color:inherit; }
+    .logo-img{ height:48px; width:auto; border-radius:50%; flex-shrink:0; }
+    .logo-text{ display:flex; flex-direction:column; line-height:1.1; }
+    .logo-title{ font-weight:700; font-size:.95rem; text-transform:uppercase; letter-spacing:.06em; }
+    .logo-subtitle{ font-size:.75rem; opacity:.8; }
+    @media (max-width:480px){ .logo-text{ display:none; } }
+  </style>
+
+  <!-- Use your site JS for nav toggle + year -->
+  <script src="../main.js" defer></script>
+</head>
+
+<body>
+  <!-- ✅ Same header as your main site -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <div class="logo">
+        <a href="../index.html" class="logo-link">
+          <img src="../images/logo.jpg" alt="JABU Law Students’ Society logo" class="logo-img" />
+          <span class="logo-text">
+            <span class="logo-title">Law Students’ Society</span>
+            <span class="logo-subtitle">Joseph Ayo Babalola University</span>
+          </span>
+        </a>
+      </div>
+
+      <nav>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+
+          <li class="nav-has-dropdown">
+            <a href="../about.html">About</a>
+            <ul class="nav-dropdown">
+              <li><a href="../lsrc.html">Law Students’ Representative Council (LSRC)</a></li>
+              <li><a href="../moot-mock.html">Moot &amp; Mock Trial Committee</a></li>
+              <li><a href="../judicial-council.html">LSS Judicial Council</a></li>
+            </ul>
+          </li>
+
+          <li><a href="../events.html">Events</a></li>
+          <li><a href="../executives.html">Executives</a></li>
+          <li><a href="../resources.html" class="active">Resources</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pq-wrap">
+    <!-- Hero -->
+    <section class="pq-hero">
+      <div class="pq-hero-inner">
+        <div>
+          <h1 class="pq-title">Past Questions Library</h1>
+          <p class="pq-sub">
+            Search and filter by Level, Semester, Type, and Session. If a file shows <b>UNSORTED</b>,
+            it only needs tagging inside <code>/pastquestions/resources.json</code>.
+          </p>
+        </div>
+
+        <div class="pq-actions">
+          <a class="pq-pill" href="../resources.html">
+            <span class="pq-accent-dot"></span>
+            <strong>Back</strong> to Resources
+          </a>
+
+          <span class="pq-pill" aria-hidden="true">
+            <span class="pq-accent-dot"></span>
+            Tip: Tag UNSORTED items in <strong>resources.json</strong>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="pq-filters" aria-label="Filters">
+      <div class="pq-control">
+        <label for="level">Level</label>
+        <select id="level">
+          <option value="">All</option>
+          <option>100L</option><option>200L</option><option>300L</option><option>400L</option><option>500L</option>
+          <option>UNSORTED</option>
+        </select>
+      </div>
+
+      <div class="pq-control">
+        <label for="semester">Semester</label>
+        <select id="semester">
+          <option value="">All</option>
+          <option value="First">First</option>
+          <option value="Second">Second</option>
+          <option value="UNSORTED">UNSORTED</option>
+        </select>
+      </div>
+
+      <div class="pq-control">
+        <label for="type">Type</label>
+        <select id="type">
+          <option value="">All</option>
+          <option>Exam</option><option>Test</option><option>Quiz</option><option>UNKNOWN</option>
+        </select>
+      </div>
+
+      <div class="pq-control pq-search">
+        <label for="q">Search</label>
+        <input id="q" placeholder="Course code, title, session… (e.g., LAW101, 2024/2025)" />
+      </div>
+
+      <div class="pq-right">
+        <a href="#" class="pq-clear" id="clearBtn">Clear</a>
+        <div class="pq-count" id="stats">—</div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="pq-grid" id="grid" aria-label="Results"></section>
+
+    <div class="pq-warn">
+      If downloads fail: confirm your files are uploaded to <code>/pastquestions/all/</code> and filenames match the <code>url</code> values in <code>resources.json</code>.
+    </div>
+  </main>
+
+  <!-- ✅ Same footer style (simple + consistent) -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        © <span class="current-year"></span> Law Students’ Society, Joseph Ayo Babalola University.
+      </div>
+    </div>
+  </footer>
+
+  <script src="pastquestions.js"></script>
+</body>
+</html>

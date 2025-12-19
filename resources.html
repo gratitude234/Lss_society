@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/jpg" href="images/logo.jpg" />
 
-    <!-- Inline styles for logo + footer social links -->
+    <!-- Inline styles for logo + footer social links + centered single library card -->
     <style>
       /* LOGO AREA */
       .logo {
@@ -66,6 +66,14 @@
       .social-row .social-pill:focus-visible {
         text-decoration: none;
       }
+
+      /* ✅ Center a single card inside the "grid-3" layout (only for this section) */
+      .grid-3--single {
+        display: grid;
+        grid-template-columns: minmax(0, 420px);
+        justify-content: center;
+        gap: 1.25rem;
+      }
     </style>
 
     <script src="main.js" defer></script>
@@ -113,7 +121,6 @@
                 </li>
               </ul>
             </li>
-
 
             <li><a href="events.html">Events</a></li>
             <li><a href="executives.html">Executives</a></li>
@@ -293,79 +300,25 @@
         </div>
       </section>
 
-      <!-- Resources by Level (100–500) -->
+      <!-- ✅ Past Questions Library (single card only) -->
       <section class="section section--muted">
         <div class="container">
-          <h2 class="section-title">Resources by Level</h2>
+          <h2 class="section-title">Past Questions</h2>
           <p class="section-subtitle">
-            Choose your level to access past questions and course materials
-            (first and second semester) prepared for Law students at JABU.
+            One library for everything. Filter by Level, Semester, Exam Type, and Search inside the library.
+            If a material shows as <b>UNSORTED</b>, it simply means it needs tagging in
+            <code>resources.json</code>.
           </p>
 
-          <div class="grid-3">
-            <!-- 100 Level -->
+          <div class="grid-3--single">
             <div class="card">
-              <h2>100 Level</h2>
+              <h2>Past Questions Library</h2>
               <p class="text-muted">
-                Includes courses such as Communication in English, Legal Method,
-                Introduction to Psychology, Nigerian Constitutional Development,
-                Introduction to International Law and more.
+                Browse all uploaded past questions. Use filters for Level, Semester,
+                Exam Type, and Search.
               </p>
-              <a href="resources-100.html" class="btn btn-blue mt-1">
-                View 100 Level Materials
-              </a>
-            </div>
-
-            <!-- 200 Level -->
-            <div class="card">
-              <h2>200 Level</h2>
-              <p class="text-muted">
-                Covers Nigerian Legal System I &amp; II, Law of Contracts I &amp;
-                II, Constitutional Law I &amp; II, History &amp; Philosophy of
-                Science, plus electives like Administrative Law, Human Rights
-                and Labour Law.
-              </p>
-              <a href="resources-200.html" class="btn btn-blue mt-1">
-                View 200 Level Materials
-              </a>
-            </div>
-
-            <!-- 300 Level -->
-            <div class="card">
-              <h2>300 Level</h2>
-              <p class="text-muted">
-                Intermediate core courses (e.g. Tort, Commercial Law, Equity
-                &amp; Trusts) and other subjects. Materials will be organised by
-                semester as they are compiled.
-              </p>
-              <a href="resources-300.html" class="btn btn-blue mt-1">
-                View 300 Level Materials
-              </a>
-            </div>
-
-            <!-- 400 Level -->
-            <div class="card">
-              <h2>400 Level</h2>
-              <p class="text-muted">
-                Advanced Law courses and electives that prepare you for
-                professional practice. Semester-by-semester materials will be
-                added here.
-              </p>
-              <a href="resources-400.html" class="btn btn-blue mt-1">
-                View 400 Level Materials
-              </a>
-            </div>
-
-            <!-- 500 Level -->
-            <div class="card">
-              <h2>500 Level</h2>
-              <p class="text-muted">
-                Final-year materials, including Jurisprudence, Moot and Mock
-                Trial, Company Law, and electives such as Succession,
-                Conveyancing, Public International Law and Criminology.
-              </p>
-              <a href="resources-500.html" class="btn btn-blue mt-1">
-                View 500 Level Materials
+              <a href="pastquestions/pastquestions.html" class="btn btn-blue mt-1">
+                Open Library
               </a>
             </div>
           </div>
