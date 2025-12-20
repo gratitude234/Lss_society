@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="../styles.css" />
   <link rel="icon" type="image/jpg" href="../images/logo.jpg" />
 
-  <!-- Page-specific polish (blends with your theme) -->
   <style>
     :root{
       --pq-bg1:#071021;
@@ -19,13 +18,24 @@
       --pq-text: rgba(255,255,255,.92);
       --pq-muted: rgba(255,255,255,.68);
       --pq-soft: rgba(255,255,255,.06);
-      --pq-accent: #23B5A8; /* matches your teal accent idea */
+      --pq-accent: #23B5A8;
       --pq-accent-soft: rgba(35,181,168,.16);
       --pq-shadow: 0 18px 50px rgba(0,0,0,.35);
       --pq-radius: 18px;
+
+      /* ✅ NEW: sticky math (no more hard-coded top) */
+      --safe-top: env(safe-area-inset-top, 0px);
+      --site-header-h: 72px; /* JS will overwrite with the real header height */
+      --sticky-gap: 10px;
     }
 
     *{ box-sizing:border-box; }
+
+    html{
+      /* ✅ NEW: prevents focused inputs / in-page jumps from hiding under sticky UI */
+      scroll-padding-top: calc(var(--safe-top) + var(--site-header-h) + 16px);
+    }
+
     body{
       margin:0;
       color: var(--pq-text);
@@ -36,7 +46,12 @@
     }
 
     /* Keep your site header consistent */
-    .site-header { position: sticky; top: 0; z-index: 50; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding-top: var(--safe-top); /* ✅ NEW: iPhone safe area */
+    }
 
     /* Main wrapper */
     .pq-wrap{
@@ -119,8 +134,10 @@
       flex-wrap: wrap;
       align-items:center;
       box-shadow: 0 10px 30px rgba(0,0,0,.22);
+
       position: sticky;
-      top: 86px; /* sits under sticky header */
+      /* ✅ NEW: dynamic offset under the real header height */
+      top: calc(var(--safe-top) + var(--site-header-h) + var(--sticky-gap));
       z-index: 20;
       backdrop-filter: blur(8px);
     }
@@ -133,7 +150,7 @@
       border: 1px solid var(--pq-border);
       border-radius: 14px;
       padding: 8px 10px;
-      min-height: 44px;
+      min-height: 44px; /* ✅ good mobile tap size */
     }
     .pq-control label{
       font-size: 12px;
@@ -184,6 +201,26 @@
       transition: transform .15s ease, background .15s ease;
     }
     .pq-clear:hover{ transform: translateY(-1px); background: rgba(35,181,168,.20); }
+
+    /* ✅ NEW: Compact sticky mode (reduces “covering important stuff”) */
+    .pq-filters.pq-compact{
+      padding: 8px;
+      gap: 8px;
+      border-radius: 16px;
+    }
+    .pq-filters.pq-compact label{ display:none; }
+    .pq-filters.pq-compact .pq-control{
+      padding: 6px 8px;
+      min-height: 40px;
+    }
+
+    /* ✅ On phones, compact mode keeps ONLY search + actions visible */
+    @media (max-width: 540px){
+      .pq-filters.pq-compact .pq-control:not(.pq-search){ display:none; }
+      .pq-filters.pq-compact .pq-right{ width: 100%; justify-content: space-between; margin-left: 0; }
+      .pq-filters .pq-right{ width: 100%; justify-content: space-between; margin-left: 0; }
+      input{ width: 100%; }
+    }
 
     /* Grid cards */
     .pq-grid{
@@ -317,7 +354,7 @@
       line-height: 1.55;
     }
 
-    /* Logo styles to match your site’s header markup (safe even if already in styles.css) */
+    /* Logo styles */
     .logo{ display:flex; align-items:center; }
     .logo-link{ display:inline-flex; align-items:center; gap:.75rem; text-decoration:none; color:inherit; }
     .logo-img{ height:48px; width:auto; border-radius:50%; flex-shrink:0; }
@@ -332,7 +369,6 @@
 </head>
 
 <body>
-  <!-- ✅ Same header as your main site -->
   <header class="site-header">
     <div class="container nav-container">
       <div class="logo">
@@ -372,7 +408,6 @@
   </header>
 
   <main class="pq-wrap">
-    <!-- Hero -->
     <section class="pq-hero">
       <div class="pq-hero-inner">
         <div>
@@ -397,7 +432,6 @@
       </div>
     </section>
 
-    <!-- Filters -->
     <section class="pq-filters" aria-label="Filters">
       <div class="pq-control">
         <label for="level">Level</label>
@@ -437,7 +471,6 @@
       </div>
     </section>
 
-    <!-- Results -->
     <section class="pq-grid" id="grid" aria-label="Results"></section>
 
     <div class="pq-warn">
@@ -445,7 +478,6 @@
     </div>
   </main>
 
-  <!-- ✅ Same footer style (simple + consistent) -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom">
@@ -453,6 +485,51 @@
       </div>
     </div>
   </footer>
+
+  <!-- ✅ NEW: tiny helper that fixes sticky overlap on phones -->
+  <script>
+    (() => {
+      const root = document.documentElement;
+
+      const setHeaderHeightVar = () => {
+        const header = document.querySelector(".site-header");
+        if (!header) return;
+        const h = Math.ceil(header.getBoundingClientRect().height);
+        root.style.setProperty("--site-header-h", h + "px");
+      };
+
+      const initCompactSticky = () => {
+        const filters = document.querySelector(".pq-filters");
+        if (!filters) return;
+
+        const toggle = () => {
+          const compact = window.scrollY > 120;
+          filters.classList.toggle("pq-compact", compact);
+        };
+
+        window.addEventListener("scroll", toggle, { passive: true });
+        toggle();
+      };
+
+      window.addEventListener("DOMContentLoaded", () => {
+        setHeaderHeightVar();
+
+        // Keep it correct if the nav expands/collapses or fonts load
+        if ("ResizeObserver" in window) {
+          const header = document.querySelector(".site-header");
+          if (header) new ResizeObserver(setHeaderHeightVar).observe(header);
+        } else {
+          let t;
+          window.addEventListener("resize", () => {
+            clearTimeout(t);
+            t = setTimeout(setHeaderHeightVar, 100);
+          });
+        }
+
+        initCompactSticky();
+      });
+    })();
+  </script>
 
   <script type="module" src="pastquestions.js"></script>
 </body>

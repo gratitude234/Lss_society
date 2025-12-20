@@ -5,6 +5,9 @@
    - Edit metadata
    - Rename file on server
    - Delete
+   + NEW:
+     - Preview selected upload file (PDF/image) before uploading
+     - Preview any existing uploaded file inside a modal
 */
 
 const API_BASE = "https://jabumarket.com.ng/lss_api";
@@ -53,6 +56,7 @@ async function apiFetch(path, options = {}) {
   const res = await fetch(url, { ...options, headers });
   const ct = res.headers.get("content-type") || "";
   const text = await res.text();
+
   let data = null;
   try {
     data = ct.includes("application/json") ? (text ? JSON.parse(text) : null) : null;
@@ -126,7 +130,6 @@ async function login() {
 }
 
 async function logout() {
-  // optional API logout; token invalidation not required since JWT-like
   setToken("");
   setSignedOut();
   toast("Logged out.", "ok");
@@ -157,6 +160,159 @@ function fileBaseFromItem(it) {
   const last = url.split("/").pop() || "";
   const base = last.replace(/\.[^.]+$/, "");
   return toKebab(base) || "past-question";
+}
+
+/* ---------- VIEW MODAL (NEW) ---------- */
+const viewOverlay = $("viewOverlay");
+const viewFrame = $("viewFrame");
+const viewTitle = $("viewTitle");
+const viewMeta = $("viewMeta");
+const viewOpen = $("viewOpen");
+const btnViewClose = $("btnViewClose");
+
+function openView(it) {
+  if (!viewOverlay || !viewFrame) return;
+
+  const title = safeStr(it?.title) || "Preview";
+  const fileUrl = safeStr(it?.file_url || it?.fileUrl || "");
+  const fileName = fileUrl ? (fileUrl.split("/").pop() || "") : "";
+
+  if (!fileUrl) {
+    toast("No file URL on this item.", "warn");
+    return;
+  }
+
+  viewTitle.textContent = title;
+  if (viewMeta) viewMeta.textContent = fileName ? fileName : fileUrl;
+
+  // Open in new tab link
+  if (viewOpen) viewOpen.href = fileUrl;
+
+  // Try to embed in iframe
+  viewFrame.src = fileUrl;
+  viewOverlay.classList.add("open");
+}
+
+function closeView() {
+  if (!viewOverlay) return;
+  viewOverlay.classList.remove("open");
+  // stop PDF rendering / free memory
+  if (viewFrame) viewFrame.src = "about:blank";
+}
+
+/* ---------- LOCAL PREVIEW (UPLOAD) (NEW) ---------- */
+const fileEl = $("file");
+const btnPreviewLocal = $("btnPreviewLocal");
+const btnCloseLocalPreview = $("btnCloseLocalPreview");
+const localPreviewWrap = $("localPreviewWrap");
+const localPreviewFrame = $("localPreviewFrame");
+const localPreviewName = $("localPreviewName");
+
+let localObjectUrl = "";
+
+function clearLocalPreview() {
+  if (localPreviewFrame) localPreviewFrame.src = "about:blank";
+  if (localPreviewWrap) localPreviewWrap.style.display = "none";
+  if (localPreviewName) localPreviewName.textContent = "No file selected";
+  if (localObjectUrl) {
+    try { URL.revokeObjectURL(localObjectUrl); } catch {}
+  }
+  localObjectUrl = "";
+}
+
+function showLocalPreviewForFile(f) {
+  if (!f) return clearLocalPreview();
+  if (!localPreviewFrame || !localPreviewWrap) return;
+
+  const isPdf = (f.type === "application/pdf") || /\.pdf$/i.test(f.name);
+  const isImage = (f.type || "").startsWith("image/") || /\.(png|jpe?g|webp)$/i.test(f.name);
+
+  if (!isPdf && !isImage) {
+    toast("Preview supports PDF/images only.", "warn");
+    clearLocalPreview();
+    return;
+  }
+
+  if (localObjectUrl) {
+    try { URL.revokeObjectURL(localObjectUrl); } catch {}
+  }
+  localObjectUrl = URL.createObjectURL(f);
+
+  localPreviewFrame.src = localObjectUrl;
+  localPreviewWrap.style.display = "block";
+  if (localPreviewName) localPreviewName.textContent = f.name;
+}
+
+/* ---------- UPLOAD ---------- */
+const upTitle = $("title");
+const upCourseCode = $("course_code");
+const upCourseTitle = $("course_title");
+const upLevel = $("level");
+const upSemester = $("semester");
+const upType = $("type");
+const upSession = $("session");
+const upNotes = $("notes");
+const upSafe = $("safe_name");
+
+const btnUpload = $("btnUpload");
+const btnClearUpload = $("btnClearUpload");
+
+function clearUploadForm() {
+  if (fileEl) fileEl.value = "";
+  if (upTitle) upTitle.value = "";
+  if (upCourseCode) upCourseCode.value = "";
+  if (upCourseTitle) upCourseTitle.value = "";
+  if (upLevel) upLevel.value = "";
+  if (upSemester) upSemester.value = "";
+  if (upType) upType.value = "Exam";
+  if (upSession) upSession.value = "";
+  if (upNotes) upNotes.value = "";
+  if (upSafe) upSafe.value = "";
+
+  // also clear local preview
+  clearLocalPreview();
+}
+
+async function uploadNow() {
+  const ok = await checkAuth();
+  if (!ok) return toast("Login first.", "warn");
+
+  const f = fileEl?.files?.[0];
+  if (!f) return toast("Choose a file first.", "warn");
+
+  const title =
+    safeStr(upTitle?.value) ||
+    safeStr(upCourseTitle?.value) ||
+    safeStr(upCourseCode?.value) ||
+    "Untitled";
+
+  const fd = new FormData();
+  fd.append("file", f);
+  fd.append("title", title);
+  fd.append("course_code", safeStr(upCourseCode?.value));
+  fd.append("course_title", safeStr(upCourseTitle?.value));
+  fd.append("level", safeStr(upLevel?.value));
+  fd.append("semester", safeStr(upSemester?.value));
+  fd.append("type", safeStr(upType?.value || "Exam"));
+  fd.append("session", safeStr(upSession?.value));
+  fd.append("year", ""); // optional
+  fd.append("notes", safeStr(upNotes?.value));
+
+  const safeName = safeStr(upSafe?.value);
+  if (safeName) fd.append("safe_name", toKebab(safeName));
+
+  try {
+    btnUpload.disabled = true;
+    const data = await apiFetch("/pastquestions/upload.php", { method: "POST", body: fd });
+    if (!data?.success) throw new Error(data?.error || "Upload failed.");
+    toast("Uploaded ✅", "ok");
+    clearUploadForm();
+    await loadList();
+  } catch (e) {
+    toast(e.message || "Upload failed.", "bad");
+  } finally {
+    btnUpload.disabled = false;
+  }
 }
 
 function renderTable(items) {
@@ -192,6 +348,10 @@ function renderTable(items) {
          <div class="rowSub mono">${escapeHtml(fileUrl.split("/").pop() || "")}</div>`
       : `<span class="mono">—</span>`;
 
+    const viewBtn = fileUrl
+      ? `<button class="miniBtn" data-act="view" data-id="${it.id}">View</button>`
+      : `<button class="miniBtn" disabled title="No file available">View</button>`;
+
     tr.innerHTML = `
       <td>
         <div class="rowTitle">${escapeHtml(title)}</div>
@@ -204,6 +364,7 @@ function renderTable(items) {
       <td>${fileCell}</td>
       <td>
         <div class="actions">
+          ${viewBtn}
           <button class="miniBtn" data-act="edit" data-id="${it.id}">Edit</button>
           <button class="miniBtn" data-act="rename" data-id="${it.id}">Rename</button>
           <button class="miniBtn danger" data-act="delete" data-id="${it.id}">Delete</button>
@@ -221,6 +382,7 @@ function renderTable(items) {
       const item = currentItems.find((x) => Number(x.id) === id);
       if (!item) return;
 
+      if (act === "view") openView(item);
       if (act === "edit") openEdit(item);
       if (act === "rename") openRename(item);
       if (act === "delete") await doDelete(item);
@@ -249,72 +411,6 @@ async function loadList() {
     renderTable(currentItems);
   } catch (e) {
     toast(e.message || "Failed to load list.", "bad");
-  }
-}
-
-/* ---------- UPLOAD ---------- */
-const fileEl = $("file");
-const upTitle = $("title");
-const upCourseCode = $("course_code");
-const upCourseTitle = $("course_title");
-const upLevel = $("level");
-const upSemester = $("semester");
-const upType = $("type");
-const upSession = $("session");
-const upNotes = $("notes");
-const upSafe = $("safe_name");
-
-const btnUpload = $("btnUpload");
-const btnClearUpload = $("btnClearUpload");
-
-function clearUploadForm() {
-  if (fileEl) fileEl.value = "";
-  if (upTitle) upTitle.value = "";
-  if (upCourseCode) upCourseCode.value = "";
-  if (upCourseTitle) upCourseTitle.value = "";
-  if (upLevel) upLevel.value = "";
-  if (upSemester) upSemester.value = "";
-  if (upType) upType.value = "Exam";
-  if (upSession) upSession.value = "";
-  if (upNotes) upNotes.value = "";
-  if (upSafe) upSafe.value = "";
-}
-
-async function uploadNow() {
-  const ok = await checkAuth();
-  if (!ok) return toast("Login first.", "warn");
-
-  const f = fileEl?.files?.[0];
-  if (!f) return toast("Choose a file first.", "warn");
-
-  const title = safeStr(upTitle?.value) || safeStr(upCourseTitle?.value) || safeStr(upCourseCode?.value) || "Untitled";
-
-  const fd = new FormData();
-  fd.append("file", f);
-  fd.append("title", title);
-  fd.append("course_code", safeStr(upCourseCode?.value));
-  fd.append("course_title", safeStr(upCourseTitle?.value));
-  fd.append("level", safeStr(upLevel?.value));
-  fd.append("semester", safeStr(upSemester?.value));
-  fd.append("type", safeStr(upType?.value || "Exam"));
-  fd.append("session", safeStr(upSession?.value));
-  fd.append("year", ""); // optional; you can add later if you want
-  fd.append("notes", safeStr(upNotes?.value));
-
-  const safeName = safeStr(upSafe?.value);
-  if (safeName) fd.append("safe_name", toKebab(safeName));
-
-  try {
-    btnUpload.disabled = true;
-    const data = await apiFetch("/pastquestions/upload.php", { method: "POST", body: fd });
-    if (!data?.success) throw new Error(data?.error || "Upload failed.");
-    toast("Uploaded ✅", "ok");
-    clearUploadForm();
-    await loadList();
-  } catch (e) {
-    toast(e.message || "Upload failed.", "bad");
-  } finally {
-    btnUpload.disabled = false;
   }
 }
 
@@ -348,7 +444,6 @@ function openEdit(it) {
 
   editOverlay.classList.add("open");
 }
-
 function closeEdit() {
   editOverlay?.classList.remove("open");
 }
@@ -439,7 +534,9 @@ async function doDelete(it) {
   const ok = await checkAuth();
   if (!ok) return toast("Login first.", "warn");
 
-  const sure = confirm(`Delete this past question?\n\n${safeStr(it.title) || "Untitled"}\n(ID: ${it.id})\n\nThis will remove it from DB and delete the uploaded file.`);
+  const sure = confirm(
+    `Delete this past question?\n\n${safeStr(it.title) || "Untitled"}\n(ID: ${it.id})\n\nThis will remove it from DB and delete the uploaded file.`
+  );
   if (!sure) return;
 
   try {
@@ -465,7 +562,6 @@ function bind() {
   $("btnRefreshTop")?.addEventListener("click", loadList);
 
   qEl?.addEventListener("input", () => {
-    // light debounce
     window.clearTimeout(bind._t);
     bind._t = window.setTimeout(loadList, 250);
   });
@@ -473,22 +569,55 @@ function bind() {
   fSemester?.addEventListener("change", loadList);
   fType?.addEventListener("change", loadList);
 
+  // upload
   btnUpload?.addEventListener("click", uploadNow);
   btnClearUpload?.addEventListener("click", () => {
     clearUploadForm();
     toast("Cleared.", "ok");
   });
 
+  // local preview events
+  fileEl?.addEventListener("change", () => {
+    const f = fileEl?.files?.[0];
+    if (!f) return clearLocalPreview();
+    // set file name pill immediately
+    if (localPreviewName) localPreviewName.textContent = f.name;
+    // auto-preview for faster workflow
+    showLocalPreviewForFile(f);
+  });
+  btnPreviewLocal?.addEventListener("click", () => {
+    const f = fileEl?.files?.[0];
+    if (!f) return toast("Select a file first.", "warn");
+    showLocalPreviewForFile(f);
+  });
+  btnCloseLocalPreview?.addEventListener("click", clearLocalPreview);
+
+  // edit modal
   btnEditClose?.addEventListener("click", closeEdit);
   btnEditSave?.addEventListener("click", saveEdit);
   editOverlay?.addEventListener("click", (e) => {
     if (e.target === editOverlay) closeEdit();
   });
 
+  // rename modal
   btnRenameClose?.addEventListener("click", closeRename);
   btnRenameDo?.addEventListener("click", doRename);
   renameOverlay?.addEventListener("click", (e) => {
     if (e.target === renameOverlay) closeRename();
+  });
+
+  // view modal
+  btnViewClose?.addEventListener("click", closeView);
+  viewOverlay?.addEventListener("click", (e) => {
+    if (e.target === viewOverlay) closeView();
+  });
+
+  // escape closes any open modal
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    closeView();
+    closeEdit();
+    closeRename();
   });
 }
 
