@@ -1,29 +1,25 @@
-/* pastquestions/admin.js (Truehost PHP + MySQL API edition)
-   - Upload API runs on Truehost: https://jabumarket.com.ng/lss_api
-   - Admin uploads to /pastquestions/upload.php
-   - Public page reads list from /pastquestions/list.php
+/* pastquestions/admin.js
+   Minimal Admin:
+   - Login
+   - Upload
+   - Edit metadata
+   - Rename file on server
+   - Delete
 */
 
 const API_BASE = "https://jabumarket.com.ng/lss_api";
-
-const STORAGE_KEY = "pq_admin_draft_v4";
 const TOKEN_KEY = "lssAdminToken";
 
 const $ = (id) => document.getElementById(id);
 
 const toastEl = $("toast");
 let toastTimer = null;
-
 function toast(msg, type = "ok") {
   if (!toastEl) return;
   toastEl.textContent = msg;
-  toastEl.className = `toast show ${type}`;
+  toastEl.className = `toast ${type} show`;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    toastEl.className = "toast";
-    toastEl.style.display = "none";
-  }, 3200);
-  toastEl.style.display = "block";
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 3200);
 }
 
 function safeStr(v) {
@@ -40,7 +36,6 @@ function toKebab(s) {
 function getToken() {
   try { return localStorage.getItem(TOKEN_KEY) || ""; } catch { return ""; }
 }
-
 function setToken(t) {
   try {
     if (!t) localStorage.removeItem(TOKEN_KEY);
@@ -50,15 +45,14 @@ function setToken(t) {
 
 async function apiFetch(path, options = {}) {
   const url = `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
-
   const token = getToken();
   const headers = { ...(options.headers || {}) };
+
   if (token && !headers.Authorization) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(url, { ...options, headers });
   const ct = res.headers.get("content-type") || "";
   const text = await res.text();
-
   let data = null;
   try {
     data = ct.includes("application/json") ? (text ? JSON.parse(text) : null) : null;
@@ -74,52 +68,80 @@ async function apiFetch(path, options = {}) {
   return data ?? {};
 }
 
-/** Draft state **/
-let draft = { items: [] };
+/* ---------- AUTH ---------- */
+const authPill = $("authPill");
+const btnLogin = $("btnLogin");
+const btnLogout = $("btnLogout");
 
-function loadDraft() {
+async function checkAuth() {
+  const token = getToken();
+  if (!token) {
+    setSignedOut();
+    return false;
+  }
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    draft = raw ? JSON.parse(raw) : { items: [] };
+    const me = await apiFetch("/auth/me.php", { method: "GET" });
+    if (me?.success && me?.admin?.email) {
+      authPill.textContent = `Signed in: ${me.admin.email}`;
+      authPill.classList.add("good");
+      btnLogout.style.display = "";
+      return true;
+    }
   } catch {
-    draft = { items: [] };
+    // token invalid/expired
+  }
+  setToken("");
+  setSignedOut();
+  return false;
+}
+
+function setSignedOut() {
+  authPill.textContent = "Not signed in";
+  authPill.classList.remove("good");
+  btnLogout.style.display = "none";
+}
+
+async function login() {
+  const email = safeStr($("loginEmail")?.value);
+  const password = String($("loginPassword")?.value || "");
+  if (!email || !password) return toast("Email + password required.", "warn");
+
+  try {
+    btnLogin.disabled = true;
+    const data = await apiFetch("/auth/login.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!data?.token) throw new Error("No token returned.");
+    setToken(data.token);
+    toast("Login successful ✅", "ok");
+    await checkAuth();
+    await loadList();
+  } catch (e) {
+    toast(e.message || "Login failed.", "bad");
+  } finally {
+    btnLogin.disabled = false;
   }
 }
 
-function saveDraft() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(draft)); } catch {}
+async function logout() {
+  // optional API logout; token invalidation not required since JWT-like
+  setToken("");
+  setSignedOut();
+  toast("Logged out.", "ok");
 }
 
-function clearDraft() {
-  draft = { items: [] };
-  saveDraft();
-  renderTable();
-  updateCounts();
-}
+/* ---------- LIST / TABLE ---------- */
+const tbody = $("tbody");
+const countPill = $("countPill");
 
-function normalizeItem(x = {}) {
-  const file_url = safeStr(x.file_url || x.url || x.fileUrl);
-  const formatGuess = safeStr(x.format || x.fileType || x.kind).toLowerCase();
-  const format =
-    formatGuess ||
-    (file_url.toLowerCase().endsWith(".pdf") ? "pdf" : (file_url ? "image" : ""));
+const qEl = $("q");
+const fLevel = $("fLevel");
+const fSemester = $("fSemester");
+const fType = $("fType");
 
-  return {
-    id: x.id ?? null,
-    title: safeStr(x.title || x.name || x.course_title || x.courseTitle),
-    course_code: safeStr(x.course_code || x.courseCode),
-    course_title: safeStr(x.course_title || x.courseTitle),
-    level: safeStr(x.level),
-    semester: safeStr(x.semester),
-    type: safeStr(x.type || "Exam"),
-    session: safeStr(x.session || x.academic_session),
-    year: safeStr(x.year),
-    notes: safeStr(x.notes),
-    format: format === "pdf" ? "pdf" : (format ? "image" : ""),
-    file_url,
-    created_at: x.created_at || x.createdAt || null,
-  };
-}
+let currentItems = [];
 
 function escapeHtml(s) {
   return safeStr(s)
@@ -130,427 +152,348 @@ function escapeHtml(s) {
     .replaceAll("'", "&#039;");
 }
 
-/** UI refs **/
-const fileEl = $("file");
-const safeNameEl = $("safeName");
-const levelEl = $("level");
-const semesterEl = $("semester");
-const typeEl = $("type");
-const sessionEl = $("session");
-const yearInputEl = $("yearInput");
-const courseCodeEl = $("courseCode");
-const courseTitleEl = $("courseTitle");
-const titleEl = $("title");
-const notesEl = $("notes");
-const urlPreviewEl = $("urlPreview");
-const idPreviewEl = $("idPreview");
-
-const btnAuto = $("btnAuto");
-const btnAdd = $("btnAdd");
-const btnUpload = $("btnUpload");
-const btnReset = $("btnReset");
-
-const btnLoadLive = $("btnLoadLive");
-const btnExport = $("btnExport");
-const btnClearDraft = $("btnClearDraft");
-
-const btnPickImport = $("btnPickImport");
-const btnImportPublish = $("btnImportFirestore");
-const importFileEl = $("importFile");
-
-const countTotalEl = $("countTotal");
-const countUnsortedEl = $("countUnsorted");
-const tbodyEl = $("tbody");
-const searchEl = $("search");
-
-/** Auth UI **/
-const loginEmailEl = $("loginEmail");
-const loginPasswordEl = $("loginPassword");
-const btnLogin = $("btnLogin");
-const btnLogout = $("btnLogout");
-const authStatusEl = $("authStatus");
-
-function setAuthUI(signedIn, email = "") {
-  if (!authStatusEl) return;
-  authStatusEl.innerHTML = signedIn
-    ? `<span class="badge2"></span> Signed in: ${escapeHtml(email || "Admin")}`
-    : `<span class="badge2"></span> Not signed in`;
-
-  if (btnLogout) btnLogout.disabled = !signedIn;
+function fileBaseFromItem(it) {
+  const url = safeStr(it?.file_url || it?.fileUrl || "");
+  const last = url.split("/").pop() || "";
+  const base = last.replace(/\.[^.]+$/, "");
+  return toKebab(base) || "past-question";
 }
 
-async function checkAuth() {
-  const token = getToken();
-  if (!token) { setAuthUI(false); return; }
+function renderTable(items) {
+  if (!tbody) return;
+  tbody.innerHTML = "";
 
-  try {
-    const me = await apiFetch("/auth/me.php");
-    setAuthUI(true, me?.admin?.email || "");
-  } catch {
-    setToken("");
-    setAuthUI(false);
-  }
-}
-
-async function login() {
-  const email = safeStr(loginEmailEl?.value);
-  const password = safeStr(loginPasswordEl?.value);
-  if (!email || !password) return toast("Enter email and password.", "warn");
-
-  try {
-    const data = await apiFetch("/auth/login.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!data?.token) throw new Error("Login failed.");
-    setToken(data.token);
-    loginPasswordEl.value = "";
-    toast("Logged in ✅", "ok");
-    await checkAuth();
-  } catch (e) {
-    toast(e.message || "Login failed.", "bad");
-  }
-}
-
-async function logout() {
-  try { await apiFetch("/auth/logout.php", { method: "POST" }); } catch {}
-  setToken("");
-  setAuthUI(false);
-  toast("Logged out.", "ok");
-}
-
-function currentFormItem() {
-  const rawTitle = safeStr(titleEl?.value) || safeStr(courseTitleEl?.value) || safeStr(courseCodeEl?.value);
-
-  const item = {
-    title: rawTitle || "Untitled",
-    course_code: safeStr(courseCodeEl?.value),
-    course_title: safeStr(courseTitleEl?.value),
-    level: safeStr(levelEl?.value),
-    semester: safeStr(semesterEl?.value),
-    type: safeStr(typeEl?.value),
-    session: safeStr(sessionEl?.value),
-    year: safeStr(yearInputEl?.value),
-    notes: safeStr(notesEl?.value),
-  };
-
-  return item;
-}
-
-function autoFillFromFilename() {
-  const f = fileEl?.files?.[0];
-  if (!f) return toast("Choose a file first.", "warn");
-
-  const nameNoExt = f.name.replace(/\.[^.]+$/, "");
-  const proposed = toKebab(nameNoExt).slice(0, 80);
-
-  if (safeNameEl) safeNameEl.value = proposed;
-  if (titleEl && !titleEl.value) titleEl.value = nameNoExt.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
-
-  if (courseCodeEl && !courseCodeEl.value) {
-    const m = nameNoExt.match(/\b([A-Z]{2,5}\s?\d{2,4})\b/i);
-    if (m) courseCodeEl.value = m[1].toUpperCase().replace(/\s+/g, " ");
-  }
-
-  toast("Auto-filled from filename.", "ok");
-}
-
-function addToDraft() {
-  const item = normalizeItem({ ...currentFormItem(), file_url: "" });
-  draft.items.unshift(item);
-  saveDraft();
-  renderTable();
-  updateCounts();
-  toast("Added to draft.", "ok");
-}
-
-function updateCounts() {
-  const items = draft.items || [];
-  const total = items.length;
-
-  const uns = items.filter((x) => {
-    const t = normalizeItem(x);
-    const hasBasics = (t.title || t.course_code) && t.level && t.semester;
-    return !hasBasics;
-  }).length;
-
-  if (countTotalEl) countTotalEl.textContent = String(total);
-  if (countUnsortedEl) countUnsortedEl.textContent = String(uns);
-}
-
-function matchesSearch(it, q) {
-  if (!q) return true;
-  const t = normalizeItem(it);
-  const hay = [
-    t.title, t.course_code, t.course_title, t.level, t.semester, t.type, t.session, t.year, t.file_url
-  ].join(" ").toLowerCase();
-  return hay.includes(q);
-}
-
-function renderTable() {
-  if (!tbodyEl) return;
-
-  const q = safeStr(searchEl?.value).toLowerCase();
-  const items = (draft.items || []).filter((it) => matchesSearch(it, q));
-
-  tbodyEl.innerHTML = "";
-
-  items.forEach((raw, idx) => {
-    const it = normalizeItem(raw);
-
-    const metaBits = [
-      it.level && it.level !== "UNSORTED" ? it.level : "",
-      it.semester && it.semester !== "UNSORTED" ? it.semester : "",
-      it.type ? it.type : "",
-      it.session ? it.session : "",
-      it.year ? `Year: ${it.year}` : "",
-      it.course_code ? it.course_code : "",
-    ].filter(Boolean);
-
+  if (!items.length) {
     const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="4" class="mono">No items found.</td>`;
+    tbody.appendChild(tr);
+    countPill.textContent = "0 items";
+    return;
+  }
+
+  countPill.textContent = `${items.length} item(s)`;
+
+  for (const it of items) {
+    const tr = document.createElement("tr");
+
+    const title = safeStr(it.title) || "Untitled";
+    const course = [safeStr(it.course_code), safeStr(it.course_title)].filter(Boolean).join(" • ");
+    const meta = [
+      safeStr(it.level),
+      safeStr(it.semester),
+      safeStr(it.type),
+      safeStr(it.session),
+      safeStr(it.year),
+    ].filter(Boolean).join(" • ");
+
+    const fileUrl = safeStr(it.file_url || it.fileUrl || "");
+    const fileCell = fileUrl
+      ? `<a href="${escapeHtml(fileUrl)}" target="_blank" rel="noopener" class="mono" style="color:rgba(234,240,255,.88); text-decoration:underline;">Open</a>
+         <div class="rowSub mono">${escapeHtml(fileUrl.split("/").pop() || "")}</div>`
+      : `<span class="mono">—</span>`;
+
     tr.innerHTML = `
       <td>
-        <div><b>${escapeHtml(it.title || "(no title)")}</b></div>
-        <div style="color: rgba(234,240,255,.62); margin-top:4px;">
-          ${escapeHtml(it.course_title || "")}
-        </div>
+        <div class="rowTitle">${escapeHtml(title)}</div>
+        ${course ? `<div class="rowSub">${escapeHtml(course)}</div>` : `<div class="rowSub">—</div>`}
       </td>
-
       <td>
-        ${metaBits.map((m) => `<span class="tag good">${escapeHtml(m)}</span>`).join("")}
+        <div class="mono">${escapeHtml(meta || "—")}</div>
+        <div class="rowSub mono">ID: ${escapeHtml(it.id)}</div>
       </td>
-
-      <td class="mono">
-        ${it.file_url
-          ? `<a href="${escapeHtml(it.file_url)}" target="_blank" rel="noopener noreferrer" style="color: rgba(223,253,249,.92); text-decoration:none;">
-              open
-            </a>`
-          : `<span style="color: rgba(234,240,255,.55);">not uploaded</span>`
-        }
-      </td>
-
-      <td class="right">
-        <button class="btnx ghost" data-act="edit" data-i="${idx}" type="button">Edit</button>
-        <button class="btnx danger" data-act="remove" data-i="${idx}" type="button">Remove</button>
+      <td>${fileCell}</td>
+      <td>
+        <div class="actions">
+          <button class="miniBtn" data-act="edit" data-id="${it.id}">Edit</button>
+          <button class="miniBtn" data-act="rename" data-id="${it.id}">Rename</button>
+          <button class="miniBtn danger" data-act="delete" data-id="${it.id}">Delete</button>
+        </div>
       </td>
     `;
 
-    tbodyEl.appendChild(tr);
-  });
+    tbody.appendChild(tr);
+  }
 
-  tbodyEl.querySelectorAll("button[data-act]").forEach((btn) => {
-    btn.addEventListener("click", () => {
+  tbody.querySelectorAll("button[data-act]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
       const act = btn.getAttribute("data-act");
-      const i = Number(btn.getAttribute("data-i"));
-      if (!Number.isFinite(i)) return;
+      const id = Number(btn.getAttribute("data-id"));
+      const item = currentItems.find((x) => Number(x.id) === id);
+      if (!item) return;
 
-      if (act === "remove") {
-        draft.items.splice(i, 1);
-        saveDraft();
-        renderTable();
-        updateCounts();
-        return;
-      }
-
-      if (act === "edit") {
-        const it = normalizeItem(draft.items[i]);
-
-        if (titleEl) titleEl.value = it.title || "";
-        if (courseCodeEl) courseCodeEl.value = it.course_code || "";
-        if (courseTitleEl) courseTitleEl.value = it.course_title || "";
-        if (levelEl) levelEl.value = it.level || "UNSORTED";
-        if (semesterEl) semesterEl.value = it.semester || "UNSORTED";
-        if (typeEl) typeEl.value = it.type || "Exam";
-        if (sessionEl) sessionEl.value = it.session || "";
-        if (yearInputEl) yearInputEl.value = it.year || "";
-        if (notesEl) notesEl.value = it.notes || "";
-
-        if (urlPreviewEl) urlPreviewEl.textContent = it.file_url || "—";
-        if (idPreviewEl) idPreviewEl.textContent = it.id ? String(it.id) : "—";
-
-        toast("Loaded item into form.", "ok");
-      }
+      if (act === "edit") openEdit(item);
+      if (act === "rename") openRename(item);
+      if (act === "delete") await doDelete(item);
     });
   });
+}
+
+async function loadList() {
+  try {
+    const qs = new URLSearchParams();
+    qs.set("limit", "400");
+
+    const q = safeStr(qEl?.value);
+    if (q) qs.set("q", q);
+
+    const lv = safeStr(fLevel?.value);
+    const sem = safeStr(fSemester?.value);
+    const tp = safeStr(fType?.value);
+
+    if (lv) qs.set("level", lv);
+    if (sem) qs.set("semester", sem);
+    if (tp) qs.set("type", tp);
+
+    const data = await apiFetch(`/pastquestions/list.php?${qs.toString()}`, { method: "GET" });
+    currentItems = Array.isArray(data?.items) ? data.items : [];
+    renderTable(currentItems);
+  } catch (e) {
+    toast(e.message || "Failed to load list.", "bad");
+  }
+}
+
+/* ---------- UPLOAD ---------- */
+const fileEl = $("file");
+const upTitle = $("title");
+const upCourseCode = $("course_code");
+const upCourseTitle = $("course_title");
+const upLevel = $("level");
+const upSemester = $("semester");
+const upType = $("type");
+const upSession = $("session");
+const upNotes = $("notes");
+const upSafe = $("safe_name");
+
+const btnUpload = $("btnUpload");
+const btnClearUpload = $("btnClearUpload");
+
+function clearUploadForm() {
+  if (fileEl) fileEl.value = "";
+  if (upTitle) upTitle.value = "";
+  if (upCourseCode) upCourseCode.value = "";
+  if (upCourseTitle) upCourseTitle.value = "";
+  if (upLevel) upLevel.value = "";
+  if (upSemester) upSemester.value = "";
+  if (upType) upType.value = "Exam";
+  if (upSession) upSession.value = "";
+  if (upNotes) upNotes.value = "";
+  if (upSafe) upSafe.value = "";
 }
 
 async function uploadNow() {
+  const ok = await checkAuth();
+  if (!ok) return toast("Login first.", "warn");
+
   const f = fileEl?.files?.[0];
-  if (!f) return toast("Choose a PDF/image to upload.", "warn");
+  if (!f) return toast("Choose a file first.", "warn");
 
-  const token = getToken();
-  if (!token) return toast("Login first (Admin Login section).", "warn");
-
-  const item = currentFormItem();
-  const safeName = safeStr(safeNameEl?.value) || toKebab(item.title).slice(0, 80);
+  const title = safeStr(upTitle?.value) || safeStr(upCourseTitle?.value) || safeStr(upCourseCode?.value) || "Untitled";
 
   const fd = new FormData();
   fd.append("file", f);
-  fd.append("safe_name", safeName);
+  fd.append("title", title);
+  fd.append("course_code", safeStr(upCourseCode?.value));
+  fd.append("course_title", safeStr(upCourseTitle?.value));
+  fd.append("level", safeStr(upLevel?.value));
+  fd.append("semester", safeStr(upSemester?.value));
+  fd.append("type", safeStr(upType?.value || "Exam"));
+  fd.append("session", safeStr(upSession?.value));
+  fd.append("year", ""); // optional; you can add later if you want
+  fd.append("notes", safeStr(upNotes?.value));
 
-  fd.append("title", item.title);
-  fd.append("course_code", item.course_code);
-  fd.append("course_title", item.course_title);
-  fd.append("level", item.level);
-  fd.append("semester", item.semester);
-  fd.append("type", item.type);
-  fd.append("session", item.session);
-  fd.append("year", item.year);
-  fd.append("notes", item.notes);
+  const safeName = safeStr(upSafe?.value);
+  if (safeName) fd.append("safe_name", toKebab(safeName));
 
   try {
-    if (btnUpload) btnUpload.disabled = true;
-
-    const data = await apiFetch("/pastquestions/upload.php", {
-      method: "POST",
-      body: fd,
-    });
-
-    const uploaded = normalizeItem(data.item || {});
-    if (urlPreviewEl) urlPreviewEl.textContent = uploaded.file_url || "—";
-    if (idPreviewEl) idPreviewEl.textContent = uploaded.id ? String(uploaded.id) : "—";
-
-    toast("Uploaded & published ✅", "ok");
-
-    // Refresh live list into draft
-    await loadLive();
+    btnUpload.disabled = true;
+    const data = await apiFetch("/pastquestions/upload.php", { method: "POST", body: fd });
+    if (!data?.success) throw new Error(data?.error || "Upload failed.");
+    toast("Uploaded ✅", "ok");
+    clearUploadForm();
+    await loadList();
   } catch (e) {
     toast(e.message || "Upload failed.", "bad");
   } finally {
-    if (btnUpload) btnUpload.disabled = false;
+    btnUpload.disabled = false;
   }
 }
 
-async function loadLive() {
-  try {
-    const data = await apiFetch("/pastquestions/list.php?limit=800");
-    const items = (data.items || []).map(normalizeItem);
-    draft.items = items;
-    saveDraft();
-    renderTable();
-    updateCounts();
-    toast("Loaded live library ✅", "ok");
-  } catch (e) {
-    toast(e.message || "Failed to load live library.", "bad");
-  }
+/* ---------- EDIT MODAL ---------- */
+const editOverlay = $("editOverlay");
+const btnEditClose = $("btnEditClose");
+const btnEditSave = $("btnEditSave");
+
+const edit_id = $("edit_id");
+const edit_title = $("edit_title");
+const edit_course_code = $("edit_course_code");
+const edit_course_title = $("edit_course_title");
+const edit_level = $("edit_level");
+const edit_semester = $("edit_semester");
+const edit_type = $("edit_type");
+const edit_session = $("edit_session");
+const edit_notes = $("edit_notes");
+
+function openEdit(it) {
+  if (!editOverlay) return;
+
+  edit_id.value = it.id;
+  edit_title.value = safeStr(it.title);
+  edit_course_code.value = safeStr(it.course_code);
+  edit_course_title.value = safeStr(it.course_title);
+  edit_level.value = safeStr(it.level);
+  edit_semester.value = safeStr(it.semester);
+  edit_type.value = safeStr(it.type) || "Exam";
+  edit_session.value = safeStr(it.session);
+  edit_notes.value = safeStr(it.notes);
+
+  editOverlay.classList.add("open");
 }
 
-function exportJson() {
-  const items = (draft.items || []).map(normalizeItem);
-  const blob = new Blob([JSON.stringify(items, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `pastquestions_export_${new Date().toISOString().slice(0, 10)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+function closeEdit() {
+  editOverlay?.classList.remove("open");
 }
 
-function importFromFile() {
-  const f = importFileEl?.files?.[0];
-  if (!f) return toast("Choose a JSON file first.", "warn");
+async function saveEdit() {
+  const ok = await checkAuth();
+  if (!ok) return toast("Login first.", "warn");
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const arr = JSON.parse(String(reader.result || "[]"));
-      if (!Array.isArray(arr)) throw new Error("JSON must be an array.");
+  const id = Number(edit_id.value);
+  if (!id) return toast("Invalid item id.", "bad");
 
-      draft.items = arr.map(normalizeItem);
-      saveDraft();
-      renderTable();
-      updateCounts();
-      toast("Imported JSON into draft ✅", "ok");
-    } catch (e) {
-      toast(e.message || "Import failed.", "bad");
-    }
+  const payload = {
+    id,
+    title: safeStr(edit_title.value),
+    course_code: safeStr(edit_course_code.value),
+    course_title: safeStr(edit_course_title.value),
+    level: safeStr(edit_level.value),
+    semester: safeStr(edit_semester.value),
+    type: safeStr(edit_type.value),
+    session: safeStr(edit_session.value),
+    year: "", // optional
+    notes: safeStr(edit_notes.value),
   };
-  reader.readAsText(f);
-}
-
-async function publishImported() {
-  const token = getToken();
-  if (!token) return toast("Login first.", "warn");
-
-  const items = (draft.items || [])
-    .map(normalizeItem)
-    .filter((x) => x.title || x.course_code || x.file_url);
-
-  if (!items.length) return toast("Nothing to publish.", "warn");
 
   try {
-    if (btnImportPublish) btnImportPublish.disabled = true;
-
-    const data = await apiFetch("/pastquestions/import.php", {
+    btnEditSave.disabled = true;
+    const data = await apiFetch("/pastquestions/update.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items }),
+      body: JSON.stringify(payload),
     });
-
-    toast(`Imported ${data.inserted || 0} item(s) ✅`, "ok");
-    await loadLive();
+    if (!data?.success) throw new Error(data?.error || "Update failed.");
+    toast("Updated ✅", "ok");
+    closeEdit();
+    await loadList();
   } catch (e) {
-    toast(e.message || "Publish import failed.", "bad");
+    toast(e.message || "Update failed.", "bad");
   } finally {
-    if (btnImportPublish) btnImportPublish.disabled = false;
+    btnEditSave.disabled = false;
   }
 }
 
-/** Init **/
-function init() {
-  loadDraft();
-  renderTable();
-  updateCounts();
+/* ---------- RENAME MODAL ---------- */
+const renameOverlay = $("renameOverlay");
+const btnRenameClose = $("btnRenameClose");
+const btnRenameDo = $("btnRenameDo");
+const rename_id = $("rename_id");
+const rename_safe = $("rename_safe");
 
-  btnAuto?.addEventListener("click", autoFillFromFilename);
-  btnAdd?.addEventListener("click", addToDraft);
-  btnUpload?.addEventListener("click", uploadNow);
+function openRename(it) {
+  if (!renameOverlay) return;
+  rename_id.value = it.id;
+  rename_safe.value = fileBaseFromItem(it);
+  renameOverlay.classList.add("open");
+}
+function closeRename() {
+  renameOverlay?.classList.remove("open");
+}
 
-  btnReset?.addEventListener("click", () => {
-    if (fileEl) fileEl.value = "";
-    if (safeNameEl) safeNameEl.value = "";
-    if (titleEl) titleEl.value = "";
-    if (courseCodeEl) courseCodeEl.value = "";
-    if (courseTitleEl) courseTitleEl.value = "";
-    if (sessionEl) sessionEl.value = "";
-    if (yearInputEl) yearInputEl.value = "";
-    if (notesEl) notesEl.value = "";
-    if (urlPreviewEl) urlPreviewEl.textContent = "—";
-    if (idPreviewEl) idPreviewEl.textContent = "—";
-    toast("Form reset.", "ok");
-  });
+async function doRename() {
+  const ok = await checkAuth();
+  if (!ok) return toast("Login first.", "warn");
 
-  btnLoadLive?.addEventListener("click", loadLive);
-  btnExport?.addEventListener("click", exportJson);
-  btnClearDraft?.addEventListener("click", () => {
-    clearDraft();
-    toast("Draft cleared.", "ok");
-  });
+  const id = Number(rename_id.value);
+  const safe_name = toKebab(rename_safe.value);
+  if (!id || !safe_name) return toast("Enter a valid name.", "warn");
 
-  btnPickImport?.addEventListener("click", () => importFileEl?.click());
-  importFileEl?.addEventListener("change", importFromFile);
+  try {
+    btnRenameDo.disabled = true;
+    const data = await apiFetch("/pastquestions/rename.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, safe_name }),
+    });
+    if (!data?.success) throw new Error(data?.error || "Rename failed.");
+    toast("Renamed ✅", "ok");
+    closeRename();
+    await loadList();
+  } catch (e) {
+    toast(e.message || "Rename failed.", "bad");
+  } finally {
+    btnRenameDo.disabled = false;
+  }
+}
 
-  btnImportPublish?.addEventListener("click", publishImported);
+/* ---------- DELETE ---------- */
+async function doDelete(it) {
+  const ok = await checkAuth();
+  if (!ok) return toast("Login first.", "warn");
 
-  fileEl?.addEventListener("change", () => {
-    const f = fileEl.files?.[0];
-    if (!f) return;
-    if (safeNameEl && !safeNameEl.value) {
-      safeNameEl.value = toKebab(f.name.replace(/\.[^.]+$/, "")).slice(0, 80);
-    }
-    if (urlPreviewEl) urlPreviewEl.textContent = "—";
-    if (idPreviewEl) idPreviewEl.textContent = "—";
-  });
+  const sure = confirm(`Delete this past question?\n\n${safeStr(it.title) || "Untitled"}\n(ID: ${it.id})\n\nThis will remove it from DB and delete the uploaded file.`);
+  if (!sure) return;
 
-  searchEl?.addEventListener("input", renderTable);
+  try {
+    const data = await apiFetch("/pastquestions/delete.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: Number(it.id) }),
+    });
+    if (!data?.success) throw new Error(data?.error || "Delete failed.");
+    toast("Deleted ✅", "ok");
+    await loadList();
+  } catch (e) {
+    toast(e.message || "Delete failed.", "bad");
+  }
+}
 
+/* ---------- WIRE UP ---------- */
+function bind() {
   btnLogin?.addEventListener("click", login);
   btnLogout?.addEventListener("click", logout);
 
-  checkAuth();
+  $("btnRefresh")?.addEventListener("click", loadList);
+  $("btnRefreshTop")?.addEventListener("click", loadList);
+
+  qEl?.addEventListener("input", () => {
+    // light debounce
+    window.clearTimeout(bind._t);
+    bind._t = window.setTimeout(loadList, 250);
+  });
+  fLevel?.addEventListener("change", loadList);
+  fSemester?.addEventListener("change", loadList);
+  fType?.addEventListener("change", loadList);
+
+  btnUpload?.addEventListener("click", uploadNow);
+  btnClearUpload?.addEventListener("click", () => {
+    clearUploadForm();
+    toast("Cleared.", "ok");
+  });
+
+  btnEditClose?.addEventListener("click", closeEdit);
+  btnEditSave?.addEventListener("click", saveEdit);
+  editOverlay?.addEventListener("click", (e) => {
+    if (e.target === editOverlay) closeEdit();
+  });
+
+  btnRenameClose?.addEventListener("click", closeRename);
+  btnRenameDo?.addEventListener("click", doRename);
+  renameOverlay?.addEventListener("click", (e) => {
+    if (e.target === renameOverlay) closeRename();
+  });
 }
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", async () => {
+  bind();
+  await checkAuth();
+  await loadList();
+});
