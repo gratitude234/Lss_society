@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Past Questions Admin | LSS – JABU</title>
 
-  <!-- Standalone: NO styles.css -->
+  <!-- Pastquestions folder: /pastquestions/admin.html -->
   <link rel="icon" type="image/jpg" href="../images/logo.jpg" />
 
   <style>
     :root{
-      /* Core palette (same family as pastquestions page) */
       --bg0:#050913;
       --bg1:#070b16;
       --bg2:#0b1020;
@@ -29,7 +28,7 @@
       --tealB: rgba(35,181,168,.28);
 
       --danger:#ef4444;
-      --dangerA: rgba(239,68,68,.16);
+      --dangerA: rgba(239,68,68,.14);
 
       --warn:#f59e0b;
       --warnA: rgba(245,158,11,.14);
@@ -39,7 +38,6 @@
 
       --radius: 18px;
       --radius2: 24px;
-
       --max: 1200px;
     }
 
@@ -55,7 +53,7 @@
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
-    /* ---------- Header ---------- */
+    /* Header */
     .site-header{
       position: sticky;
       top: 0;
@@ -74,6 +72,7 @@
       align-items:center;
       justify-content:space-between;
       gap: 14px;
+      position: relative;
     }
     .brand{
       display:flex;
@@ -133,7 +132,6 @@
       background: rgba(255,255,255,.06);
       color: var(--text);
     }
-
     .nav-toggle{
       display:none;
       width: 44px;
@@ -151,7 +149,6 @@
       background: rgba(234,240,255,.86);
       border-radius: 999px;
     }
-
     @media (max-width: 860px){
       .brand .t2{ display:none; }
       .nav-toggle{ display:inline-block; }
@@ -174,7 +171,7 @@
       .navlinks a{ width:100%; }
     }
 
-    /* ---------- Page layout ---------- */
+    /* Layout */
     .wrap{
       max-width: var(--max);
       margin: 0 auto;
@@ -227,14 +224,6 @@
       max-width: 90ch;
     }
 
-    .cta{
-      display:flex;
-      flex-wrap:wrap;
-      gap: 10px;
-      align-items:center;
-      margin-top: 14px;
-    }
-
     .grid{
       margin-top: 14px;
       display:grid;
@@ -254,7 +243,6 @@
       padding: 14px;
       overflow:hidden;
     }
-
     .card h2{
       margin: 0 0 6px;
       font-size: 15px;
@@ -267,29 +255,35 @@
       line-height: 1.55;
     }
 
+    /* Form grid */
     .row{
       margin-top: 12px;
       display:grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 10px;
     }
+    .col12{ grid-column: span 12; }
+    .col8{ grid-column: span 8; }
+    .col6{ grid-column: span 6; }
+    .col4{ grid-column: span 4; }
+    @media (max-width: 760px){
+      .col8,.col6,.col4{ grid-column: span 12; }
+    }
 
     .field{
       grid-column: span 12;
       display:flex;
-      align-items:center;
-      gap: 10px;
+      flex-direction: column;
+      gap: 6px;
       padding: 10px 10px;
       border-radius: 14px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.10);
-      min-height: 46px;
     }
-    .field label{
-      min-width: 96px;
+    .field .lbl{
       font-size: 12px;
       color: rgba(234,240,255,.68);
-      white-space: nowrap;
+      letter-spacing: .02em;
     }
     .field input, .field select, .field textarea{
       width:100%;
@@ -302,23 +296,21 @@
     }
     .field textarea{
       resize: vertical;
-      min-height: 46px;
-      padding-top: 2px;
+      min-height: 70px;
     }
     .field:focus-within{
       border-color: rgba(35,181,168,.45);
       box-shadow: 0 0 0 4px rgba(35,181,168,.10);
     }
 
-    .col6{ grid-column: span 6; }
-    .col4{ grid-column: span 4; }
-    .col8{ grid-column: span 8; }
-    @media (max-width: 760px){
-      .col6,.col4,.col8{ grid-column: span 12; }
-      .field label{ min-width: 86px; }
+    /* Buttons */
+    .cta{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      margin-top: 12px;
     }
-
-    /* ---------- Buttons ---------- */
     .btnx{
       display:inline-flex;
       align-items:center;
@@ -342,6 +334,7 @@
       border-color: rgba(255,255,255,.18);
     }
     .btnx:active{ transform: translateY(0px); }
+    .btnx[disabled]{ opacity:.55; cursor:not-allowed; transform:none; }
 
     .btnx.primary{
       background: rgba(35,181,168,.14);
@@ -352,13 +345,11 @@
       background: rgba(35,181,168,.20);
       border-color: rgba(35,181,168,.42);
     }
-
     .btnx.ghost{
       background: rgba(255,255,255,.04);
       border-color: rgba(255,255,255,.10);
       color: rgba(234,240,255,.82);
     }
-
     .btnx.danger{
       background: rgba(239,68,68,.12);
       border-color: rgba(239,68,68,.28);
@@ -369,7 +360,7 @@
       border-color: rgba(239,68,68,.36);
     }
 
-    /* ---------- Mini pills / previews ---------- */
+    /* Pills, toast */
     .mini{
       display:flex;
       flex-wrap:wrap;
@@ -395,14 +386,45 @@
       background: var(--teal);
       box-shadow: 0 0 0 6px rgba(35,181,168,.12);
     }
+    .toast{
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: rgba(234,240,255,.92);
+      font-size: 12px;
+      line-height: 1.55;
+      display:none;
+    }
+    .toast.show{ display:block; }
+    .toast.ok{ border-color: rgba(35,181,168,.25); background: rgba(35,181,168,.10); color: rgba(223,253,249,.94); }
+    .toast.warn{ border-color: rgba(245,158,11,.25); background: rgba(245,158,11,.10); color: rgba(255,236,196,.94); }
+    .toast.bad{ border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.10); color: rgba(255,220,220,.94); }
 
-    /* ---------- Table ---------- */
+    .warnbox{
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(245,158,11,.22);
+      background: rgba(245,158,11,.10);
+      color: rgba(255,236,196,.92);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    code{
+      background: rgba(255,255,255,.08);
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: rgba(234,240,255,.92);
+    }
+
+    /* Table */
     .sep{
       height: 1px;
       background: rgba(255,255,255,.10);
       margin: 12px 0;
     }
-
     table{
       width:100%;
       border-collapse: collapse;
@@ -439,50 +461,12 @@
       margin-right: 6px;
       margin-top: 4px;
     }
-    .tag.good{
-      border-color: rgba(35,181,168,.30);
-      background: rgba(35,181,168,.12);
-      color: rgba(223,253,249,.92);
-    }
-    .tag.warn{
-      border-color: rgba(245,158,11,.28);
-      background: rgba(245,158,11,.12);
-      color: rgba(255,236,196,.92);
-    }
+    .tag.good{ border-color: rgba(35,181,168,.30); background: rgba(35,181,168,.12); color: rgba(223,253,249,.92); }
+    .tag.warn{ border-color: rgba(245,158,11,.28); background: rgba(245,158,11,.12); color: rgba(255,236,196,.92); }
 
-    /* ---------- Toast + warning box ---------- */
-    .toast{
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(35,181,168,.22);
-      background: rgba(35,181,168,.10);
-      color: rgba(223,253,249,.94);
-      font-size: 12px;
-      line-height: 1.55;
-      display:none;
-    }
-    .toast.show{ display:block; }
+    .right{ text-align:right; }
+    .mono{ font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
 
-    .warnbox{
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(245,158,11,.22);
-      background: rgba(245,158,11,.10);
-      color: rgba(255,236,196,.92);
-      font-size: 12px;
-      line-height: 1.55;
-    }
-
-    code{
-      background: rgba(255,255,255,.08);
-      padding: 2px 6px;
-      border-radius: 8px;
-      color: rgba(234,240,255,.92);
-    }
-
-    /* Footer */
     .footer{
       margin-top: 18px;
       color: rgba(234,240,255,.55);
@@ -493,7 +477,6 @@
 </head>
 
 <body>
-  <!-- Header -->
   <header class="site-header">
     <div class="container">
       <div class="nav">
@@ -523,147 +506,159 @@
 
   <main class="wrap">
     <section class="hero">
-      <div class="badge"><span class="dot"></span> Past Questions Admin • Local Draft Builder</div>
-      <h1>Build resources.json without stress</h1>
+      <div class="badge"><span class="dot"></span> Past Questions Admin • Upload + Database</div>
+      <h1>Upload past questions (properly)</h1>
       <p class="sub">
-        Add a past question’s metadata here and export a clean <code>resources.json</code>.
-        Since this is a static site, you’ll still upload the actual files into <code>/pastquestions/all/</code> using your normal method.
+        Login as admin → upload file → metadata gets saved into your database via the Truehost API
+        (<code>jabumarket.com.ng/lss_api</code>).
       </p>
 
       <div class="cta">
         <a class="btnx primary" href="pastquestions.html">Open Past Questions</a>
         <a class="btnx ghost" href="../resources.html">Back to Resources</a>
-        <button class="btnx" id="btnLoadLive">Load live /pastquestions/resources.json</button>
+        <button class="btnx" id="btnLoadLive" type="button">Load Live Library</button>
       </div>
 
       <div class="toast" id="toast"></div>
     </section>
-    <section class="card" id="authCard" style="margin-top:18px">
-      <div class="card-h">
-        <div>
-          <div class="card-title">Admin Login</div>
-          <div class="card-sub">Only admins can upload/edit. Public users can still view past questions.</div>
-        </div>
-        <div class="actions">
-          <span class="pill" id="authStatus">Not signed in</span>
-        </div>
+
+    <!-- AUTH -->
+    <section class="card" style="margin-top:18px">
+      <h2>Admin Login</h2>
+      <p class="hint">Only admins can upload/publish. Public users can still view.</p>
+
+      <div class="mini">
+        <span class="pill" id="authStatus"><span class="badge2"></span> Not signed in</span>
       </div>
 
-      <div class="grid2" style="margin-top:12px">
-        <label class="field">
+      <div class="row">
+        <label class="field col6">
           <span class="lbl">Email</span>
           <input id="loginEmail" type="email" placeholder="admin@jabulss.com" autocomplete="username" />
         </label>
 
-        <label class="field">
+        <label class="field col6">
           <span class="lbl">Password</span>
           <input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password" />
         </label>
       </div>
 
-      <div class="actions" style="margin-top:12px; justify-content:flex-end">
-        <button class="btn" id="btnLogout" type="button" disabled>Logout</button>
-        <button class="btn primary" id="btnLogin" type="button">Login</button>
+      <div class="cta" style="justify-content:flex-end">
+        <button class="btnx ghost" id="btnLogout" type="button" disabled>Logout</button>
+        <button class="btnx primary" id="btnLogin" type="button">Login</button>
       </div>
     </section>
 
-
     <section class="grid">
-      <!-- Left -->
+      <!-- LEFT: Upload -->
       <div class="card">
-        <h2>Add a new past question</h2>
-        <p class="hint">Choose file → Auto-detect (optional) → Add to Draft → Export resources.json</p>
+        <h2>Upload a new past question</h2>
+        <p class="hint">Choose file → fill metadata → Upload & Publish</p>
 
         <div class="row">
-          <div class="field col8">
-            <label for="file">File</label>
+          <label class="field col8">
+            <span class="lbl">File (PDF / Image)</span>
             <input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" />
-          </div>
+          </label>
 
-          <div class="field col4">
-            <label for="safeName">Save as</label>
-            <input id="safeName" placeholder="auto safe filename" />
-          </div>
+          <label class="field col4">
+            <span class="lbl">Save As (safe_name)</span>
+            <input id="safeName" placeholder="auto-generated" />
+          </label>
 
-          <div class="field col6">
-            <label for="level">Level</label>
+          <label class="field col6">
+            <span class="lbl">Level</span>
             <select id="level">
               <option value="UNSORTED">UNSORTED</option>
               <option>100L</option><option>200L</option><option>300L</option><option>400L</option><option>500L</option>
             </select>
-          </div>
+          </label>
 
-          <div class="field col6">
-            <label for="semester">Semester</label>
+          <label class="field col6">
+            <span class="lbl">Semester</span>
             <select id="semester">
               <option value="UNSORTED">UNSORTED</option>
               <option value="First">First</option>
               <option value="Second">Second</option>
             </select>
-          </div>
+          </label>
 
-          <div class="field col6">
-            <label for="type">Type</label>
+          <label class="field col6">
+            <span class="lbl">Type</span>
             <select id="type">
-              <option value="UNKNOWN">UNKNOWN</option>
-              <option>Exam</option><option>Test</option><option>Quiz</option>
+              <option value="Exam">Exam</option>
+              <option value="Test">Test</option>
+              <option value="Quiz">Quiz</option>
             </select>
-          </div>
+          </label>
 
-          <div class="field col6">
-            <label for="session">Session</label>
+          <label class="field col6">
+            <span class="lbl">Session</span>
             <input id="session" placeholder="e.g., 2023/2024" />
-          </div>
+          </label>
 
-          <div class="field col6">
-            <label for="courseCode">Course</label>
+          <label class="field col6">
+            <span class="lbl">Year (optional)</span>
+            <input id="yearInput" placeholder="e.g., 2024" inputmode="numeric" />
+          </label>
+
+          <label class="field col6">
+            <span class="lbl">Course Code</span>
             <input id="courseCode" placeholder="e.g., LAW 201" />
-          </div>
+          </label>
 
-          <div class="field col6">
-            <label for="courseTitle">Title</label>
+          <label class="field col12">
+            <span class="lbl">Course Title</span>
             <input id="courseTitle" placeholder="e.g., Constitutional Law" />
-          </div>
+          </label>
 
-          <div class="field">
-            <label for="title">Display</label>
-            <input id="title" placeholder="What users see (auto-filled if possible)" />
-          </div>
+          <label class="field col12">
+            <span class="lbl">Display Title (what users see)</span>
+            <input id="title" placeholder="Auto-filled from filename if empty" />
+          </label>
 
-          <div class="field">
-            <label for="notes">Notes</label>
+          <label class="field col12">
+            <span class="lbl">Notes (optional)</span>
             <textarea id="notes" placeholder="Optional notes…"></textarea>
-          </div>
+          </label>
         </div>
 
         <div class="mini">
-          <span class="pill"><span class="badge2"></span> URL: <code id="urlPreview">/pastquestions/all/…</code></span>
+          <span class="pill"><span class="badge2"></span> URL: <code id="urlPreview">—</code></span>
           <span class="pill">ID: <code id="idPreview">—</code></span>
         </div>
 
-        <div class="cta" style="margin-top:12px;">
-          <button class="btnx" id="btnAuto">Auto-detect</button>
-          <button class="btnx primary" id="btnAdd">Add to Draft</button>
-          <button class="btnx primary" id="btnUpload">Upload & Publish</button>
-          <button class="btnx danger" id="btnReset">Reset</button>
+        <div class="cta">
+          <button class="btnx" id="btnAuto" type="button">Auto-detect</button>
+          <button class="btnx" id="btnAdd" type="button">Add to Draft</button>
+          <button class="btnx primary" id="btnUpload" type="button">Upload & Publish</button>
+          <button class="btnx danger" id="btnReset" type="button">Reset</button>
         </div>
 
         <div class="warnbox">
-          With Firebase: click <b>Upload & Publish</b> — the file goes to Firebase Storage and metadata goes to Firestore. Your past questions page updates automatically.
+          “Upload & Publish” sends the file + metadata to your Truehost API. Your Past Questions page loads from the DB.
         </div>
       </div>
 
-      <!-- Right -->
+      <!-- RIGHT: Library -->
       <div class="card">
-        <h2>Draft Library (local)</h2>
-        <p class="hint">Saved in your browser (localStorage). Import/merge existing JSON anytime.</p>
+        <h2>Library (Draft + Live)</h2>
+        <p class="hint">Draft is saved in your browser. You can import/export JSON too.</p>
 
-        <div class="cta" style="margin-top:12px;">
-          <button class="btnx" id="btnImportFile">Import JSON (Draft)</button>
-          <button class="btnx" id="btnImportFirestore">Publish draft → Database</button>
+        <div class="row">
+          <label class="field col12">
+            <span class="lbl">Search library</span>
+            <input id="search" placeholder="Search by title/course/session/level…" />
+          </label>
+        </div>
+
+        <div class="cta">
+          <button class="btnx" id="btnPickImport" type="button">Import JSON</button>
           <input id="importFile" type="file" accept="application/json" style="display:none" />
-          <button class="btnx primary" id="btnExport">Export resources.json</button>
-          <button class="btnx danger" id="btnClearDraft">Clear Draft</button>
+
+          <button class="btnx" id="btnImportFirestore" type="button">Publish Draft → Database</button>
+          <button class="btnx primary" id="btnExport" type="button">Export JSON</button>
+          <button class="btnx danger" id="btnClearDraft" type="button">Clear Draft</button>
         </div>
 
         <div class="sep"></div>
@@ -673,35 +668,33 @@
           <span class="pill">Unsorted: <b id="countUnsorted">0</b></span>
         </div>
 
-        <table aria-label="Draft items">
+        <table aria-label="Past questions library">
           <thead>
             <tr>
               <th>Title</th>
-              <th>Tags</th>
+              <th>Meta</th>
               <th>File</th>
-              <th>Actions</th>
+              <th class="right">Actions</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
         </table>
 
         <div class="warnbox" style="margin-top:12px;">
-          Tip: avoid spaces. Safe filenames are best (underscores).
+          Tip: use safe filenames (no weird characters). “Auto-detect” helps generate a clean <code>safe_name</code>.
         </div>
       </div>
     </section>
 
     <div class="footer">
-      © <span id="year"></span> Law Students’ Society, Joseph Ayo Babalola University.
+      © <span id="footerYear"></span> Law Students’ Society, Joseph Ayo Babalola University.
     </div>
   </main>
 
-  <!-- Keep your existing logic -->
-  <script type="module" src="admin.js"></script>
+  <script src="admin.js"></script>
 
-  <!-- Tiny helpers for nav + year (no dependency on main.js) -->
   <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("footerYear").textContent = new Date().getFullYear();
     const t = document.getElementById("navToggle");
     const links = document.getElementById("navLinks");
     t?.addEventListener("click", () => links.classList.toggle("open"));
