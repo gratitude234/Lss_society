@@ -5,9 +5,10 @@
    - Edit metadata
    - Rename file on server
    - Delete
-   + NEW:
-     - Preview selected upload file (PDF/image) before uploading
-     - Preview any existing uploaded file inside a modal
+   + Preview improvements:
+     - Uses <img> for images (not iframe)
+     - Click image preview to open full-size viewer
+     - Same behavior for local (before upload) + existing library items
 */
 
 const API_BASE = "https://jabumarket.com.ng/lss_api";
@@ -28,12 +29,18 @@ function toast(msg, type = "ok") {
 function safeStr(v) {
   return String(v ?? "").trim();
 }
-
 function toKebab(s) {
   return safeStr(s)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function isPdfName(nameOrUrl = "") {
+  return /\.pdf(\?|#|$)/i.test(nameOrUrl);
+}
+function isImageName(nameOrUrl = "") {
+  return /\.(png|jpe?g|webp|gif|bmp|svg)(\?|#|$)/i.test(nameOrUrl);
 }
 
 function getToken() {
@@ -162,16 +169,43 @@ function fileBaseFromItem(it) {
   return toKebab(base) || "past-question";
 }
 
-/* ---------- VIEW MODAL (NEW) ---------- */
+/* ---------- VIEW MODAL ---------- */
 const viewOverlay = $("viewOverlay");
-const viewFrame = $("viewFrame");
+const viewPdf = $("viewPdf");
+const viewImg = $("viewImg");
 const viewTitle = $("viewTitle");
 const viewMeta = $("viewMeta");
 const viewOpen = $("viewOpen");
 const btnViewClose = $("btnViewClose");
 
+/* ---------- IMAGE ZOOM MODAL ---------- */
+const zoomOverlay = $("zoomOverlay");
+const zoomImg = $("zoomImg");
+const zoomTitle = $("zoomTitle");
+const zoomMeta = $("zoomMeta");
+const zoomOpen = $("zoomOpen");
+const btnZoomClose = $("btnZoomClose");
+
+function openZoom({ title = "Image", meta = "", url = "" } = {}) {
+  if (!zoomOverlay || !zoomImg) return;
+  if (!url) return toast("No image URL.", "warn");
+
+  zoomTitle.textContent = title;
+  if (zoomMeta) zoomMeta.textContent = meta || url;
+  if (zoomOpen) zoomOpen.href = url;
+
+  zoomImg.src = url;
+  zoomOverlay.classList.add("open");
+}
+
+function closeZoom() {
+  if (!zoomOverlay) return;
+  zoomOverlay.classList.remove("open");
+  if (zoomImg) zoomImg.src = "";
+}
+
 function openView(it) {
-  if (!viewOverlay || !viewFrame) return;
+  if (!viewOverlay) return;
 
   const title = safeStr(it?.title) || "Preview";
   const fileUrl = safeStr(it?.file_url || it?.fileUrl || "");
@@ -184,48 +218,74 @@ function openView(it) {
 
   viewTitle.textContent = title;
   if (viewMeta) viewMeta.textContent = fileName ? fileName : fileUrl;
-
-  // Open in new tab link
   if (viewOpen) viewOpen.href = fileUrl;
 
-  // Try to embed in iframe
-  viewFrame.src = fileUrl;
+  // reset
+  if (viewPdf) { viewPdf.style.display = "none"; viewPdf.src = "about:blank"; }
+  if (viewImg) { viewImg.style.display = "none"; viewImg.src = ""; }
+
+  if (isPdfName(fileUrl)) {
+    // PDF
+    viewPdf.style.display = "block";
+    viewPdf.src = fileUrl;
+  } else if (isImageName(fileUrl)) {
+    // Image
+    viewImg.style.display = "block";
+    viewImg.src = fileUrl;
+
+    // click to zoom full-size
+    viewImg.onclick = () => openZoom({
+      title,
+      meta: fileName || fileUrl,
+      url: fileUrl
+    });
+  } else {
+    // unknown type: try PDF iframe as fallback
+    viewPdf.style.display = "block";
+    viewPdf.src = fileUrl;
+  }
+
   viewOverlay.classList.add("open");
 }
 
 function closeView() {
   if (!viewOverlay) return;
   viewOverlay.classList.remove("open");
-  // stop PDF rendering / free memory
-  if (viewFrame) viewFrame.src = "about:blank";
+  if (viewPdf) viewPdf.src = "about:blank";
+  if (viewImg) viewImg.src = "";
 }
 
-/* ---------- LOCAL PREVIEW (UPLOAD) (NEW) ---------- */
+/* ---------- LOCAL PREVIEW (UPLOAD) ---------- */
 const fileEl = $("file");
 const btnPreviewLocal = $("btnPreviewLocal");
 const btnCloseLocalPreview = $("btnCloseLocalPreview");
 const localPreviewWrap = $("localPreviewWrap");
-const localPreviewFrame = $("localPreviewFrame");
+const localPreviewPdf = $("localPreviewPdf");
+const localPreviewImg = $("localPreviewImg");
 const localPreviewName = $("localPreviewName");
 
 let localObjectUrl = "";
 
+function revokeLocalObjectUrl() {
+  if (!localObjectUrl) return;
+  try { URL.revokeObjectURL(localObjectUrl); } catch {}
+  localObjectUrl = "";
+}
+
 function clearLocalPreview() {
-  if (localPreviewFrame) localPreviewFrame.src = "about:blank";
+  if (localPreviewPdf) { localPreviewPdf.src = "about:blank"; localPreviewPdf.style.display = "none"; }
+  if (localPreviewImg) { localPreviewImg.src = ""; localPreviewImg.style.display = "none"; localPreviewImg.onclick = null; }
   if (localPreviewWrap) localPreviewWrap.style.display = "none";
   if (localPreviewName) localPreviewName.textContent = "No file selected";
-  if (localObjectUrl) {
-    try { URL.revokeObjectURL(localObjectUrl); } catch {}
-  }
-  localObjectUrl = "";
+  revokeLocalObjectUrl();
 }
 
 function showLocalPreviewForFile(f) {
   if (!f) return clearLocalPreview();
-  if (!localPreviewFrame || !localPreviewWrap) return;
+  if (!localPreviewWrap) return;
 
-  const isPdf = (f.type === "application/pdf") || /\.pdf$/i.test(f.name);
-  const isImage = (f.type || "").startsWith("image/") || /\.(png|jpe?g|webp)$/i.test(f.name);
+  const isPdf = (f.type === "application/pdf") || isPdfName(f.name);
+  const isImage = (f.type || "").startsWith("image/") || isImageName(f.name);
 
   if (!isPdf && !isImage) {
     toast("Preview supports PDF/images only.", "warn");
@@ -233,12 +293,28 @@ function showLocalPreviewForFile(f) {
     return;
   }
 
-  if (localObjectUrl) {
-    try { URL.revokeObjectURL(localObjectUrl); } catch {}
-  }
+  revokeLocalObjectUrl();
   localObjectUrl = URL.createObjectURL(f);
 
-  localPreviewFrame.src = localObjectUrl;
+  // reset
+  if (localPreviewPdf) { localPreviewPdf.style.display = "none"; localPreviewPdf.src = "about:blank"; }
+  if (localPreviewImg) { localPreviewImg.style.display = "none"; localPreviewImg.src = ""; localPreviewImg.onclick = null; }
+
+  if (isPdf) {
+    localPreviewPdf.style.display = "block";
+    localPreviewPdf.src = localObjectUrl;
+  } else {
+    localPreviewImg.style.display = "block";
+    localPreviewImg.src = localObjectUrl;
+
+    // click to zoom full-size
+    localPreviewImg.onclick = () => openZoom({
+      title: "Selected image",
+      meta: f.name,
+      url: localObjectUrl
+    });
+  }
+
   localPreviewWrap.style.display = "block";
   if (localPreviewName) localPreviewName.textContent = f.name;
 }
@@ -268,8 +344,6 @@ function clearUploadForm() {
   if (upSession) upSession.value = "";
   if (upNotes) upNotes.value = "";
   if (upSafe) upSafe.value = "";
-
-  // also clear local preview
   clearLocalPreview();
 }
 
@@ -580,10 +654,7 @@ function bind() {
   fileEl?.addEventListener("change", () => {
     const f = fileEl?.files?.[0];
     if (!f) return clearLocalPreview();
-    // set file name pill immediately
-    if (localPreviewName) localPreviewName.textContent = f.name;
-    // auto-preview for faster workflow
-    showLocalPreviewForFile(f);
+    showLocalPreviewForFile(f); // auto-preview
   });
   btnPreviewLocal?.addEventListener("click", () => {
     const f = fileEl?.files?.[0];
@@ -612,9 +683,17 @@ function bind() {
     if (e.target === viewOverlay) closeView();
   });
 
+  // zoom modal
+  btnZoomClose?.addEventListener("click", closeZoom);
+  zoomOverlay?.addEventListener("click", (e) => {
+    if (e.target === zoomOverlay) closeZoom();
+  });
+  zoomImg?.addEventListener("click", closeZoom);
+
   // escape closes any open modal
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    closeZoom();
     closeView();
     closeEdit();
     closeRename();

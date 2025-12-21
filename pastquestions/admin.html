@@ -4,9 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Past Questions Admin</title>
-  <meta name="color-scheme" content="dark light" />
+
+  <!-- Force the same (mobile) dark scheme everywhere -->
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#070A14" />
+
+  <!-- (Optional but helpful) reduce aggressive caching in some setups -->
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
   <style>
     :root{
+      color-scheme: dark; /* lock UI controls to dark */
       --bg:#070A14;
       --card:rgba(255,255,255,.05);
       --card2:rgba(255,255,255,.035);
@@ -23,6 +33,7 @@
     }
 
     *{ box-sizing:border-box; }
+    html, body { background-color: var(--bg); }
     body{
       margin:0;
       background:
@@ -67,9 +78,7 @@
     .navlinks a:hover{ color:var(--text); }
 
     /* hero */
-    .hero{
-      padding:18px 0 8px;
-    }
+    .hero{ padding:18px 0 8px; }
     .badge{
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px;
@@ -235,13 +244,13 @@
     .rowSub{ margin-top:4px; font-size:12px; color: var(--muted); }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-    /* embedded local preview (upload) */
+    /* embedded preview (upload + view) */
     .previewTools{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       margin: 10px 0 6px;
       flex-wrap:wrap;
     }
-    .pdfWrap{
+    .previewBox{
       margin-top:10px;
       border:1px solid rgba(255,255,255,.12);
       border-radius: 16px;
@@ -254,6 +263,14 @@
       border:0;
       display:block;
       background: rgba(0,0,0,.25);
+    }
+    .imgFrame{
+      width:100%;
+      height: min(52vh, 520px);
+      display:block;
+      object-fit: contain;
+      background: rgba(0,0,0,.25);
+      cursor: zoom-in;
     }
 
     /* modal */
@@ -288,6 +305,28 @@
     }
     .mbody{ padding: 16px; }
 
+    /* image zoom modal */
+    .zoomStage{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px;
+      max-height: 78vh;
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      background: rgba(0,0,0,.25);
+    }
+    .zoomImg{
+      max-width: 100%;
+      max-height: 76vh;
+      width: auto;
+      height: auto;
+      display:block;
+      border-radius: 12px;
+      cursor: zoom-out;
+    }
+
     .footer{
       margin-top: 18px;
       color: rgba(234,240,255,.55);
@@ -303,7 +342,7 @@
       <div class="nav">
         <div class="brand">
           <a href="./index.html" title="Back to Home">
-            <img src="./images/logo.jpg" alt="LSS Logo" />
+            <img src="/images/logo.jpg" alt="LSS Logo" />
             <div>
               <div class="t1">Law Students’ Society</div>
               <div class="t2">Joseph Ayo Babalola University</div>
@@ -326,7 +365,7 @@
       <div class="badge"><span class="dot"></span> Past Questions Admin</div>
       <h1>Upload • Edit • Rename • Delete</h1>
       <p class="sub">
-        Admin can now preview PDFs inside this page while filling the form.
+        Admin can now preview PDFs/images inside this page while filling the form.
       </p>
 
       <div class="cta">
@@ -386,7 +425,6 @@
             <input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,application/pdf,image/*" />
           </label>
 
-          <!-- NEW: Local preview tools -->
           <div class="previewTools">
             <div class="actions">
               <button class="miniBtn" id="btnPreviewLocal" type="button">Preview selected</button>
@@ -395,9 +433,14 @@
             <span class="pill mono" id="localPreviewName">No file selected</span>
           </div>
 
-          <!-- NEW: Local preview frame -->
-          <div class="pdfWrap" id="localPreviewWrap" style="display:none;">
-            <iframe id="localPreviewFrame" class="pdfFrame" title="Selected file preview"></iframe>
+          <div class="hint" style="margin-top:6px;">
+            Tip: For images, click the preview to view full-size.
+          </div>
+
+          <!-- Local preview area -->
+          <div class="previewBox" id="localPreviewWrap" style="display:none;">
+            <iframe id="localPreviewPdf" class="pdfFrame" title="Selected PDF preview" style="display:none;"></iframe>
+            <img id="localPreviewImg" class="imgFrame" alt="Selected image preview" style="display:none;" />
           </div>
 
           <div style="height:12px"></div>
@@ -540,7 +583,7 @@
       © <span id="year"></span> Law Students’ Society, Joseph Ayo Babalola University.
     </div>
 
-    <!-- VIEW MODAL (NEW) -->
+    <!-- VIEW MODAL -->
     <div class="modalOverlay" id="viewOverlay" aria-hidden="true">
       <div class="modal wide" role="dialog" aria-modal="true" aria-label="View file">
         <div class="mhead">
@@ -554,11 +597,36 @@
           </div>
         </div>
         <div class="mbody">
-          <div class="pdfWrap">
-            <iframe id="viewFrame" class="pdfFrame" title="File preview"></iframe>
+          <div class="previewBox">
+            <iframe id="viewPdf" class="pdfFrame" title="PDF preview" style="display:none;"></iframe>
+            <img id="viewImg" class="imgFrame" alt="Image preview" style="display:none;" />
           </div>
           <div class="hint" style="margin-top:10px;">
-            If the preview is blank, the browser may have blocked iframe embedding for that file. Use “Open in new tab”.
+            For images, click the preview to view full-size. If a PDF preview is blank, use “Open in new tab”.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGE ZOOM MODAL -->
+    <div class="modalOverlay" id="zoomOverlay" aria-hidden="true">
+      <div class="modal wide" role="dialog" aria-modal="true" aria-label="Image viewer">
+        <div class="mhead">
+          <div style="min-width:0;">
+            <div class="title" id="zoomTitle">Image</div>
+            <div class="hint mono" id="zoomMeta" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" id="zoomOpen" target="_blank" rel="noopener">Open in new tab</a>
+            <button class="btn" id="btnZoomClose" type="button">Close</button>
+          </div>
+        </div>
+        <div class="mbody">
+          <div class="zoomStage">
+            <img id="zoomImg" class="zoomImg" alt="Full image view" />
+          </div>
+          <div class="hint" style="margin-top:10px;">
+            Tip: Scroll if the image is tall. Click the image to close.
           </div>
         </div>
       </div>
@@ -673,6 +741,8 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
-  <script src="./admin.js"></script>
+
+  <!-- cache-bust so laptop won’t keep old JS -->
+  <script src="./admin.js?v=2025-12-21"></script>
 </body>
 </html>
