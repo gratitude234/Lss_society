@@ -5,10 +5,16 @@
    - Edit metadata
    - Rename file on server
    - Delete
+<<<<<<< HEAD
    + Preview improvements:
      - Uses <img> for images (not iframe)
      - Click image preview to open full-size viewer
      - Same behavior for local (before upload) + existing library items
+=======
+   + Preview selected upload file before uploading
+   + Preview any existing uploaded file inside a modal
+   + UX upgrades: mobile nav toggle, list loading state, focus restore
+>>>>>>> 8f706c1a54a0727d3bc3d15ce6b0806f4b1109c0
 */
 
 const API_BASE = "https://jabumarket.com.ng/lss_api";
@@ -77,6 +83,34 @@ async function apiFetch(path, options = {}) {
   }
 
   return data ?? {};
+}
+
+/* ---------- NAV (mobile) ---------- */
+function initMobileNav() {
+  const navToggle = $("navToggle");
+  const navLinks = $("navLinks");
+  if (!navToggle || !navLinks) return;
+
+  function close() {
+    navLinks.classList.remove("open");
+    navToggle.setAttribute("aria-expanded", "false");
+  }
+
+  navToggle.addEventListener("click", () => {
+    const isOpen = navLinks.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!navLinks.classList.contains("open")) return;
+    const t = e.target;
+    if (t === navToggle || navLinks.contains(t)) return;
+    close();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
 }
 
 /* ---------- AUTH ---------- */
@@ -151,7 +185,11 @@ const fLevel = $("fLevel");
 const fSemester = $("fSemester");
 const fType = $("fType");
 
+const btnRefresh = $("btnRefresh");
+const btnRefreshTop = $("btnRefreshTop");
+
 let currentItems = [];
+let listLoading = false;
 
 function escapeHtml(s) {
   return safeStr(s)
@@ -169,6 +207,33 @@ function fileBaseFromItem(it) {
   return toKebab(base) || "past-question";
 }
 
+<<<<<<< HEAD
+=======
+function setListLoading(on) {
+  listLoading = !!on;
+  if (btnRefresh) btnRefresh.disabled = on;
+  if (btnRefreshTop) btnRefreshTop.disabled = on;
+
+  if (countPill) {
+    if (on) {
+      countPill.textContent = "Loading…";
+      countPill.classList.add("warn");
+    } else {
+      countPill.classList.remove("warn");
+    }
+  }
+}
+
+function renderLoadingRow() {
+  if (!tbody) return;
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="4" class="mono">Loading past questions…</td>
+    </tr>
+  `;
+}
+
+>>>>>>> 8f706c1a54a0727d3bc3d15ce6b0806f4b1109c0
 /* ---------- VIEW MODAL ---------- */
 const viewOverlay = $("viewOverlay");
 const viewPdf = $("viewPdf");
@@ -178,6 +243,7 @@ const viewMeta = $("viewMeta");
 const viewOpen = $("viewOpen");
 const btnViewClose = $("btnViewClose");
 
+<<<<<<< HEAD
 /* ---------- IMAGE ZOOM MODAL ---------- */
 const zoomOverlay = $("zoomOverlay");
 const zoomImg = $("zoomImg");
@@ -203,6 +269,9 @@ function closeZoom() {
   zoomOverlay.classList.remove("open");
   if (zoomImg) zoomImg.src = "";
 }
+=======
+let lastFocusEl = null;
+>>>>>>> 8f706c1a54a0727d3bc3d15ce6b0806f4b1109c0
 
 function openView(it) {
   if (!viewOverlay) return;
@@ -216,8 +285,11 @@ function openView(it) {
     return;
   }
 
+  lastFocusEl = document.activeElement;
+
   viewTitle.textContent = title;
   if (viewMeta) viewMeta.textContent = fileName ? fileName : fileUrl;
+<<<<<<< HEAD
   if (viewOpen) viewOpen.href = fileUrl;
 
   // reset
@@ -245,14 +317,27 @@ function openView(it) {
     viewPdf.src = fileUrl;
   }
 
+=======
+
+  if (viewOpen) viewOpen.href = fileUrl;
+
+  viewFrame.src = fileUrl;
+>>>>>>> 8f706c1a54a0727d3bc3d15ce6b0806f4b1109c0
   viewOverlay.classList.add("open");
+  btnViewClose?.focus();
 }
 
 function closeView() {
   if (!viewOverlay) return;
   viewOverlay.classList.remove("open");
+<<<<<<< HEAD
   if (viewPdf) viewPdf.src = "about:blank";
   if (viewImg) viewImg.src = "";
+=======
+  if (viewFrame) viewFrame.src = "about:blank";
+  if (lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
+  lastFocusEl = null;
+>>>>>>> 8f706c1a54a0727d3bc3d15ce6b0806f4b1109c0
 }
 
 /* ---------- LOCAL PREVIEW (UPLOAD) ---------- */
@@ -369,7 +454,7 @@ async function uploadNow() {
   fd.append("semester", safeStr(upSemester?.value));
   fd.append("type", safeStr(upType?.value || "Exam"));
   fd.append("session", safeStr(upSession?.value));
-  fd.append("year", ""); // optional
+  fd.append("year", "");
   fd.append("notes", safeStr(upNotes?.value));
 
   const safeName = safeStr(upSafe?.value);
@@ -418,7 +503,7 @@ function renderTable(items) {
 
     const fileUrl = safeStr(it.file_url || it.fileUrl || "");
     const fileCell = fileUrl
-      ? `<a href="${escapeHtml(fileUrl)}" target="_blank" rel="noopener" class="mono" style="color:rgba(234,240,255,.88); text-decoration:underline;">Open</a>
+      ? `<a href="${escapeHtml(fileUrl)}" target="_blank" rel="noopener" class="mono" style="color:inherit; text-decoration:underline;">Open</a>
          <div class="rowSub mono">${escapeHtml(fileUrl.split("/").pop() || "")}</div>`
       : `<span class="mono">—</span>`;
 
@@ -427,16 +512,25 @@ function renderTable(items) {
       : `<button class="miniBtn" disabled title="No file available">View</button>`;
 
     tr.innerHTML = `
-      <td>
-        <div class="rowTitle">${escapeHtml(title)}</div>
-        ${course ? `<div class="rowSub">${escapeHtml(course)}</div>` : `<div class="rowSub">—</div>`}
+      <td data-label="Title">
+        <div>
+          <div class="rowTitle">${escapeHtml(title)}</div>
+          ${course ? `<div class="rowSub">${escapeHtml(course)}</div>` : `<div class="rowSub">—</div>`}
+        </div>
       </td>
-      <td>
-        <div class="mono">${escapeHtml(meta || "—")}</div>
-        <div class="rowSub mono">ID: ${escapeHtml(it.id)}</div>
+
+      <td data-label="Meta">
+        <div>
+          <div class="mono">${escapeHtml(meta || "—")}</div>
+          <div class="rowSub mono">ID: ${escapeHtml(it.id)}</div>
+        </div>
       </td>
-      <td>${fileCell}</td>
-      <td>
+
+      <td data-label="File">
+        <div>${fileCell}</div>
+      </td>
+
+      <td data-label="Actions">
         <div class="actions">
           ${viewBtn}
           <button class="miniBtn" data-act="edit" data-id="${it.id}">Edit</button>
@@ -465,7 +559,11 @@ function renderTable(items) {
 }
 
 async function loadList() {
+  if (listLoading) return;
   try {
+    setListLoading(true);
+    renderLoadingRow();
+
     const qs = new URLSearchParams();
     qs.set("limit", "400");
 
@@ -485,6 +583,8 @@ async function loadList() {
     renderTable(currentItems);
   } catch (e) {
     toast(e.message || "Failed to load list.", "bad");
+  } finally {
+    setListLoading(false);
   }
 }
 
@@ -506,6 +606,8 @@ const edit_notes = $("edit_notes");
 function openEdit(it) {
   if (!editOverlay) return;
 
+  lastFocusEl = document.activeElement;
+
   edit_id.value = it.id;
   edit_title.value = safeStr(it.title);
   edit_course_code.value = safeStr(it.course_code);
@@ -517,9 +619,12 @@ function openEdit(it) {
   edit_notes.value = safeStr(it.notes);
 
   editOverlay.classList.add("open");
+  edit_title?.focus();
 }
 function closeEdit() {
   editOverlay?.classList.remove("open");
+  if (lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
+  lastFocusEl = null;
 }
 
 async function saveEdit() {
@@ -538,7 +643,7 @@ async function saveEdit() {
     semester: safeStr(edit_semester.value),
     type: safeStr(edit_type.value),
     session: safeStr(edit_session.value),
-    year: "", // optional
+    year: "",
     notes: safeStr(edit_notes.value),
   };
 
@@ -569,12 +674,18 @@ const rename_safe = $("rename_safe");
 
 function openRename(it) {
   if (!renameOverlay) return;
+
+  lastFocusEl = document.activeElement;
+
   rename_id.value = it.id;
   rename_safe.value = fileBaseFromItem(it);
   renameOverlay.classList.add("open");
+  rename_safe?.focus();
 }
 function closeRename() {
   renameOverlay?.classList.remove("open");
+  if (lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
+  lastFocusEl = null;
 }
 
 async function doRename() {
@@ -632,8 +743,8 @@ function bind() {
   btnLogin?.addEventListener("click", login);
   btnLogout?.addEventListener("click", logout);
 
-  $("btnRefresh")?.addEventListener("click", loadList);
-  $("btnRefreshTop")?.addEventListener("click", loadList);
+  btnRefresh?.addEventListener("click", loadList);
+  btnRefreshTop?.addEventListener("click", loadList);
 
   qEl?.addEventListener("input", () => {
     window.clearTimeout(bind._t);
@@ -650,11 +761,16 @@ function bind() {
     toast("Cleared.", "ok");
   });
 
-  // local preview events
+  // local preview
   fileEl?.addEventListener("change", () => {
     const f = fileEl?.files?.[0];
     if (!f) return clearLocalPreview();
+<<<<<<< HEAD
     showLocalPreviewForFile(f); // auto-preview
+=======
+    if (localPreviewName) localPreviewName.textContent = f.name;
+    showLocalPreviewForFile(f);
+>>>>>>> 8f706c1a54a0727d3bc3d15ce6b0806f4b1109c0
   });
   btnPreviewLocal?.addEventListener("click", () => {
     const f = fileEl?.files?.[0];
@@ -683,6 +799,7 @@ function bind() {
     if (e.target === viewOverlay) closeView();
   });
 
+<<<<<<< HEAD
   // zoom modal
   btnZoomClose?.addEventListener("click", closeZoom);
   zoomOverlay?.addEventListener("click", (e) => {
@@ -691,6 +808,9 @@ function bind() {
   zoomImg?.addEventListener("click", closeZoom);
 
   // escape closes any open modal
+=======
+  // escape closes modals
+>>>>>>> 8f706c1a54a0727d3bc3d15ce6b0806f4b1109c0
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     closeZoom();
@@ -701,6 +821,7 @@ function bind() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  initMobileNav();
   bind();
   await checkAuth();
   await loadList();
