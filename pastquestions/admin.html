@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Past Questions Admin</title>
 
   <!-- Force the same (mobile) dark scheme everywhere -->
@@ -16,20 +16,34 @@
 
   <style>
     :root{
-      color-scheme: dark; /* lock UI controls to dark */
+      color-scheme: dark;
       --bg:#070A14;
+
       --card:rgba(255,255,255,.05);
       --card2:rgba(255,255,255,.035);
+
       --stroke:rgba(255,255,255,.12);
       --stroke2:rgba(255,255,255,.08);
+
       --text:rgba(234,240,255,.92);
       --muted:rgba(234,240,255,.62);
       --muted2:rgba(234,240,255,.45);
+
+      --accent: rgba(99,102,241,.92);
+      --accentSoft: rgba(99,102,241,.18);
+      --accentStroke: rgba(99,102,241,.35);
+
       --good:rgba(35,181,168,.35);
       --warn:rgba(245,158,11,.35);
       --bad:rgba(239,68,68,.35);
+
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --r:18px;
+
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+
+      --headerH: 64px;
     }
 
     *{ box-sizing:border-box; }
@@ -44,41 +58,142 @@
       color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
       line-height:1.35;
+      padding-bottom: calc(18px + var(--safeBottom));
     }
-    a{ color:inherit; }
-    .wrap{ width:min(1180px, 92vw); margin:0 auto; padding:22px 0 40px; }
 
-    /* top header (simple) */
+    a{ color:inherit; }
+
+    .wrap{
+      width:min(1180px, 92vw);
+      margin:0 auto;
+      padding: 18px 0 44px;
+    }
+
+    /* =========================
+       Sticky Header (Mobile Safe)
+    ========================== */
     .site-header{
-      position:sticky; top:0; z-index:50;
-      background: rgba(7,10,20,.72);
+      position:sticky;
+      top:0;
+      z-index:50;
+      background: rgba(7,10,20,.78);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--stroke2);
+      padding-top: var(--safeTop);
     }
     .container{ width:min(1180px, 92vw); margin:0 auto; }
     .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 0;
-      gap:14px;
+      min-height: var(--headerH);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 10px 0;
+      gap: 12px;
     }
+
     .brand a{
       display:flex; align-items:center; gap:10px;
       text-decoration:none;
+      min-width: 0;
     }
     .brand img{
       width:40px; height:40px; border-radius:12px;
       border:1px solid var(--stroke);
       object-fit:cover;
       box-shadow: 0 10px 28px rgba(0,0,0,.45);
+      flex:0 0 auto;
     }
-    .brand .t1{ font-weight:700; font-size:13px; letter-spacing:.2px; }
-    .brand .t2{ font-size:11px; color:var(--muted); margin-top:1px; }
-    .navlinks{ display:flex; gap:14px; list-style:none; padding:0; margin:0; }
-    .navlinks a{ text-decoration:none; font-size:13px; color:var(--muted); }
-    .navlinks a:hover{ color:var(--text); }
+    .brand .twrap{ min-width:0; }
+    .brand .t1{
+      font-weight:800;
+      font-size:13px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 220px;
+    }
+    .brand .t2{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:1px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 220px;
+    }
 
-    /* hero */
-    .hero{ padding:18px 0 8px; }
+    /* Desktop links */
+    .navlinks{
+      display:flex;
+      gap:14px;
+      list-style:none;
+      padding:0; margin:0;
+      align-items:center;
+    }
+    .navlinks a{
+      text-decoration:none;
+      font-size:13px;
+      color:var(--muted);
+      padding: 8px 10px;
+      border-radius: 12px;
+      outline:none;
+    }
+    .navlinks a:hover{ color:var(--text); background: rgba(255,255,255,.04); }
+    .navlinks a:focus-visible{
+      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+      border: 1px solid rgba(99,102,241,.35);
+    }
+
+    /* Mobile hamburger */
+    .navToggle{
+      display:none;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      height: 42px;
+      padding: 0 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .navToggle:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+      border-color: rgba(99,102,241,.35);
+    }
+
+    .navPanel{
+      display:none;
+      border-top: 1px solid var(--stroke2);
+      background: rgba(7,10,20,.72);
+      backdrop-filter: blur(14px);
+      padding: 10px 0 14px;
+    }
+    .navPanel.open{ display:block; }
+    .navPanel .navlinks{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .navPanel .navlinks a{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    @media (max-width: 760px){
+      .navlinks.desktop{ display:none; }
+      .navToggle{ display:inline-flex; align-items:center; gap:10px; }
+      .brand .t1, .brand .t2{ max-width: 56vw; }
+      .wrap{ padding-top: 14px; }
+      :root{ --headerH: 60px; }
+    }
+
+    /* =========================
+       Hero
+    ========================== */
+    .hero{ padding: 18px 0 8px; }
     .badge{
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px;
@@ -90,14 +205,33 @@
     }
     .dot{
       width:8px;height:8px;border-radius:999px;
-      background: rgba(99,102,241,.9);
+      background: var(--accent);
       box-shadow: 0 0 0 6px rgba(99,102,241,.12);
     }
-    h1{ margin:10px 0 6px; font-size:28px; letter-spacing:.2px; }
-    .sub{ margin:0; color:var(--muted); max-width: 70ch; }
-    .cta{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
 
-    /* cards */
+    h1{
+      margin:10px 0 6px;
+      font-size: clamp(22px, 4.7vw, 34px);
+      letter-spacing:.2px;
+      line-height: 1.12;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      max-width: 70ch;
+      font-size: 14px;
+    }
+    .cta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      align-items:center;
+    }
+
+    /* =========================
+       Cards + Layout
+    ========================== */
     .card{
       border-radius: var(--r);
       border:1px solid var(--stroke);
@@ -107,15 +241,14 @@
     }
     .head{
       padding:14px 16px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
       border-bottom:1px solid var(--stroke2);
       background: rgba(255,255,255,.03);
     }
-    .title{ font-weight:800; letter-spacing:.2px; }
+    .title{ font-weight:900; letter-spacing:.2px; }
     .hint{ font-size:12px; color:var(--muted); margin-top:3px; }
     .body{ padding:16px; }
 
-    /* layout for upload + manage */
     .two{
       display:grid;
       grid-template-columns: 1fr 1.15fr;
@@ -127,19 +260,37 @@
       .two{ grid-template-columns: 1fr; }
     }
 
-    /* fields */
+    /* Make “auth pill + logout” not crush on mobile */
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    @media (max-width: 520px){
+      .head{ flex-direction: column; }
+      .actions{ justify-content:flex-start; }
+    }
+
+    /* =========================
+       Fields (Mobile-friendly)
+    ========================== */
     .field{ display:block; }
     .lbl{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+
     input, select, textarea{
       width:100%;
-      padding:11px 12px;
+      padding:12px 12px;
       border-radius: 14px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(10,14,28,.55);
       color: var(--text);
       outline:none;
+      font-size: 16px; /* prevents “zoom” on some mobile browsers */
     }
-    textarea{ min-height: 86px; resize: vertical; }
+    textarea{ min-height: 92px; resize: vertical; }
+
     input:focus, select:focus, textarea:focus{
       border-color: rgba(99,102,241,.38);
       box-shadow: 0 0 0 4px rgba(99,102,241,.12);
@@ -154,22 +305,35 @@
       .grid2{ grid-template-columns: 1fr; }
     }
 
-    /* buttons */
+    /* =========================
+       Buttons
+    ========================== */
     .btn{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       color: var(--text);
-      padding:10px 12px;
+      padding: 11px 14px;
       border-radius: 14px;
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
       font-size:13px;
+      min-height: 42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-decoration:none;
     }
     .btn:hover{ background: rgba(255,255,255,.09); }
     .btn:disabled{ opacity:.55; cursor:not-allowed; }
-    .btn.primary{
+    .btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
       border-color: rgba(99,102,241,.35);
-      background: rgba(99,102,241,.18);
+    }
+    .btn.primary{
+      border-color: var(--accentStroke);
+      background: var(--accentSoft);
     }
     .btn.primary:hover{ background: rgba(99,102,241,.22); }
     .btn.danger{
@@ -180,31 +344,34 @@
     .btn.ghost{
       background: transparent;
       border:1px dashed rgba(255,255,255,.16);
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
     }
 
-    .actions{ display:flex; gap:8px; flex-wrap:wrap; }
     .miniBtn{
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       color: var(--text);
-      padding:7px 10px;
+      padding: 9px 10px;
       border-radius: 12px;
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
       font-size:12px;
+      min-height: 38px;
     }
     .miniBtn:hover{ background: rgba(255,255,255,.09); }
+    .miniBtn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+      border-color: rgba(99,102,241,.35);
+    }
     .miniBtn.danger{
       border-color: rgba(239,68,68,.30);
       background: rgba(239,68,68,.12);
     }
     .miniBtn.danger:hover{ background: rgba(239,68,68,.18); }
 
-    /* pills + toast */
+    /* =========================
+       Pills + Toast
+    ========================== */
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px;
@@ -214,6 +381,9 @@
       background: rgba(255,255,255,.04);
       color: var(--muted);
       white-space:nowrap;
+      max-width: 100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .pill.good{ border-color: rgba(35,181,168,.30); background: rgba(35,181,168,.10); color: rgba(210,255,250,.86); }
     .pill.warn{ border-color: rgba(245,158,11,.30); background: rgba(245,158,11,.10); color: rgba(255,236,196,.92); }
@@ -232,21 +402,75 @@
     .toast.bad{ border-color: rgba(239,68,68,.24); background: rgba(239,68,68,.10); color: rgba(255,225,225,.92); }
     .toast.show{ display:block; }
 
-    /* manage table */
+    /* =========================
+       Manage table (Mobile UX)
+    ========================== */
     .toolbar{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
       margin-bottom: 12px;
     }
-    table{ width:100%; border-collapse: collapse; min-width: 720px; }
-    th, td{ padding:10px 10px; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align:top; }
-    th{ text-align:left; font-size:12px; color: var(--muted); }
-    .rowTitle{ font-weight:800; }
+
+    /* input in toolbar: better mobile sizing */
+    #q{ min-height: 42px; }
+
+    /* Scroll container improvements */
+    .tableWrap{
+      overflow:auto;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(10,14,28,.30);
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .scrollHint{
+      position: sticky;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: rgba(234,240,255,.58);
+      background: linear-gradient(180deg, transparent, rgba(7,10,20,.75));
+      pointer-events:none;
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 760px; /* keep columns readable */
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      vertical-align:top;
+    }
+    th{
+      text-align:left;
+      font-size:12px;
+      color: var(--muted);
+      position: sticky;
+      top: 0;
+      background: rgba(10,14,28,.85);
+      backdrop-filter: blur(10px);
+      z-index: 2;
+    }
+
+    .rowTitle{ font-weight:900; }
     .rowSub{ margin-top:4px; font-size:12px; color: var(--muted); }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-    /* embedded preview (upload + view) */
+    /* =========================
+       Embedded Preview
+    ========================== */
     .previewTools{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
       margin: 10px 0 6px;
       flex-wrap:wrap;
     }
@@ -273,7 +497,9 @@
       cursor: zoom-in;
     }
 
-    /* modal */
+    /* =========================
+       Modals
+    ========================== */
     .modalOverlay{
       position: fixed; inset: 0;
       background: rgba(0,0,0,.55);
@@ -294,6 +520,7 @@
       overflow:hidden;
     }
     .modal.wide{ width: min(1120px, 100%); }
+
     .mhead{
       padding: 14px 16px;
       display:flex;
@@ -343,14 +570,30 @@
         <div class="brand">
           <a href="./index.html" title="Back to Home">
             <img src="./images/logo.jpg" alt="LSS Logo" />
-            <div>
+            <div class="twrap">
               <div class="t1">Law Students’ Society</div>
               <div class="t2">Joseph Ayo Babalola University</div>
             </div>
           </a>
         </div>
 
-        <ul class="navlinks" id="navLinks">
+        <!-- Desktop nav -->
+        <ul class="navlinks desktop" id="navLinksDesktop">
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./resources.html">Resources</a></li>
+          <li><a href="./pastquestions.html">Past Questions</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+        </ul>
+
+        <!-- Mobile toggle -->
+        <button class="navToggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navPanel">
+          ☰ Menu
+        </button>
+      </div>
+
+      <!-- Mobile panel -->
+      <div class="navPanel" id="navPanel" aria-hidden="true">
+        <ul class="navlinks" id="navLinksMobile">
           <li><a href="./index.html">Home</a></li>
           <li><a href="./resources.html">Resources</a></li>
           <li><a href="./pastquestions.html">Past Questions</a></li>
@@ -369,7 +612,10 @@
       </p>
 
       <div class="cta">
-        <a class="btn ghost" href="../pastquestions.html">Open Past Questions</a>
+        <!-- ✅ Updated link (your real past questions page) -->
+        <a class="btn ghost" href="https://www.jabulss.com/pastquestions/pastquestions.html" target="_blank" rel="noopener">
+          Open Past Questions
+        </a>
         <button class="btn" id="btnRefreshTop" type="button">Refresh List</button>
       </div>
 
@@ -558,7 +804,8 @@
             </div>
           </div>
 
-          <div style="overflow:auto;">
+          <!-- ✅ better mobile table experience -->
+          <div class="tableWrap" aria-label="Past questions table container">
             <table aria-label="Past questions table">
               <thead>
                 <tr>
@@ -570,6 +817,7 @@
               </thead>
               <tbody id="tbody"></tbody>
             </table>
+            <div class="scrollHint">Tip: swipe left/right to see all columns</div>
           </div>
 
           <div class="hint" style="margin-top:10px;">
@@ -735,11 +983,45 @@
         </div>
       </div>
     </div>
-
   </main>
 
   <script>
+    // footer year
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ✅ Mobile nav toggle
+    (function () {
+      const btn = document.getElementById("navToggle");
+      const panel = document.getElementById("navPanel");
+      if (!btn || !panel) return;
+
+      function setOpen(open){
+        panel.classList.toggle("open", open);
+        btn.setAttribute("aria-expanded", String(open));
+        panel.setAttribute("aria-hidden", String(!open));
+      }
+
+      btn.addEventListener("click", () => {
+        const open = !panel.classList.contains("open");
+        setOpen(open);
+      });
+
+      // close when tapping a link
+      panel.addEventListener("click", (e) => {
+        const a = e.target.closest("a");
+        if (a) setOpen(false);
+      });
+
+      // close on escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setOpen(false);
+      });
+
+      // close when resizing to desktop
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 760) setOpen(false);
+      });
+    })();
   </script>
 
   <!-- cache-bust so laptop won’t keep old JS -->
