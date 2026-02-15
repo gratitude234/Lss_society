@@ -11,8 +11,19 @@
      - Same behavior for local (before upload) + existing library items
 */
 
-const API_BASE = "https://jabumarket.com.ng/lss_api";
+const API_BASE = ""; // Truehost API removed. Use Supabase Storage + Table instead.
 const TOKEN_KEY = "lssAdminToken";
+
+
+const SUPABASE = window.__SUPABASE__ || { url: "", anonKey: "", bucket: "pastquestions" };
+
+// NOTE: Admin upload/edit used to depend on a PHP API on Truehost.
+// That host expired, so this admin panel is currently READ-ONLY until you implement either:
+// 1) Supabase Auth + RLS + allowed inserts/updates (recommended), or
+// 2) A small server/edge function to handle privileged writes.
+//
+// The public Past Questions page (pastquestions.html) has been migrated to Supabase reads + Storage URLs.
+
 
 const $ = (id) => document.getElementById(id);
 
