@@ -1025,6 +1025,14 @@
   </script>
 
   <!-- cache-bust so laptop won’t keep old JS -->
-  <script src="./admin.js?v=2025-12-21"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+<script>
+  (function(){
+    const cfg = window.__SUPABASE__ || {};
+    window.sb = window.supabase?.createClient?.(cfg.url, cfg.anonKey);
+  })();
+</script>
+<script src="./admin.js?v=2025-12-21"></script>
 </body>
 </html>

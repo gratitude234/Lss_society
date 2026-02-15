@@ -1,30 +1,15 @@
 /* pastquestions/admin.js
-   Minimal Admin:
-   - Login
-   - Upload
-   - Edit metadata
-   - Rename file on server
-   - Delete
-   + Preview improvements:
-     - Uses <img> for images (not iframe)
-     - Click image preview to open full-size viewer
-     - Same behavior for local (before upload) + existing library items
+   Supabase Admin (Auth + Storage + Table)
+   - Email/password login (Supabase Auth)
+   - Upload file to Storage bucket: pastquestions
+   - Insert/Update/Delete metadata in public.past_questions
+   - Rename (Storage move + update file_path)
 */
 
-const API_BASE = ""; // Truehost API removed. Use Supabase Storage + Table instead.
-const TOKEN_KEY = "lssAdminToken";
-
-
 const SUPABASE = window.__SUPABASE__ || { url: "", anonKey: "", bucket: "pastquestions" };
+const sb = window.sb;
 
-// NOTE: Admin upload/edit used to depend on a PHP API on Truehost.
-// That host expired, so this admin panel is currently READ-ONLY until you implement either:
-// 1) Supabase Auth + RLS + allowed inserts/updates (recommended), or
-// 2) A small server/edge function to handle privileged writes.
-//
-// The public Past Questions page (pastquestions.html) has been migrated to Supabase reads + Storage URLs.
-
-
+// ---------- DOM helpers ----------
 const $ = (id) => document.getElementById(id);
 
 const toastEl = $("toast");
@@ -40,130 +25,6 @@ function toast(msg, type = "ok") {
 function safeStr(v) {
   return String(v ?? "").trim();
 }
-function toKebab(s) {
-  return safeStr(s)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-function isPdfName(nameOrUrl = "") {
-  return /\.pdf(\?|#|$)/i.test(nameOrUrl);
-}
-function isImageName(nameOrUrl = "") {
-  return /\.(png|jpe?g|webp|gif|bmp|svg)(\?|#|$)/i.test(nameOrUrl);
-}
-
-function getToken() {
-  try { return localStorage.getItem(TOKEN_KEY) || ""; } catch { return ""; }
-}
-function setToken(t) {
-  try {
-    if (!t) localStorage.removeItem(TOKEN_KEY);
-    else localStorage.setItem(TOKEN_KEY, t);
-  } catch {}
-}
-
-async function apiFetch(path, options = {}) {
-  const url = `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
-  const token = getToken();
-  const headers = { ...(options.headers || {}) };
-
-  if (token && !headers.Authorization) headers.Authorization = `Bearer ${token}`;
-
-  const res = await fetch(url, { ...options, headers });
-  const ct = res.headers.get("content-type") || "";
-  const text = await res.text();
-
-  let data = null;
-  try {
-    data = ct.includes("application/json") ? (text ? JSON.parse(text) : null) : null;
-  } catch {
-    data = null;
-  }
-
-  if (!res.ok) {
-    const msg = (data && (data.error || data.message)) || text || `HTTP ${res.status}`;
-    throw new Error(msg);
-  }
-
-  return data ?? {};
-}
-
-/* ---------- AUTH ---------- */
-const authPill = $("authPill");
-const btnLogin = $("btnLogin");
-const btnLogout = $("btnLogout");
-
-async function checkAuth() {
-  const token = getToken();
-  if (!token) {
-    setSignedOut();
-    return false;
-  }
-  try {
-    const me = await apiFetch("/auth/me.php", { method: "GET" });
-    if (me?.success && me?.admin?.email) {
-      authPill.textContent = `Signed in: ${me.admin.email}`;
-      authPill.classList.add("good");
-      btnLogout.style.display = "";
-      return true;
-    }
-  } catch {
-    // token invalid/expired
-  }
-  setToken("");
-  setSignedOut();
-  return false;
-}
-
-function setSignedOut() {
-  authPill.textContent = "Not signed in";
-  authPill.classList.remove("good");
-  btnLogout.style.display = "none";
-}
-
-async function login() {
-  const email = safeStr($("loginEmail")?.value);
-  const password = String($("loginPassword")?.value || "");
-  if (!email || !password) return toast("Email + password required.", "warn");
-
-  try {
-    btnLogin.disabled = true;
-    const data = await apiFetch("/auth/login.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!data?.token) throw new Error("No token returned.");
-    setToken(data.token);
-    toast("Login successful ✅", "ok");
-    await checkAuth();
-    await loadList();
-  } catch (e) {
-    toast(e.message || "Login failed.", "bad");
-  } finally {
-    btnLogin.disabled = false;
-  }
-}
-
-async function logout() {
-  setToken("");
-  setSignedOut();
-  toast("Logged out.", "ok");
-}
-
-/* ---------- LIST / TABLE ---------- */
-const tbody = $("tbody");
-const countPill = $("countPill");
-
-const qEl = $("q");
-const fLevel = $("fLevel");
-const fSemester = $("fSemester");
-const fType = $("fType");
-
-let currentItems = [];
-
 function escapeHtml(s) {
   return safeStr(s)
     .replaceAll("&", "&amp;")
@@ -172,231 +33,303 @@ function escapeHtml(s) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-
-function fileBaseFromItem(it) {
-  const url = safeStr(it?.file_url || it?.fileUrl || "");
-  const last = url.split("/").pop() || "";
-  const base = last.replace(/\.[^.]+$/, "");
-  return toKebab(base) || "past-question";
+function toKebab(s) {
+  return safeStr(s)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+function isPdfName(nameOrUrl = "") {
+  return /\.pdf(\?|#|$)/i.test(nameOrUrl);
+}
+function isImageName(nameOrUrl = "") {
+  return /\.(png|jpe?g|gif|webp)(\?|#|$)/i.test(nameOrUrl);
+}
+function publicFileUrl(filePath) {
+  if (window.__supabasePublicFileUrl__) return window.__supabasePublicFileUrl__(filePath);
+  if (!filePath) return "";
+  return `${SUPABASE.url}/storage/v1/object/public/${SUPABASE.bucket}/${encodeURI(filePath)}`;
 }
 
-/* ---------- VIEW MODAL ---------- */
-const viewOverlay = $("viewOverlay");
-const viewPdf = $("viewPdf");
-const viewImg = $("viewImg");
-const viewTitle = $("viewTitle");
-const viewMeta = $("viewMeta");
-const viewOpen = $("viewOpen");
-const btnViewClose = $("btnViewClose");
+// ---------- Elements ----------
+const authPill = $("authPill");
+const btnLogout = $("btnLogout");
+const btnLogin = $("btnLogin");
+const loginEmail = $("loginEmail");
+const loginPassword = $("loginPassword");
 
-/* ---------- IMAGE ZOOM MODAL ---------- */
-const zoomOverlay = $("zoomOverlay");
-const zoomImg = $("zoomImg");
-const zoomTitle = $("zoomTitle");
-const zoomMeta = $("zoomMeta");
-const zoomOpen = $("zoomOpen");
-const btnZoomClose = $("btnZoomClose");
+const btnRefreshTop = $("btnRefreshTop");
 
-function openZoom({ title = "Image", meta = "", url = "" } = {}) {
-  if (!zoomOverlay || !zoomImg) return;
-  if (!url) return toast("No image URL.", "warn");
-
-  zoomTitle.textContent = title;
-  if (zoomMeta) zoomMeta.textContent = meta || url;
-  if (zoomOpen) zoomOpen.href = url;
-
-  zoomImg.src = url;
-  zoomOverlay.classList.add("open");
-}
-
-function closeZoom() {
-  if (!zoomOverlay) return;
-  zoomOverlay.classList.remove("open");
-  if (zoomImg) zoomImg.src = "";
-}
-
-function openView(it) {
-  if (!viewOverlay) return;
-
-  const title = safeStr(it?.title) || "Preview";
-  const fileUrl = safeStr(it?.file_url || it?.fileUrl || "");
-  const fileName = fileUrl ? (fileUrl.split("/").pop() || "") : "";
-
-  if (!fileUrl) {
-    toast("No file URL on this item.", "warn");
-    return;
-  }
-
-  viewTitle.textContent = title;
-  if (viewMeta) viewMeta.textContent = fileName ? fileName : fileUrl;
-  if (viewOpen) viewOpen.href = fileUrl;
-
-  // reset
-  if (viewPdf) { viewPdf.style.display = "none"; viewPdf.src = "about:blank"; }
-  if (viewImg) { viewImg.style.display = "none"; viewImg.src = ""; }
-
-  if (isPdfName(fileUrl)) {
-    // PDF
-    viewPdf.style.display = "block";
-    viewPdf.src = fileUrl;
-  } else if (isImageName(fileUrl)) {
-    // Image
-    viewImg.style.display = "block";
-    viewImg.src = fileUrl;
-
-    // click to zoom full-size
-    viewImg.onclick = () => openZoom({
-      title,
-      meta: fileName || fileUrl,
-      url: fileUrl
-    });
-  } else {
-    // unknown type: try PDF iframe as fallback
-    viewPdf.style.display = "block";
-    viewPdf.src = fileUrl;
-  }
-
-  viewOverlay.classList.add("open");
-}
-
-function closeView() {
-  if (!viewOverlay) return;
-  viewOverlay.classList.remove("open");
-  if (viewPdf) viewPdf.src = "about:blank";
-  if (viewImg) viewImg.src = "";
-}
-
-/* ---------- LOCAL PREVIEW (UPLOAD) ---------- */
 const fileEl = $("file");
 const btnPreviewLocal = $("btnPreviewLocal");
 const btnCloseLocalPreview = $("btnCloseLocalPreview");
+const localPreviewName = $("localPreviewName");
 const localPreviewWrap = $("localPreviewWrap");
 const localPreviewPdf = $("localPreviewPdf");
 const localPreviewImg = $("localPreviewImg");
-const localPreviewName = $("localPreviewName");
 
-let localObjectUrl = "";
-
-function revokeLocalObjectUrl() {
-  if (!localObjectUrl) return;
-  try { URL.revokeObjectURL(localObjectUrl); } catch {}
-  localObjectUrl = "";
-}
-
-function clearLocalPreview() {
-  if (localPreviewPdf) { localPreviewPdf.src = "about:blank"; localPreviewPdf.style.display = "none"; }
-  if (localPreviewImg) { localPreviewImg.src = ""; localPreviewImg.style.display = "none"; localPreviewImg.onclick = null; }
-  if (localPreviewWrap) localPreviewWrap.style.display = "none";
-  if (localPreviewName) localPreviewName.textContent = "No file selected";
-  revokeLocalObjectUrl();
-}
-
-function showLocalPreviewForFile(f) {
-  if (!f) return clearLocalPreview();
-  if (!localPreviewWrap) return;
-
-  const isPdf = (f.type === "application/pdf") || isPdfName(f.name);
-  const isImage = (f.type || "").startsWith("image/") || isImageName(f.name);
-
-  if (!isPdf && !isImage) {
-    toast("Preview supports PDF/images only.", "warn");
-    clearLocalPreview();
-    return;
-  }
-
-  revokeLocalObjectUrl();
-  localObjectUrl = URL.createObjectURL(f);
-
-  // reset
-  if (localPreviewPdf) { localPreviewPdf.style.display = "none"; localPreviewPdf.src = "about:blank"; }
-  if (localPreviewImg) { localPreviewImg.style.display = "none"; localPreviewImg.src = ""; localPreviewImg.onclick = null; }
-
-  if (isPdf) {
-    localPreviewPdf.style.display = "block";
-    localPreviewPdf.src = localObjectUrl;
-  } else {
-    localPreviewImg.style.display = "block";
-    localPreviewImg.src = localObjectUrl;
-
-    // click to zoom full-size
-    localPreviewImg.onclick = () => openZoom({
-      title: "Selected image",
-      meta: f.name,
-      url: localObjectUrl
-    });
-  }
-
-  localPreviewWrap.style.display = "block";
-  if (localPreviewName) localPreviewName.textContent = f.name;
-}
-
-/* ---------- UPLOAD ---------- */
-const upTitle = $("title");
-const upCourseCode = $("course_code");
-const upCourseTitle = $("course_title");
-const upLevel = $("level");
-const upSemester = $("semester");
-const upType = $("type");
-const upSession = $("session");
-const upNotes = $("notes");
-const upSafe = $("safe_name");
+const course_code = $("course_code");
+const course_title = $("course_title");
+const titleEl = $("title");
+const levelEl = $("level");
+const semesterEl = $("semester");
+const typeEl = $("type");
+const sessionEl = $("session");
+const notesEl = $("notes");
+const safeNameEl = $("safe_name");
 
 const btnUpload = $("btnUpload");
 const btnClearUpload = $("btnClearUpload");
 
-function clearUploadForm() {
-  if (fileEl) fileEl.value = "";
-  if (upTitle) upTitle.value = "";
-  if (upCourseCode) upCourseCode.value = "";
-  if (upCourseTitle) upCourseTitle.value = "";
-  if (upLevel) upLevel.value = "";
-  if (upSemester) upSemester.value = "";
-  if (upType) upType.value = "Exam";
-  if (upSession) upSession.value = "";
-  if (upNotes) upNotes.value = "";
-  if (upSafe) upSafe.value = "";
-  clearLocalPreview();
+const countPill = $("countPill");
+const qEl = $("q");
+const fLevel = $("fLevel");
+const fSemester = $("fSemester");
+const fType = $("fType");
+const btnRefresh = $("btnRefresh");
+const tbody = $("tbody");
+
+// View modal
+const viewOverlay = $("viewOverlay");
+const btnViewClose = $("btnViewClose");
+const viewTitle = $("viewTitle");
+const viewMeta = $("viewMeta");
+const viewOpen = $("viewOpen");
+const viewPdf = $("viewPdf");
+const viewImg = $("viewImg");
+
+// Edit modal
+const editOverlay = $("editOverlay");
+const btnEditClose = $("btnEditClose");
+const btnEditSave = $("btnEditSave");
+
+const edit_id = $("edit_id");
+const edit_title = $("edit_title");
+const edit_course_code = $("edit_course_code");
+const edit_course_title = $("edit_course_title");
+const edit_level = $("edit_level");
+const edit_semester = $("edit_semester");
+const edit_type = $("edit_type");
+const edit_session = $("edit_session");
+const edit_notes = $("edit_notes");
+
+// ---------- State ----------
+let currentItems = [];
+
+// ---------- Auth ----------
+async function refreshAuthUI() {
+  try {
+    if (!sb) {
+      authPill.textContent = "Supabase not loaded";
+      authPill.className = "pill warn";
+      return;
+    }
+    const { data } = await sb.auth.getSession();
+    const session = data?.session;
+    if (session?.user) {
+      const email = session.user.email || "Signed in";
+      authPill.textContent = email;
+      authPill.className = "pill ok";
+      btnLogout.style.display = "inline-flex";
+    } else {
+      authPill.textContent = "Not signed in";
+      authPill.className = "pill warn";
+      btnLogout.style.display = "none";
+    }
+  } catch (e) {
+    authPill.textContent = "Auth error";
+    authPill.className = "pill bad";
+  }
 }
 
-async function uploadNow() {
-  const ok = await checkAuth();
-  if (!ok) return toast("Login first.", "warn");
+async function login() {
+  const email = safeStr(loginEmail?.value);
+  const password = String(loginPassword?.value || "");
+  if (!email || !password) return toast("Email + password required.", "warn");
+  try {
+    btnLogin.disabled = true;
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    toast("Signed in ✅", "ok");
+    loginPassword.value = "";
+    await refreshAuthUI();
+    await loadList();
+  } catch (e) {
+    toast(e?.message || "Login failed.", "bad");
+  } finally {
+    btnLogin.disabled = false;
+  }
+}
 
-  const f = fileEl?.files?.[0];
-  if (!f) return toast("Choose a file first.", "warn");
+async function logout() {
+  try {
+    await sb.auth.signOut();
+    toast("Logged out.", "ok");
+    await refreshAuthUI();
+  } catch (e) {
+    toast(e?.message || "Logout failed.", "bad");
+  }
+}
 
-  const title =
-    safeStr(upTitle?.value) ||
-    safeStr(upCourseTitle?.value) ||
-    safeStr(upCourseCode?.value) ||
-    "Untitled";
+// ---------- Local preview ----------
+function clearLocalPreview() {
+  if (!localPreviewWrap) return;
+  localPreviewWrap.style.display = "none";
+  if (localPreviewPdf) localPreviewPdf.style.display = "none";
+  if (localPreviewImg) localPreviewImg.style.display = "none";
+  if (localPreviewPdf) localPreviewPdf.src = "";
+  if (localPreviewImg) localPreviewImg.src = "";
+  if (localPreviewName) localPreviewName.textContent = "";
+}
 
-  const fd = new FormData();
-  fd.append("file", f);
-  fd.append("title", title);
-  fd.append("course_code", safeStr(upCourseCode?.value));
-  fd.append("course_title", safeStr(upCourseTitle?.value));
-  fd.append("level", safeStr(upLevel?.value));
-  fd.append("semester", safeStr(upSemester?.value));
-  fd.append("type", safeStr(upType?.value || "Exam"));
-  fd.append("session", safeStr(upSession?.value));
-  fd.append("year", ""); // optional
-  fd.append("notes", safeStr(upNotes?.value));
+function showLocalPreview(file) {
+  if (!file || !localPreviewWrap) return;
+  const url = URL.createObjectURL(file);
+  if (localPreviewName) localPreviewName.textContent = file.name;
 
-  const safeName = safeStr(upSafe?.value);
-  if (safeName) fd.append("safe_name", toKebab(safeName));
+  if (isPdfName(file.name)) {
+    localPreviewPdf.style.display = "block";
+    localPreviewImg.style.display = "none";
+    localPreviewPdf.src = url;
+  } else if (isImageName(file.name)) {
+    localPreviewImg.style.display = "block";
+    localPreviewPdf.style.display = "none";
+    localPreviewImg.src = url;
+  } else {
+    toast("Preview supports PDF/images only.", "warn");
+    URL.revokeObjectURL(url);
+    return;
+  }
+  localPreviewWrap.style.display = "block";
+}
+
+// ---------- Upload ----------
+function buildFilePathFromForm(file) {
+  const ext = (file?.name?.split(".").pop() || "pdf").toLowerCase();
+
+  // If user typed safe_name, respect it (and keep folder 'all/')
+  const typed = toKebab(safeNameEl?.value || "");
+  if (typed) return `all/${typed}.${ext}`;
+
+  const code = toKebab(course_code?.value || "course");
+  const lv = toKebab(levelEl?.value || "");
+  const sem = toKebab(semesterEl?.value || "");
+  const tp = toKebab(typeEl?.value || "");
+  const sess = toKebab(sessionEl?.value || "");
+  const base = [code, lv, sem, tp, sess].filter(Boolean).join("-");
+  return `all/${base || "past-question"}.${ext}`;
+}
+
+function readMetaFromForm() {
+  return {
+    title: safeStr(titleEl?.value),
+    course_code: safeStr(course_code?.value),
+    course_title: safeStr(course_title?.value),
+    level: safeStr(levelEl?.value),
+    semester: safeStr(semesterEl?.value),
+    type: safeStr(typeEl?.value),
+    session: safeStr(sessionEl?.value),
+    notes: safeStr(notesEl?.value),
+  };
+}
+
+async function uploadNew() {
+  const file = fileEl?.files?.[0];
+  if (!file) return toast("Choose a file first.", "warn");
+
+  const meta = readMetaFromForm();
+  if (!meta.title) return toast("Title is required.", "warn");
 
   try {
     btnUpload.disabled = true;
-    const data = await apiFetch("/pastquestions/upload.php", { method: "POST", body: fd });
-    if (!data?.success) throw new Error(data?.error || "Upload failed.");
+
+    // Ensure signed in
+    const { data } = await sb.auth.getSession();
+    if (!data?.session?.user) {
+      toast("Please sign in first.", "warn");
+      return;
+    }
+
+    const filePath = buildFilePathFromForm(file);
+
+    // Upload (upsert allowed)
+    const up = await sb.storage.from(SUPABASE.bucket).upload(filePath, file, {
+      upsert: true,
+      contentType: file.type || "application/pdf",
+    });
+    if (up.error) throw up.error;
+
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    const format = ext === "pdf" ? "pdf" : (isImageName(file.name) ? "image" : ext);
+
+    // Insert metadata
+    const ins = await sb.from("past_questions").insert([{
+      ...meta,
+      format,
+      file_path: filePath,
+    }]);
+    if (ins.error) throw ins.error;
+
     toast("Uploaded ✅", "ok");
     clearUploadForm();
     await loadList();
   } catch (e) {
-    toast(e.message || "Upload failed.", "bad");
+    toast(e?.message || "Upload failed.", "bad");
   } finally {
     btnUpload.disabled = false;
+  }
+}
+
+function clearUploadForm() {
+  if (fileEl) fileEl.value = "";
+  if (titleEl) titleEl.value = "";
+  if (course_code) course_code.value = "";
+  if (course_title) course_title.value = "";
+  if (levelEl) levelEl.value = "";
+  if (semesterEl) semesterEl.value = "";
+  if (typeEl) typeEl.value = "";
+  if (sessionEl) sessionEl.value = "";
+  if (notesEl) notesEl.value = "";
+  if (safeNameEl) safeNameEl.value = "";
+  clearLocalPreview();
+}
+
+// ---------- List / Filters ----------
+async function loadList() {
+  try {
+    const q = safeStr(qEl?.value);
+    const lv = safeStr(fLevel?.value);
+    const sem = safeStr(fSemester?.value);
+    const tp = safeStr(fType?.value);
+
+    let query = sb.from("past_questions")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(400);
+
+    if (lv) query = query.eq("level", lv);
+    if (sem) query = query.eq("semester", sem);
+    if (tp) query = query.eq("type", tp);
+
+    if (q) {
+      // Escape commas because .or() uses commas as separators
+      const qq = q.replaceAll(",", " ");
+      query = query.or(
+        `title.ilike.%${qq}%,course_code.ilike.%${qq}%,course_title.ilike.%${qq}%,session.ilike.%${qq}%`
+      );
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    currentItems = (data || []).map((row) => ({
+      ...row,
+      file_url: publicFileUrl(row.file_path),
+    }));
+
+    renderTable(currentItems);
+  } catch (e) {
+    toast(e?.message || "Failed to load list.", "bad");
   }
 }
 
@@ -408,11 +341,11 @@ function renderTable(items) {
     const tr = document.createElement("tr");
     tr.innerHTML = `<td colspan="4" class="mono">No items found.</td>`;
     tbody.appendChild(tr);
-    countPill.textContent = "0 items";
+    if (countPill) countPill.textContent = "0 items";
     return;
   }
 
-  countPill.textContent = `${items.length} item(s)`;
+  if (countPill) countPill.textContent = `${items.length} item(s)`;
 
   for (const it of items) {
     const tr = document.createElement("tr");
@@ -448,7 +381,7 @@ function renderTable(items) {
       </td>
       <td>${fileCell}</td>
       <td>
-        <div class="actions">
+        <div class="rowActions">
           ${viewBtn}
           <button class="miniBtn" data-act="edit" data-id="${it.id}">Edit</button>
           <button class="miniBtn" data-act="rename" data-id="${it.id}">Rename</button>
@@ -456,92 +389,77 @@ function renderTable(items) {
         </div>
       </td>
     `;
-
     tbody.appendChild(tr);
   }
-
-  tbody.querySelectorAll("button[data-act]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const act = btn.getAttribute("data-act");
-      const id = Number(btn.getAttribute("data-id"));
-      const item = currentItems.find((x) => Number(x.id) === id);
-      if (!item) return;
-
-      if (act === "view") openView(item);
-      if (act === "edit") openEdit(item);
-      if (act === "rename") openRename(item);
-      if (act === "delete") await doDelete(item);
-    });
-  });
 }
 
-async function loadList() {
-  try {
-    const qs = new URLSearchParams();
-    qs.set("limit", "400");
+// ---------- View modal ----------
+function openView(item) {
+  if (!item) return;
+  const fileUrl = safeStr(item.file_url || "");
+  if (!fileUrl) return toast("No file URL.", "warn");
 
-    const q = safeStr(qEl?.value);
-    if (q) qs.set("q", q);
+  viewTitle.textContent = safeStr(item.title) || "Preview";
+  viewMeta.textContent = [safeStr(item.course_code), safeStr(item.level), safeStr(item.semester), safeStr(item.session)]
+    .filter(Boolean)
+    .join(" • ");
 
-    const lv = safeStr(fLevel?.value);
-    const sem = safeStr(fSemester?.value);
-    const tp = safeStr(fType?.value);
+  viewOpen.href = fileUrl;
 
-    if (lv) qs.set("level", lv);
-    if (sem) qs.set("semester", sem);
-    if (tp) qs.set("type", tp);
+  // reset
+  viewPdf.style.display = "none";
+  viewImg.style.display = "none";
+  viewPdf.src = "";
+  viewImg.src = "";
 
-    const data = await apiFetch(`/pastquestions/list.php?${qs.toString()}`, { method: "GET" });
-    currentItems = Array.isArray(data?.items) ? data.items : [];
-    renderTable(currentItems);
-  } catch (e) {
-    toast(e.message || "Failed to load list.", "bad");
+  if (isPdfName(fileUrl)) {
+    viewPdf.style.display = "block";
+    viewPdf.src = fileUrl;
+  } else if (isImageName(fileUrl)) {
+    viewImg.style.display = "block";
+    viewImg.src = fileUrl;
+  } else {
+    // fallback
+    viewPdf.style.display = "block";
+    viewPdf.src = fileUrl;
   }
+
+  viewOverlay.setAttribute("aria-hidden", "false");
+  viewOverlay.classList.add("show");
+}
+function closeView() {
+  viewOverlay.setAttribute("aria-hidden", "true");
+  viewOverlay.classList.remove("show");
+  viewPdf.src = "";
+  viewImg.src = "";
 }
 
-/* ---------- EDIT MODAL ---------- */
-const editOverlay = $("editOverlay");
-const btnEditClose = $("btnEditClose");
-const btnEditSave = $("btnEditSave");
+// ---------- Edit modal ----------
+function openEdit(item) {
+  if (!item) return;
+  edit_id.value = item.id;
+  edit_title.value = safeStr(item.title);
+  edit_course_code.value = safeStr(item.course_code);
+  edit_course_title.value = safeStr(item.course_title);
+  edit_level.value = safeStr(item.level);
+  edit_semester.value = safeStr(item.semester);
+  edit_type.value = safeStr(item.type);
+  edit_session.value = safeStr(item.session);
+  edit_notes.value = safeStr(item.notes);
 
-const edit_id = $("edit_id");
-const edit_title = $("edit_title");
-const edit_course_code = $("edit_course_code");
-const edit_course_title = $("edit_course_title");
-const edit_level = $("edit_level");
-const edit_semester = $("edit_semester");
-const edit_type = $("edit_type");
-const edit_session = $("edit_session");
-const edit_notes = $("edit_notes");
-
-function openEdit(it) {
-  if (!editOverlay) return;
-
-  edit_id.value = it.id;
-  edit_title.value = safeStr(it.title);
-  edit_course_code.value = safeStr(it.course_code);
-  edit_course_title.value = safeStr(it.course_title);
-  edit_level.value = safeStr(it.level);
-  edit_semester.value = safeStr(it.semester);
-  edit_type.value = safeStr(it.type) || "Exam";
-  edit_session.value = safeStr(it.session);
-  edit_notes.value = safeStr(it.notes);
-
-  editOverlay.classList.add("open");
+  editOverlay.setAttribute("aria-hidden", "false");
+  editOverlay.classList.add("show");
 }
 function closeEdit() {
-  editOverlay?.classList.remove("open");
+  editOverlay.setAttribute("aria-hidden", "true");
+  editOverlay.classList.remove("show");
 }
 
 async function saveEdit() {
-  const ok = await checkAuth();
-  if (!ok) return toast("Login first.", "warn");
-
-  const id = Number(edit_id.value);
-  if (!id) return toast("Invalid item id.", "bad");
+  const id = safeStr(edit_id.value);
+  if (!id) return;
 
   const payload = {
-    id,
     title: safeStr(edit_title.value),
     course_code: safeStr(edit_course_code.value),
     course_title: safeStr(edit_course_title.value),
@@ -549,170 +467,187 @@ async function saveEdit() {
     semester: safeStr(edit_semester.value),
     type: safeStr(edit_type.value),
     session: safeStr(edit_session.value),
-    year: "", // optional
     notes: safeStr(edit_notes.value),
   };
 
   try {
     btnEditSave.disabled = true;
-    const data = await apiFetch("/pastquestions/update.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (!data?.success) throw new Error(data?.error || "Update failed.");
-    toast("Updated ✅", "ok");
+
+    const { data: sess } = await sb.auth.getSession();
+    if (!sess?.session?.user) {
+      toast("Please sign in first.", "warn");
+      return;
+    }
+
+    const { error } = await sb.from("past_questions").update(payload).eq("id", id);
+    if (error) throw error;
+
+    toast("Saved ✅", "ok");
     closeEdit();
     await loadList();
   } catch (e) {
-    toast(e.message || "Update failed.", "bad");
+    toast(e?.message || "Save failed.", "bad");
   } finally {
     btnEditSave.disabled = false;
   }
 }
 
-/* ---------- RENAME MODAL ---------- */
-const renameOverlay = $("renameOverlay");
-const btnRenameClose = $("btnRenameClose");
-const btnRenameDo = $("btnRenameDo");
-const rename_id = $("rename_id");
-const rename_safe = $("rename_safe");
+// ---------- Rename (Storage move + update file_path) ----------
+async function renameItem(item) {
+  if (!item) return;
 
-function openRename(it) {
-  if (!renameOverlay) return;
-  rename_id.value = it.id;
-  rename_safe.value = fileBaseFromItem(it);
-  renameOverlay.classList.add("open");
-}
-function closeRename() {
-  renameOverlay?.classList.remove("open");
-}
+  const current = safeStr(item.file_path);
+  if (!current) return toast("No file_path for this item.", "warn");
 
-async function doRename() {
-  const ok = await checkAuth();
-  if (!ok) return toast("Login first.", "warn");
+  const currentName = current.split("/").pop() || current;
+  const nextBase = prompt(
+    "New file name (no extension). Example: lss101-first-semester-exam-2024-2025\n\nCurrent: " + currentName,
+    currentName.replace(/\.[^.]+$/, "")
+  );
+  if (!nextBase) return;
 
-  const id = Number(rename_id.value);
-  const safe_name = toKebab(rename_safe.value);
-  if (!id || !safe_name) return toast("Enter a valid name.", "warn");
+  const ext = (currentName.split(".").pop() || "pdf").toLowerCase();
+  const next = `all/${toKebab(nextBase)}.${ext}`;
+
+  if (next === current) return;
 
   try {
-    btnRenameDo.disabled = true;
-    const data = await apiFetch("/pastquestions/rename.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, safe_name }),
-    });
-    if (!data?.success) throw new Error(data?.error || "Rename failed.");
+    const { data: sess } = await sb.auth.getSession();
+    if (!sess?.session?.user) {
+      toast("Please sign in first.", "warn");
+      return;
+    }
+
+    // Move in storage
+    const mv = await sb.storage.from(SUPABASE.bucket).move(current, next);
+    if (mv.error) throw mv.error;
+
+    // Update row
+    const { error } = await sb.from("past_questions").update({ file_path: next }).eq("id", item.id);
+    if (error) throw error;
+
     toast("Renamed ✅", "ok");
-    closeRename();
     await loadList();
   } catch (e) {
-    toast(e.message || "Rename failed.", "bad");
-  } finally {
-    btnRenameDo.disabled = false;
+    toast(e?.message || "Rename failed.", "bad");
   }
 }
 
-/* ---------- DELETE ---------- */
-async function doDelete(it) {
-  const ok = await checkAuth();
-  if (!ok) return toast("Login first.", "warn");
-
-  const sure = confirm(
-    `Delete this past question?\n\n${safeStr(it.title) || "Untitled"}\n(ID: ${it.id})\n\nThis will remove it from DB and delete the uploaded file.`
-  );
-  if (!sure) return;
+// ---------- Delete ----------
+async function deleteItem(item) {
+  if (!item) return;
+  if (!confirm(`Delete this item?\n\n${safeStr(item.title) || item.id}`)) return;
 
   try {
-    const data = await apiFetch("/pastquestions/delete.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: Number(it.id) }),
-    });
-    if (!data?.success) throw new Error(data?.error || "Delete failed.");
+    const { data: sess } = await sb.auth.getSession();
+    if (!sess?.session?.user) {
+      toast("Please sign in first.", "warn");
+      return;
+    }
+
+    // Delete storage object if present
+    const fp = safeStr(item.file_path);
+    if (fp) {
+      const rm = await sb.storage.from(SUPABASE.bucket).remove([fp]);
+      if (rm.error) throw rm.error;
+    }
+
+    const { error } = await sb.from("past_questions").delete().eq("id", item.id);
+    if (error) throw error;
+
     toast("Deleted ✅", "ok");
     await loadList();
   } catch (e) {
-    toast(e.message || "Delete failed.", "bad");
+    toast(e?.message || "Delete failed.", "bad");
   }
 }
 
-/* ---------- WIRE UP ---------- */
-function bind() {
-  btnLogin?.addEventListener("click", login);
-  btnLogout?.addEventListener("click", logout);
+// ---------- Events ----------
+function wireEvents() {
+  // Auth
+  btnLogin?.addEventListener("click", (e) => { e.preventDefault(); login(); });
+  btnLogout?.addEventListener("click", (e) => { e.preventDefault(); logout(); });
 
-  $("btnRefresh")?.addEventListener("click", loadList);
-  $("btnRefreshTop")?.addEventListener("click", loadList);
+  // Upload
+  btnUpload?.addEventListener("click", (e) => { e.preventDefault(); uploadNew(); });
+  btnClearUpload?.addEventListener("click", (e) => { e.preventDefault(); clearUploadForm(); });
 
-  qEl?.addEventListener("input", () => {
-    window.clearTimeout(bind._t);
-    bind._t = window.setTimeout(loadList, 250);
-  });
-  fLevel?.addEventListener("change", loadList);
-  fSemester?.addEventListener("change", loadList);
-  fType?.addEventListener("change", loadList);
-
-  // upload
-  btnUpload?.addEventListener("click", uploadNow);
-  btnClearUpload?.addEventListener("click", () => {
-    clearUploadForm();
-    toast("Cleared.", "ok");
-  });
-
-  // local preview events
   fileEl?.addEventListener("change", () => {
-    const f = fileEl?.files?.[0];
-    if (!f) return clearLocalPreview();
-    showLocalPreviewForFile(f); // auto-preview
-  });
-  btnPreviewLocal?.addEventListener("click", () => {
-    const f = fileEl?.files?.[0];
-    if (!f) return toast("Select a file first.", "warn");
-    showLocalPreviewForFile(f);
-  });
-  btnCloseLocalPreview?.addEventListener("click", clearLocalPreview);
-
-  // edit modal
-  btnEditClose?.addEventListener("click", closeEdit);
-  btnEditSave?.addEventListener("click", saveEdit);
-  editOverlay?.addEventListener("click", (e) => {
-    if (e.target === editOverlay) closeEdit();
+    clearLocalPreview();
+    const file = fileEl.files?.[0];
+    if (file) showLocalPreview(file);
   });
 
-  // rename modal
-  btnRenameClose?.addEventListener("click", closeRename);
-  btnRenameDo?.addEventListener("click", doRename);
-  renameOverlay?.addEventListener("click", (e) => {
-    if (e.target === renameOverlay) closeRename();
+  btnPreviewLocal?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const file = fileEl.files?.[0];
+    if (!file) return toast("Choose a file first.", "warn");
+    showLocalPreview(file);
+  });
+  btnCloseLocalPreview?.addEventListener("click", (e) => {
+    e.preventDefault();
+    clearLocalPreview();
   });
 
-  // view modal
-  btnViewClose?.addEventListener("click", closeView);
+  // List / filters
+  btnRefreshTop?.addEventListener("click", (e) => { e.preventDefault(); loadList(); });
+  btnRefresh?.addEventListener("click", (e) => { e.preventDefault(); loadList(); });
+  qEl?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loadList();
+  });
+  fLevel?.addEventListener("change", () => loadList());
+  fSemester?.addEventListener("change", () => loadList());
+  fType?.addEventListener("change", () => loadList());
+
+  // Table actions (event delegation)
+  tbody?.addEventListener("click", async (e) => {
+    const btn = e.target?.closest?.("button");
+    if (!btn) return;
+    const act = btn.getAttribute("data-act");
+    const id = btn.getAttribute("data-id");
+    if (!act || !id) return;
+
+    const item = currentItems.find((x) => String(x.id) === String(id));
+    if (!item) return;
+
+    if (act === "view") return openView(item);
+    if (act === "edit") return openEdit(item);
+    if (act === "rename") return renameItem(item);
+    if (act === "delete") return deleteItem(item);
+  });
+
+  // View modal
+  btnViewClose?.addEventListener("click", (e) => { e.preventDefault(); closeView(); });
   viewOverlay?.addEventListener("click", (e) => {
     if (e.target === viewOverlay) closeView();
   });
 
-  // zoom modal
-  btnZoomClose?.addEventListener("click", closeZoom);
-  zoomOverlay?.addEventListener("click", (e) => {
-    if (e.target === zoomOverlay) closeZoom();
-  });
-  zoomImg?.addEventListener("click", closeZoom);
-
-  // escape closes any open modal
-  document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    closeZoom();
-    closeView();
-    closeEdit();
-    closeRename();
+  // Edit modal
+  btnEditClose?.addEventListener("click", (e) => { e.preventDefault(); closeEdit(); });
+  btnEditSave?.addEventListener("click", (e) => { e.preventDefault(); saveEdit(); });
+  editOverlay?.addEventListener("click", (e) => {
+    if (e.target === editOverlay) closeEdit();
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  bind();
-  await checkAuth();
+async function init() {
+  $("year").textContent = String(new Date().getFullYear());
+
+  if (!sb) {
+    toast("Supabase not loaded. Check admin.html script tags.", "bad");
+    return;
+  }
+
+  wireEvents();
+  await refreshAuthUI();
+
+  // React to auth changes
+  sb.auth.onAuthStateChange(() => {
+    refreshAuthUI();
+  });
+
+  // Load list (public read)
   await loadList();
-});
+}
+
+document.addEventListener("DOMContentLoaded", init);
