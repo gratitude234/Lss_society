@@ -2,7 +2,7 @@
 // Public page loads from jabumarket.com.ng/lss_api and renders cards.
 // If API fails, falls back to local resources.json (optional).
 
-const API_BASE = "https://jabumarket.com.ng/lss_api";
+const SUPABASE = window.__SUPABASE__ || { url: "", anonKey: "", bucket: "pastquestions" };
 
 const $ = (id) => document.getElementById(id);
 
@@ -46,7 +46,11 @@ function highlight(text, needle) {
 }
 
 function normalize(x = {}) {
-  const url = String(x.file_url || x.url || x.fileUrl || "").trim();
+  let url = String(x.file_url || x.url || x.fileUrl || "").trim();
+  const filePath = String(x.file_path || x.filePath || x.path || "").trim();
+  if (!url && filePath && window.__supabasePublicFileUrl__) {
+    url = window.__supabasePublicFileUrl__(filePath);
+  }
 
   const formatGuess =
     (String(x.format || x.fileType || "").toLowerCase() ||
@@ -113,6 +117,7 @@ function buildCard(item, needle = "") {
   const hint = item.notes || "";
 
   const href = item.url || "#";
+  const hrefDownload = window.__supabaseForceDownloadUrl__ ? window.__supabaseForceDownloadUrl__(href) : href;
   const canOpen = Boolean(item.url);
 
   // For actions
@@ -159,7 +164,7 @@ function buildCard(item, needle = "") {
         ${
           canOpen
             ? `<a class="pq-btn pq-btn--primary" data-action="download" href="${esc(
-                href
+                hrefDownload
               )}" target="_blank" rel="noopener" download>${esc(downloadLabel)}</a>`
             : `<button class="pq-btn pq-btn--primary" type="button" disabled>Unavailable</button>`
         }
@@ -198,14 +203,54 @@ function toQuery(params) {
 }
 
 async function fetchApiList(filters) {
-  const qs = toQuery({ ...filters, limit: 200 });
-  const res = await fetch(`${API_BASE}/pastquestions/list.php${qs}`, {
-    cache: "no-store",
+  // Supabase REST (public read)
+  // We fetch a large list once (up to 2000) then apply client-side filters,
+  // because complex OR search across many fields is painful via URL params.
+  const headers = window.__supabaseHeaders__ ? window.__supabaseHeaders__() : {};
+  const base = (SUPABASE.url || "").replace(/\/$/, "");
+  if (!base) throw new Error("Supabase URL not configured");
+
+  // Try common table names (you might name it either way)
+  const tableCandidates = ["past_questions", "pastquestions", "past_question"];
+  let items = null;
+  let lastErr = null;
+
+  for (const table of tableCandidates) {
+    try {
+      const url = `${base}/rest/v1/${table}?select=*&order=created_at.desc&limit=2000`;
+      const res = await fetch(url, { headers, cache: "no-store" });
+      if (!res.ok) throw new Error(`${table} fetch failed (${res.status})`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        items = data;
+        break;
+      }
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+
+  if (!items) throw (lastErr || new Error("Could not load items from Supabase"));
+
+  // Normalize first (also builds URLs from file_path)
+  const normalized = items.map(normalize);
+
+  // Apply the same client-side filters used by resources.json fallback
+  const { level, semester, type, q } = filters;
+  const needle = String(q || "").toLowerCase().trim();
+
+  return normalized.filter((it) => {
+    if (level && it.level !== level) return false;
+    if (semester && it.semester !== semester) return false;
+    if (type && it.type !== type) return false;
+    if (needle) {
+      const blob = `${it.title} ${it.course_code} ${it.course_title} ${it.session} ${it.semester} ${it.type} ${it.level} ${it.notes}`.toLowerCase();
+      if (!blob.includes(needle)) return false;
+    }
+    return true;
   });
-  const data = await res.json();
-  if (!res.ok || !data.success) throw new Error(data.error || "API error");
-  return (data.items || []).map(normalize);
 }
+
 
 async function fetchFallbackJson(filters) {
   const res = await fetch("./resources.json", { cache: "no-store" });
@@ -298,8 +343,9 @@ function openModal(item) {
   m.meta.textContent = meta;
 
   const href = item.url || "#";
-  m.open.href = href;
-  m.download.href = href;
+  const hrefDownload = window.__supabaseForceDownloadUrl__ ? window.__supabaseForceDownloadUrl__(href) : href;
+m.open.href = href;
+  m.download.href = hrefDownload;
 
   // Viewer
   m.viewer.innerHTML = "";
