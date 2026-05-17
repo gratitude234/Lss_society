@@ -39,6 +39,37 @@ function toKebab(s) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
+function splitStoragePath(filePath) {
+  const clean = safeStr(filePath);
+  const slash = clean.lastIndexOf("/");
+  const folder = slash >= 0 ? clean.slice(0, slash + 1) : "";
+  const name = slash >= 0 ? clean.slice(slash + 1) : clean;
+  const dot = name.lastIndexOf(".");
+
+  if (dot <= 0) {
+    return { folder, stem: name || "past-question", ext: "" };
+  }
+
+  return {
+    folder,
+    stem: name.slice(0, dot) || "past-question",
+    ext: name.slice(dot),
+  };
+}
+function shortUniqueSuffix() {
+  const time = Date.now().toString(36);
+  const rand = Math.random().toString(36).slice(2, 7);
+  return `${time}-${rand}`;
+}
+function addPathSuffix(filePath, suffix) {
+  const parts = splitStoragePath(filePath);
+  return `${parts.folder}${parts.stem}-${suffix}${parts.ext}`;
+}
+function isStorageConflict(error) {
+  const msg = safeStr(error?.message || error?.error || error?.name).toLowerCase();
+  const code = safeStr(error?.statusCode || error?.status || error?.code);
+  return code === "409" || msg.includes("already exists") || msg.includes("duplicate");
+}
 function isPdfName(nameOrUrl = "") {
   return /\.pdf(\?|#|$)/i.test(nameOrUrl);
 }
@@ -220,6 +251,35 @@ function buildFilePathFromForm(file) {
   return `all/${base || "past-question"}.${ext}`;
 }
 
+async function uploadFileWithoutOverwrite(basePath, file) {
+  let filePath = basePath;
+
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const up = await sb.storage.from(SUPABASE.bucket).upload(filePath, file, {
+      upsert: false,
+      contentType: file.type || "application/pdf",
+    });
+
+    if (!up.error) {
+      return {
+        filePath,
+        renamed: filePath !== basePath,
+      };
+    }
+
+    if (!isStorageConflict(up.error)) throw up.error;
+    filePath = addPathSuffix(basePath, shortUniqueSuffix());
+  }
+
+  throw new Error("Could not create a unique file name. Please try again.");
+}
+
+async function removeUploadedFile(filePath) {
+  const clean = safeStr(filePath);
+  if (!clean) return;
+  await sb.storage.from(SUPABASE.bucket).remove([clean]);
+}
+
 function readMetaFromForm() {
   return {
     title: safeStr(titleEl?.value),
@@ -250,14 +310,11 @@ async function uploadNew() {
       return;
     }
 
-    const filePath = buildFilePathFromForm(file);
+    const baseFilePath = buildFilePathFromForm(file);
 
-    // Upload (upsert allowed)
-    const up = await sb.storage.from(SUPABASE.bucket).upload(filePath, file, {
-      upsert: true,
-      contentType: file.type || "application/pdf",
-    });
-    if (up.error) throw up.error;
+    // Upload without overwriting. If the generated name already exists, retry
+    // with a short suffix so old records keep pointing at their original file.
+    const upload = await uploadFileWithoutOverwrite(baseFilePath, file);
 
     const ext = (file.name.split(".").pop() || "").toLowerCase();
     const format = ext === "pdf" ? "pdf" : (isImageName(file.name) ? "image" : ext);
@@ -266,11 +323,16 @@ async function uploadNew() {
     const ins = await sb.from("past_questions").insert([{
       ...meta,
       format,
-      file_path: filePath,
+      file_path: upload.filePath,
     }]);
-    if (ins.error) throw ins.error;
+    if (ins.error) {
+      try {
+        await removeUploadedFile(upload.filePath);
+      } catch {}
+      throw ins.error;
+    }
 
-    toast("Uploaded ✅", "ok");
+    toast(upload.renamed ? "Uploaded with a unique file name ✅" : "Uploaded ✅", "ok");
     clearUploadForm();
     await loadList();
   } catch (e) {
@@ -292,6 +354,57 @@ function clearUploadForm() {
   if (notesEl) notesEl.value = "";
   if (safeNameEl) safeNameEl.value = "";
   clearLocalPreview();
+}
+
+function getDuplicatePathCounts(items) {
+  const counts = new Map();
+  for (const item of items || []) {
+    const fp = safeStr(item.file_path);
+    if (!fp) continue;
+    counts.set(fp, (counts.get(fp) || 0) + 1);
+  }
+  return counts;
+}
+
+function annotateDuplicateFilePaths(items) {
+  const counts = getDuplicatePathCounts(items);
+  return (items || []).map((item) => {
+    const fp = safeStr(item.file_path);
+    const count = fp ? (counts.get(fp) || 0) : 0;
+    return {
+      ...item,
+      duplicate_file_path_count: count,
+      has_duplicate_file_path: count > 1,
+    };
+  });
+}
+
+function duplicatePathSummary(items) {
+  const counts = getDuplicatePathCounts(items);
+  let duplicatePaths = 0;
+  let duplicateRows = 0;
+
+  counts.forEach((count) => {
+    if (count > 1) {
+      duplicatePaths += 1;
+      duplicateRows += count;
+    }
+  });
+
+  return { duplicatePaths, duplicateRows };
+}
+
+async function fetchRowsForFilePath(filePath) {
+  const fp = safeStr(filePath);
+  if (!fp) return [];
+
+  const { data, error } = await sb.from("past_questions")
+    .select("id,title,file_path")
+    .eq("file_path", fp)
+    .limit(50);
+
+  if (error) throw error;
+  return data || [];
 }
 
 // ---------- List / Filters ----------
@@ -322,10 +435,10 @@ async function loadList() {
     const { data, error } = await query;
     if (error) throw error;
 
-    currentItems = (data || []).map((row) => ({
+    currentItems = annotateDuplicateFilePaths((data || []).map((row) => ({
       ...row,
       file_url: publicFileUrl(row.file_path),
-    }));
+    })));
 
     renderTable(currentItems);
   } catch (e) {
@@ -341,14 +454,36 @@ function renderTable(items) {
     const tr = document.createElement("tr");
     tr.innerHTML = `<td colspan="4" class="mono">No items found.</td>`;
     tbody.appendChild(tr);
-    if (countPill) countPill.textContent = "0 items";
+    if (countPill) {
+      countPill.textContent = "0 items";
+      countPill.className = "pill";
+    }
     return;
   }
 
-  if (countPill) countPill.textContent = `${items.length} item(s)`;
+  const dupes = duplicatePathSummary(items);
+  if (countPill) {
+    countPill.textContent = dupes.duplicatePaths
+      ? `${items.length} item(s) • ${dupes.duplicatePaths} duplicate path(s)`
+      : `${items.length} item(s)`;
+    countPill.className = dupes.duplicatePaths ? "pill warn" : "pill";
+  }
+
+  if (dupes.duplicatePaths) {
+    const warning = document.createElement("tr");
+    warning.className = "duplicateSummary";
+    warning.innerHTML = `
+      <td colspan="4">
+        Duplicate warning: ${escapeHtml(dupes.duplicateRows)} records share ${escapeHtml(dupes.duplicatePaths)} file path(s).
+        These rows are marked below. Delete extra metadata rows carefully; shared files will not be removed.
+      </td>
+    `;
+    tbody.appendChild(warning);
+  }
 
   for (const it of items) {
     const tr = document.createElement("tr");
+    if (it.has_duplicate_file_path) tr.className = "duplicateRow";
 
     const title = safeStr(it.title) || "Untitled";
     const course = [safeStr(it.course_code), safeStr(it.course_title)].filter(Boolean).join(" • ");
@@ -363,7 +498,8 @@ function renderTable(items) {
     const fileUrl = safeStr(it.file_url || it.fileUrl || "");
     const fileCell = fileUrl
       ? `<a href="${escapeHtml(fileUrl)}" target="_blank" rel="noopener" class="mono" style="color:rgba(234,240,255,.88); text-decoration:underline;">Open</a>
-         <div class="rowSub mono">${escapeHtml(fileUrl.split("/").pop() || "")}</div>`
+         <div class="rowSub mono">${escapeHtml(fileUrl.split("/").pop() || "")}</div>
+         ${it.has_duplicate_file_path ? `<div class="rowWarn">Duplicate file path shared by ${escapeHtml(it.duplicate_file_path_count)} records</div>` : ""}`
       : `<span class="mono">—</span>`;
 
     const viewBtn = fileUrl
@@ -499,6 +635,18 @@ async function renameItem(item) {
   const current = safeStr(item.file_path);
   if (!current) return toast("No file_path for this item.", "warn");
 
+  try {
+    const matches = await fetchRowsForFilePath(current);
+    if (matches.length > 1) {
+      toast("Rename blocked: this file path is shared by duplicate records. Clean up the duplicate rows first.", "warn");
+      await loadList();
+      return;
+    }
+  } catch (e) {
+    toast(e?.message || "Could not check duplicate file paths.", "bad");
+    return;
+  }
+
   const currentName = current.split("/").pop() || current;
   const nextBase = prompt(
     "New file name (no extension). Example: lss101-first-semester-exam-2024-2025\n\nCurrent: " + currentName,
@@ -545,17 +693,26 @@ async function deleteItem(item) {
       return;
     }
 
-    // Delete storage object if present
+    // Delete storage object only when no other row points at it.
     const fp = safeStr(item.file_path);
     if (fp) {
-      const rm = await sb.storage.from(SUPABASE.bucket).remove([fp]);
-      if (rm.error) throw rm.error;
+      const matches = await fetchRowsForFilePath(fp);
+      if (matches.length <= 1) {
+        const rm = await sb.storage.from(SUPABASE.bucket).remove([fp]);
+        if (rm.error) throw rm.error;
+      } else {
+        toast("Deleted metadata only; shared file kept for duplicate records.", "warn");
+      }
     }
 
     const { error } = await sb.from("past_questions").delete().eq("id", item.id);
     if (error) throw error;
 
-    toast("Deleted ✅", "ok");
+    if (!fp) toast("Deleted ✅", "ok");
+    else {
+      const matchesAfter = await fetchRowsForFilePath(fp);
+      toast(matchesAfter.length ? "Deleted metadata only; shared file kept ✅" : "Deleted ✅", "ok");
+    }
     await loadList();
   } catch (e) {
     toast(e?.message || "Delete failed.", "bad");
